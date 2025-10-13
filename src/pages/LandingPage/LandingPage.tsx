@@ -1,10 +1,10 @@
 import Image from "next/image";
 
-const YEARS_OF_EXPERIENCE = new Date().getFullYear() - 2011;
+// const YEARS_OF_EXPERIENCE = new Date().getFullYear() - 2011;
 
 export const LandingPage = () => {
   return (
-    <main className="overflow-hidden bg-[#171717]">
+    <main className="relative overflow-hidden bg-[#171717]">
       <div className="z-0 relative min-h-screen min-w-screen">
         {/* TODO: mudar de imagem a cada 5s (ao mesmo tempo que sanfona os botões) */}
         <Image
@@ -22,17 +22,17 @@ export const LandingPage = () => {
         <div className="flex flex-row min-h-screen min-w-screen">
           <div className="min-h-screen w-[10px] md:w-[20px] bg-[#74746C]" />
 
-          <div className="grid grid-rows-[1fr_auto_1fr] gap-[30px] min-h-screen w-full">
+          <div className="grid grid-rows-[1fr_auto_1fr] md:grid-rows-[.8fr_auto_1.2fr] gap-[30px] min-h-screen w-full">
             <div />
 
-            <div className="px-[10px]">
-              <h3 className="text-[14px] md:text-[24px] text-white font-[spectral] font-normal italic">
+            <div className="px-[10px] md:max-w-[95%]">
+              <h3 className="text-[14px] md:text-[20px] text-white font-[spectral] font-normal italic">
                 est. 2011
               </h3>
-              <h2 className="text-[14px] md:text-[24px] text-white font-[spectral] font-normal">
+              <h2 className="text-[14px] md:text-[20px] text-white font-[spectral] font-normal">
                 FRONT-END AND FULL-STACK
               </h2>
-              <h2 className="text-[16px] md:text-[32px] text-white font-[spectral] font-bold">
+              <h2 className="text-[16px] md:text-[28px] text-white font-[spectral] font-bold">
                 SENIOR SOFTWARE DEVELOPER
               </h2>
               <div className="w-full h-[1px] bg-white my-1" />
@@ -41,7 +41,7 @@ export const LandingPage = () => {
               </h1>
             </div>
 
-            <div className="flex flex-row gap-[5px] h-full">
+            <div className="flex flex-row gap-[5px] md:gap-[10px] h-full">
               <div className="h-full w-[5px] md:w-[10px] bg-[#E5E5E0]" />
 
               <div className="flex flex-col w-full gap-[10px]">
@@ -60,10 +60,9 @@ export const LandingPage = () => {
                   </button>
 
                   {/* TODO: substituir 14 anos por valor computado referente ao meu tempo de experiência */}
-                  <p className="text-[14px] md:text-[24px] text-white font-[spectral] font-normal italic">
+                  <p className="text-[14px] md:text-[22px] text-white font-[spectral] font-normal italic">
                     I am a strongly committed and self-taught professional who
-                    has been engaged in software development for{" "}
-                    {YEARS_OF_EXPERIENCE} years, working in various business
+                    has been engaged in software development for more than a decade, working in various business
                     niches worldwide.
                   </p>
                 </div>
@@ -84,7 +83,7 @@ export const LandingPage = () => {
                     </div>
                   </button>
 
-                  {/* <p className="text-[14px] md:text-[24px] text-white font-[spectral] font-normal italic">
+                  {/* <p className="text-[14px] md:text-[22px] text-white font-[spectral] font-normal italic">
                     My profound knowledge across the technical realm, coupled with natural creativity and a thirst for results, establishes a fast-paced, delivery-oriented professional profile.
                   </p> */}
                 </div>
@@ -105,7 +104,7 @@ export const LandingPage = () => {
                     </div>
                   </button>
 
-                  {/* <p className="text-[14px] md:text-[24px] text-white font-[spectral] font-normal italic">
+                  {/* <p className="text-[14px] md:text-[22px] text-white font-[spectral] font-normal italic">
                     If you&#x27;re interested, I&#x27;d be glad to schedule a call.
                   </p> */}
                 </div>
