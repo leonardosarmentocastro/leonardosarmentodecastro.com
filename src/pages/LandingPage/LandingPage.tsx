@@ -4,8 +4,8 @@ import Image from "next/image";
 
 export const LandingPage = () => {
   return (
-    <main className="relative overflow-hidden bg-[#171717]">
-      <div className="z-0 relative min-h-screen min-w-screen">
+    <main className="block lg:grid grid-cols-[35%_65%] relative lg:static overflow-hidden bg-[#171717]">
+      <div className="z-0 relative h-screen w-screen lg:w-auto">
         {/* TODO: mudar de imagem a cada 5s (ao mesmo tempo que sanfona os botões) */}
         <Image
           src="/leonardo.01.jpg"
@@ -18,14 +18,14 @@ export const LandingPage = () => {
         <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30" />
       </div>
 
-      <div className="absolute min-h-screen min-w-screen top-0 left-0 z-10">
-        <div className="flex flex-row min-h-screen min-w-screen">
-          <div className="min-h-screen w-[10px] md:w-[20px] bg-[#74746C]" />
+      <div className="absolute lg:static h-screen w-screen lg:w-auto top-0 left-0 z-10">
+        <div className="flex flex-row min-h-screen min-w-screen bg-none lg:bg-[#fff]">
+          <div className="min-h-screen w-[10px] md:w-[20px] bg-[#74746C] block lg:hidden" />
 
-          <div className="grid grid-rows-[1fr_auto_1fr] md:grid-rows-[.8fr_auto_1.2fr] gap-[30px] min-h-screen w-full">
+          <div className="grid grid-rows-[1fr_auto_1fr] md:grid-rows-[.8fr_auto_1.2fr] lg:grid-rows-[.5fr_auto_1.5fr] gap-[30px] min-h-screen w-full lg:bg-none lg:bg-[rgba(0,0,0,.7)]">
             <div />
 
-            <div className="px-[10px] md:max-w-[95%]">
+            <div className="px-[10px] md:px-[20px] md:max-w-[95%] max-w-full lg:max-w-[800px]">
               <h3 className="text-[14px] md:text-[20px] text-white font-[spectral] font-normal italic">
                 est. 2011
               </h3>
@@ -41,7 +41,7 @@ export const LandingPage = () => {
               </h1>
             </div>
 
-            <div className="flex flex-row gap-[5px] md:gap-[10px] h-full">
+            <div className="flex flex-row gap-[5px] md:gap-[10px] h-full max-w-full lg:max-w-[800px]">
               <div className="h-full w-[5px] md:w-[10px] bg-[#E5E5E0]" />
 
               <div className="flex flex-col w-full gap-[10px]">
@@ -55,7 +55,7 @@ export const LandingPage = () => {
 
                     <div className="flex flex-col justify-between w-full h-full bg-[rgba(229,229,224,0.5)] text-start">
                       <div className="grow pl-[5px] content-center">RESUME</div>
-                      <div className="w-full h-[5px] md:h-[10px] bg-[rgba(229,229,224,0.5)]" />
+                      <div className="w-full h-[5px] md:h-[10px] bg-[rgba(229,229,224,0.5)] lg:bg-[#E5E5E0]" />
                     </div>
                   </button>
 
@@ -79,7 +79,7 @@ export const LandingPage = () => {
                       <div className="grow pl-[5px] content-center">
                         LINKEDIN
                       </div>
-                      <div className="w-full h-[5px] md:h-[10px] bg-[rgba(0,114,177,0.5)]" />
+                      <div className="w-full h-[5px] md:h-[10px] bg-[rgba(0,114,177,0.5)] lg:bg-[#72ABC8]" />
                     </div>
                   </button>
 
@@ -100,7 +100,7 @@ export const LandingPage = () => {
                       <div className="grow pl-[5px] content-center">
                         CONTACT ME
                       </div>
-                      <div className="w-full h-[5px] md:h-[10px] bg-[rgba(18,140,126,0.5)]" />
+                      <div className="w-full h-[5px] md:h-[10px] bg-[rgba(18,140,126,0.5)] lg:bg-[#46A296]" />
                     </div>
                   </button>
 
