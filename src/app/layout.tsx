@@ -9,6 +9,22 @@ import {
 } from "next/font/google";
 import "./globals.css";
 
+// @mantine
+/////
+// Import styles of packages that you've installed.
+// All packages except `@mantine/hooks` require styles imports
+import "@mantine/core/styles.css";
+import {
+  ColorSchemeScript,
+  createTheme,
+  MantineProvider,
+  mantineHtmlProps,
+} from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
+import Head from "next/head";
+
+// fonts
+/////
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -45,6 +61,12 @@ export const metadata: Metadata = {
   description: "Personal website of Leonardo Sarmento de Castro",
 };
 
+// @mantine
+/////
+const theme = createTheme({
+  /** Put your mantine theme override here */
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -53,8 +75,16 @@ export default function RootLayout({
   const fonts = `${geistSans.variable} ${geistMono.variable} ${spectral.variable} ${domine.variable} ${quicksand.variable} ${plusJakartaSans.variable}`;
 
   return (
-    <html lang="en">
-      <body className={` ${fonts} antialiased`}>{children}</body>
+    <html lang="en" {...mantineHtmlProps}>
+      <Head>
+        <ColorSchemeScript />
+      </Head>
+
+      <body className={` ${fonts} antialiased`}>
+        <MantineProvider theme={theme}>
+          <ModalsProvider>{children}</ModalsProvider>
+        </MantineProvider>
+      </body>
     </html>
   );
 }
