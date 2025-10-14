@@ -1,7 +1,5 @@
 import Image from "next/image";
 
-// const YEARS_OF_EXPERIENCE = new Date().getFullYear() - 2011;
-
 export const LandingPage = () => {
   return (
     <main className="block lg:grid grid-cols-[35%_65%] relative lg:static overflow-hidden bg-[#171717]">
@@ -11,7 +9,8 @@ export const LandingPage = () => {
           src="/leonardo.01.jpg"
           alt="Leonardo Sarmento de Castro"
           className="object-cover object-[center_20%]"
-          fill
+          width={1920}
+          height={1080}
           priority
         />
 
@@ -49,13 +48,13 @@ export const LandingPage = () => {
                   {/* TODO: sanfonar botões (e animar suas barras de progresso) a cada 5s, mudando também a imagem de fundo */}
                   <button
                     type="button"
-                    className="flex flex-row h-[35px] md:h-[80px] font-jakarta-sans text-[16px] md:text-[32px] text-white font-bold"
+                    className="flex flex-row h-[35px] md:h-[80px] font-jakarta-sans text-[16px] md:text-[32px] text-white font-bold cursor-pointer"
                   >
                     <div className="h-full w-[5px] md:w-[10px] bg-[#E5E5E0] inline-block" />
 
                     <div className="flex flex-col justify-between w-full h-full bg-[rgba(229,229,224,0.5)] text-start">
                       <div className="grow pl-[5px] content-center">RESUME</div>
-                      <div className="w-full h-[5px] md:h-[10px] bg-[rgba(229,229,224,0.5)] lg:bg-[#E5E5E0]" />
+                      <div className="w-full h-[5px] md:h-[10px] bg-[rgba(229,229,224,0.5)]" />
                     </div>
                   </button>
 
@@ -71,7 +70,7 @@ export const LandingPage = () => {
                   {/* TODO: sanfonar botões (e animar suas barras de progresso) a cada 5s, mudando também a imagem de fundo */}
                   <button
                     type="button"
-                    className="flex flex-row h-[35px] md:h-[80px] font-jakarta-sans text-[16px] md:text-[32px] text-white font-bold"
+                    className="flex flex-row h-[35px] md:h-[80px] font-jakarta-sans text-[16px] md:text-[32px] text-white font-bold cursor-pointer"
                   >
                     <div className="h-full w-[5px] md:w-[10px] bg-[#0072B1] inline-block" />
 
@@ -92,7 +91,7 @@ export const LandingPage = () => {
                   {/* TODO: sanfonar botões (e animar suas barras de progresso) a cada 5s, mudando também a imagem de fundo */}
                   <button
                     type="button"
-                    className="flex flex-row h-[35px] md:h-[80px] font-jakarta-sans text-[16px] md:text-[32px] text-white font-bold"
+                    className="flex flex-row h-[35px] md:h-[80px] font-jakarta-sans text-[16px] md:text-[32px] text-white font-bold cursor-pointer"
                   >
                     <div className="h-full w-[5px] md:w-[10px] bg-[#128C7E] inline-block" />
 
