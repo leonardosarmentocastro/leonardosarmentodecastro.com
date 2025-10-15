@@ -2,20 +2,79 @@
 
 import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { IconBrandWhatsapp, IconMail } from "@tabler/icons-react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 import image1 from "@/../public/leonardo.01.jpg";
 
 export const LandingPage = () => {
   const [opened, { open, close }] = useDisclosure(false);
+  const [currentTime, setCurrentTime] = useState("");
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const timeString = now.toLocaleString("en-US", {
+        timeZone: "America/Sao_Paulo", // GMT-3 (Brazil time)
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      });
+      setCurrentTime(timeString);
+    };
+
+    // Update immediately
+    updateTime();
+
+    // Update every minute
+    const interval = setInterval(updateTime, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>
-      <Modal opened={opened} onClose={close}>
-        {/* <Modal.Title>My Modal</Modal.Title>
-        <Modal.Body>
-          <p>This is the content of the modal.</p>
-        </Modal.Body> */}
+      <Modal opened={opened} onClose={close} centered>
+        <div className="flex flex-col gap-[20px] items-center">
+          <h1 className="text-center font-jakarta-sans text-[24px] md:text-[32px] font-black">
+            CONTACT ME
+          </h1>
+
+          <div className="flex flex-col gap-[10px] items-center w-full">
+            <button
+              className="flex flex-col items-center bg-[#128c7e] rounded-[20px] px-[30px] py-[15px] w-full max-w-full cursor-pointer"
+              type="button"
+            >
+              <IconBrandWhatsapp className="w-[32px] h-[32px] text-white mb-[10px]" />
+
+              <span className="text-white font-jakarta-sans font-bold text-[14px] md:text-[20px]">
+                MESSAGE ME on WHATSAPP
+              </span>
+              <span className="text-white font-jakarta-sans font-bold text-[12px] md:text-[18px]">
+                +55 (12) 98127-6618
+              </span>
+            </button>
+
+            <button
+              className="flex flex-col items-center bg-[#BB001B] rounded-[20px] px-[30px] py-[15px] max-w-full cursor-pointer"
+              type="button"
+            >
+              <IconMail className="w-[32px] h-[32px] text-white mb-[10px]" />
+
+              <span className="text-white font-jakarta-sans font-bold text-[14px] md:text-[20px]">
+                SEND ME an EMAIL
+              </span>
+              <span className="text-white font-jakarta-sans font-bold text-[12px] md:text-[18px]">
+                negocios.leonardosarmentocastro@gmail.com
+              </span>
+            </button>
+
+            <p className="text-center text-[14px] font-spectral font-normal italic">
+              Current time for me is <strong>{currentTime}</strong> (GMT-3)
+            </p>
+          </div>
+        </div>
       </Modal>
 
       <main className="block lg:grid grid-cols-[35%_65%] relative lg:static overflow-hidden bg-[#171717]">
@@ -26,6 +85,7 @@ export const LandingPage = () => {
             alt="Leonardo Sarmento de Castro"
             className="object-cover object-[center_20%]"
             priority
+            fill
           />
 
           <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30" />
