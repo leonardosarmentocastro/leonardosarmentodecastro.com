@@ -13,6 +13,24 @@ import image2 from "@/../public/leonardo-02.jpg";
 import image3 from "@/../public/leonardo-03.jpg";
 import image4 from "@/../public/leonardo-04.jpg";
 
+const ACCORDIONS = [
+  {
+    id: 1,
+    text: "#landing-page-accordion-1-text",
+    progressBar: "#landing-page-accordion-1-button-progress-bar",
+  },
+  {
+    id: 2,
+    text: "#landing-page-accordion-2-text",
+    progressBar: "#landing-page-accordion-2-button-progress-bar",
+  },
+  {
+    id: 3,
+    text: "#landing-page-accordion-3-text",
+    progressBar: "#landing-page-accordion-3-button-progress-bar",
+  },
+];
+
 export const LandingPage = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const [currentTime, setCurrentTime] = useState("");
@@ -40,7 +58,28 @@ export const LandingPage = () => {
 
   // animations
   /////
-  // image cover fade in/out
+  // Initialize all accordion texts as hidden (to later be animated in sequence)
+  useGSAP(() => {
+    gsap.set(
+      [
+        "#landing-page-accordion-1-text",
+        "#landing-page-accordion-2-text",
+        "#landing-page-accordion-3-text",
+      ],
+      { opacity: 0, height: 0 },
+    );
+
+    gsap.set(
+      [
+        "#landing-page-accordion-1-button-progress-bar",
+        "#landing-page-accordion-2-button-progress-bar",
+        "#landing-page-accordion-3-button-progress-bar",
+      ],
+      { width: "0%" },
+    );
+  });
+
+  // image cover fade in/out infinite loop
   const images = [image1, image2, image3, image4];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   useGSAP(() => {
@@ -146,6 +185,10 @@ export const LandingPage = () => {
         duration: 0.3,
         ease: "power1.in",
         stagger: 0.3,
+        onComplete: () => {
+          // Start accordion cycling after initial animations complete
+          startAccordionCycle();
+        },
       },
     );
 
@@ -153,6 +196,52 @@ export const LandingPage = () => {
       tl.kill();
     };
   });
+
+  // accordion cycling animations
+  const startAccordionCycle = () => {
+    let currentAccordionIndex = 0;
+
+    const cycleAccordion = () => {
+      const current = ACCORDIONS[currentAccordionIndex];
+      const tl = gsap.timeline();
+
+      // Show text
+      tl.fromTo(
+        current.text,
+        { opacity: 0, height: 0 },
+        { opacity: 1, height: "auto", duration: 1, ease: "circ.out" },
+      );
+
+      // Animate progress bar from 0% to 100% over 7 seconds
+      tl.fromTo(
+        current.progressBar,
+        { width: "0%" },
+        { width: "100%", duration: 7, ease: "none" },
+      );
+
+      // Hide text and reset progress bar
+      tl.to([current.text, current.progressBar], {
+        opacity: 0,
+        duration: 0.2,
+        ease: "power2.in",
+        onComplete: () => {
+          // Reset progress bar width and text opacity for next cycle
+          gsap.set(current.progressBar, { width: "0%", opacity: 1 });
+          gsap.set(current.text, { opacity: 0, height: 0 });
+
+          // Move to next accordion
+          currentAccordionIndex =
+            (currentAccordionIndex + 1) % ACCORDIONS.length;
+
+          // Continue cycling
+          cycleAccordion();
+        },
+      });
+    };
+
+    // Start the cycle
+    cycleAccordion();
+  };
 
   return (
     <>
@@ -239,7 +328,7 @@ export const LandingPage = () => {
                   className="text-[14px] md:text-[20px] text-white font-spectral font-normal"
                   id="landing-page-headings-skills"
                 >
-                  TYPESCRIPT | NODE.JS | REACT.JS | AWS
+                  TYPESCRIPT | NODE.JS | REACT | AWS
                 </h2>
                 <h2
                   className="text-[16px] md:text-[28px] text-white font-spectral font-bold"
@@ -273,7 +362,6 @@ export const LandingPage = () => {
                     className="flex flex-col w-full gap-[5px]"
                     id="landing-page-accordion-1"
                   >
-                    {/* TODO: sanfonar botões (e animar suas barras de progresso) a cada 5s, mudando também a imagem de fundo */}
                     <button
                       type="button"
                       className="flex flex-row h-[35px] md:h-[80px] cursor-pointer"
@@ -284,23 +372,27 @@ export const LandingPage = () => {
                         <p className="grow pl-[5px] content-center font-jakarta-sans text-[16px] md:text-[32px] text-white font-bold">
                           RESUME
                         </p>
-                        <div className="w-full h-[5px] md:h-[10px] bg-[rgba(229,229,224,0.5)]" />
+                        <div
+                          className="w-full h-[5px] md:h-[10px] bg-[rgba(229,229,224,0.5)]"
+                          id="landing-page-accordion-1-button-progress-bar"
+                        />
                       </div>
                     </button>
 
-                    {/* TODO: substituir 14 anos por valor computado referente ao meu tempo de experiência */}
-                    {/* <p className="text-[14px] md:text-[22px] text-white font-spectral font-normal italic">
+                    <p
+                      className="text-[14px] md:text-[22px] text-white font-spectral font-normal italic overflow-hidden"
+                      id="landing-page-accordion-1-text"
+                    >
                       I am a strongly committed and self-taught professional who
                       has been engaged in software development for more than a
                       decade, working in various business niches worldwide.
-                    </p> */}
+                    </p>
                   </div>
 
                   <div
                     className="flex flex-col w-full gap-[5px]"
                     id="landing-page-accordion-2"
                   >
-                    {/* TODO: sanfonar botões (e animar suas barras de progresso) a cada 5s, mudando também a imagem de fundo */}
                     <button
                       type="button"
                       className="flex flex-row h-[35px] md:h-[80px] cursor-pointer"
@@ -311,20 +403,28 @@ export const LandingPage = () => {
                         <p className="grow pl-[5px] content-center font-jakarta-sans text-[16px] md:text-[32px] text-white font-bold">
                           LINKEDIN
                         </p>
-                        <div className="w-full h-[5px] md:h-[10px] bg-[rgba(0,114,177,0.5)] lg:bg-[#72ABC8]" />
+                        <div
+                          className="w-full h-[5px] md:h-[10px] bg-[rgba(0,114,177,0.5)] lg:bg-[#72ABC8]"
+                          id="landing-page-accordion-2-button-progress-bar"
+                        />
                       </div>
                     </button>
 
-                    {/* <p className="text-[14px] md:text-[22px] text-white font-spectral font-normal italic">
-                      My profound knowledge across the technical realm, coupled with natural creativity and a thirst for results, establishes a fast-paced, delivery-oriented professional profile.
-                    </p> */}
+                    <p
+                      className="text-[14px] md:text-[22px] text-white font-spectral font-normal italic overflow-hidden"
+                      id="landing-page-accordion-2-text"
+                    >
+                      My profound knowledge across the technical realm, coupled
+                      with natural creativity and a thirst for results,
+                      establishes a fast-paced, delivery-oriented professional
+                      profile.
+                    </p>
                   </div>
 
                   <div
                     className="flex flex-col w-full gap-[5px]"
                     id="landing-page-accordion-3"
                   >
-                    {/* TODO: sanfonar botões (e animar suas barras de progresso) a cada 5s, mudando também a imagem de fundo */}
                     <button
                       type="button"
                       className="flex flex-row h-[35px] md:h-[80px] cursor-pointer"
@@ -336,13 +436,19 @@ export const LandingPage = () => {
                         <p className="grow pl-[5px] content-center font-jakarta-sans text-[16px] md:text-[32px] text-white font-bold">
                           CONTACT ME
                         </p>
-                        <div className="w-full h-[5px] md:h-[10px] bg-[rgba(18,140,126,0.5)] lg:bg-[#46A296]" />
+                        <div
+                          className="w-full h-[5px] md:h-[10px] bg-[rgba(18,140,126,0.5)] lg:bg-[#46A296]"
+                          id="landing-page-accordion-3-button-progress-bar"
+                        />
                       </div>
                     </button>
 
-                    {/* <p className="text-[14px] md:text-[22px] text-white font-spectral font-normal italic">
-                      If you&#x27;re interested, I&#x27;d be glad to schedule a call.
-                    </p> */}
+                    <p
+                      className="text-[14px] md:text-[22px] text-white font-spectral font-normal italic overflow-hidden"
+                      id="landing-page-accordion-3-text"
+                    >
+                      If you're interested, I'd be glad to schedule a call.
+                    </p>
                   </div>
                 </div>
               </div>
