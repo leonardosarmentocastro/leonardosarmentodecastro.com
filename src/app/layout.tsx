@@ -7,6 +7,10 @@ import {
   Quicksand,
   Spectral,
 } from "next/font/google";
+import Head from "next/head";
+
+// global styles
+/////
 import "./globals.css";
 
 // @mantine
@@ -14,6 +18,7 @@ import "./globals.css";
 // Import styles of packages that you've installed.
 // All packages except `@mantine/hooks` require styles imports
 import "@mantine/core/styles.css";
+import { useGSAP } from "@gsap/react";
 import {
   ColorSchemeScript,
   createTheme,
@@ -21,7 +26,11 @@ import {
   mantineHtmlProps,
 } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
-import Head from "next/head";
+// GSAP (animations library)
+/////
+import gsap from "gsap";
+
+gsap.registerPlugin(useGSAP);
 
 // fonts
 /////

@@ -10,10 +10,12 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@mantine/core": "^8.3.4",
     "@mantine/hooks": "^8.3.4",
     "@mantine/modals": "^8.3.4",
     "@tabler/icons-react": "^3.35.0",
+    "gsap": "^3.13.0",
     "next": "15.5.3",
     "react": "19.1.0",
     "react-dom": "19.1.0"

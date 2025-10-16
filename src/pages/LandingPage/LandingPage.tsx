@@ -1,12 +1,17 @@
 "use client";
 
+import { useGSAP } from "@gsap/react";
 import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconBrandWhatsapp, IconMail } from "@tabler/icons-react";
+import gsap from "gsap";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-import image1 from "@/../public/leonardo.01.jpg";
+import image1 from "@/../public/leonardo-01.jpg";
+import image2 from "@/../public/leonardo-02.jpg";
+import image3 from "@/../public/leonardo-03.jpg";
+import image4 from "@/../public/leonardo-04.jpg";
 
 export const LandingPage = () => {
   const [opened, { open, close }] = useDisclosure(false);
@@ -33,9 +38,36 @@ export const LandingPage = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // animations
+  /////
+  // image cover fade in/out
+  const images = [image1, image2, image3, image4];
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useGSAP(() => {
+    const tl = gsap.timeline({
+      repeat: -1,
+      onRepeat: () => {
+        // Change image when animation repeats
+        setCurrentImageIndex((prev) => (prev + 1) % images.length);
+      },
+    });
+
+    // Fade in: 3 seconds (opacity 0 → 1)
+    tl.fromTo(
+      "#landing-page-cover-image-element",
+      { opacity: 0 },
+      { opacity: 1, duration: 3 },
+    )
+      // Hold: 3 seconds (opacity stays at 1)
+      .to("#landing-page-cover-image-element", { opacity: 1, duration: 3 })
+      // Fade out: 1 second (opacity 1 → 0)
+      .to("#landing-page-cover-image-element", { opacity: 0, duration: 3 });
+  }, [images.length]);
+
   return (
     <>
-      <Modal opened={opened} onClose={close} centered size='auto'>
+      <Modal opened={opened} onClose={close} centered size="auto">
         <div className="flex flex-col gap-[20px] items-center">
           <h1 className="text-center font-jakarta-sans text-[24px] md:text-[32px] font-black">
             CONTACT ME
@@ -78,12 +110,15 @@ export const LandingPage = () => {
       </Modal>
 
       <main className="block lg:grid grid-cols-[35%_65%] relative lg:static overflow-hidden bg-[#171717]">
-        <div className="z-0 relative h-screen w-screen lg:w-auto">
-          {/* TODO: mudar de imagem a cada 5s (ao mesmo tempo que sanfona os botões) */}
+        <div
+          className="z-0 relative h-screen w-screen lg:w-auto"
+          id="landing-page-cover-image"
+        >
           <Image
-            src={image1}
             alt="Leonardo Sarmento de Castro"
-            className="object-cover object-[center_20%]"
+            className="object-cover object-[center_20%] opacity-0"
+            id="landing-page-cover-image-element"
+            src={images[currentImageIndex]}
             priority
             fill
           />
