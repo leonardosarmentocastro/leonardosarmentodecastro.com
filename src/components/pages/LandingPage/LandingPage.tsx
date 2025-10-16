@@ -327,7 +327,7 @@ export const LandingPage = () => {
           className="absolute lg:static h-screen w-screen lg:w-auto top-0 left-0 z-10"
           id="landing-page-content-container"
         >
-          <div className="flex flex-row min-h-screen min-w-screen bg-none lg:bg-[#fff]">
+          <div className="flex flex-row min-h-screen min-w-screen bg-none lg:bg-white">
             <div
               className="min-h-screen w-[10px] md:w-[20px] bg-[#74746C] block lg:hidden"
               id="landing-page-vertical-bar-1"
@@ -356,7 +356,7 @@ export const LandingPage = () => {
                   SENIOR SOFTWARE ENGINEER
                 </h2>
                 <div
-                  className="w-full h-[1px] bg-white my-1"
+                  className="w-full h-px bg-white my-1"
                   id="landing-page-headings-separator"
                 />
                 <h1
