@@ -3,6 +3,7 @@
 import { useGSAP } from "@gsap/react";
 import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 import { IconBrandWhatsapp, IconMail } from "@tabler/icons-react";
 import gsap from "gsap";
 import Image from "next/image";
@@ -12,6 +13,11 @@ import image1 from "@/../public/leonardo-01.jpg";
 import image2 from "@/../public/leonardo-02.jpg";
 import image3 from "@/../public/leonardo-03.jpg";
 import image4 from "@/../public/leonardo-04.jpg";
+
+const RESUME_LINK =
+  "https://drive.google.com/file/d/1EDyG1whkW6vOvf_72x7ApOsl0EwXW6Up/view?usp=drive_link";
+const LINKEDIN_LINK =
+  "https://www.linkedin.com/in/leonardo-sarmento-de-castro-a249b945/";
 
 const ACCORDIONS = [
   {
@@ -252,9 +258,11 @@ export const LandingPage = () => {
           </h1>
 
           <div className="flex flex-col gap-[10px] items-center w-full">
-            <button
+            <a
               className="flex flex-col items-center bg-[#128c7e] rounded-[20px] px-[30px] py-[15px] w-full max-w-full cursor-pointer hover:scale-[1.02] transition-transform"
-              type="button"
+              href="https://wa.me/5512981276618?text=Hello%20Leonardo%2C%20I%27m%20interested%20in%20discussing%20a%20project%20opportunity%20with%20you."
+              target="_blank"
+              rel="noopener noreferrer"
             >
               <IconBrandWhatsapp className="w-[32px] h-[32px] text-white mb-[10px]" />
 
@@ -264,11 +272,22 @@ export const LandingPage = () => {
               <span className="text-white font-jakarta-sans font-bold text-[12px] md:text-[18px]">
                 +55 (12) 98127-6618
               </span>
-            </button>
+            </a>
 
-            <button
+            <a
               className="flex flex-col items-center bg-[#BB001B] rounded-[20px] px-[30px] py-[15px] w-full max-w-full cursor-pointer hover:scale-[1.02] transition-transform"
-              type="button"
+              href="mailto:negocios.leonardosarmentocastro@gmail.com?subject=Project%20Opportunity%20Inquiry&body=Hello%20Leonardo%2C%0A%0AI%27m%20interested%20in%20discussing%20a%20potential%20project%20opportunity%20with%20you.%0A%0ABest%20regards"
+              onClick={(_e) => {
+                navigator.clipboard.writeText(
+                  "negocios.leonardosarmentocastro@gmail.com",
+                );
+                notifications.show({
+                  color: "red",
+                  title: "Email copied",
+                  message:
+                    'The email "negocios.leonardosarmentocastro@gmail.com" has been copied to clipboard!',
+                });
+              }}
             >
               <IconMail className="w-[32px] h-[32px] text-white mb-[10px]" />
 
@@ -278,7 +297,7 @@ export const LandingPage = () => {
               <span className="text-white font-jakarta-sans font-bold text-[12px] md:text-[18px]">
                 negocios.leonardosarmentocastro@gmail.com
               </span>
-            </button>
+            </a>
 
             <p className="text-center text-[14px] font-spectral font-normal italic">
               Current time for me is <strong>{currentTime}</strong> (GMT-3)
@@ -362,9 +381,11 @@ export const LandingPage = () => {
                     className="flex flex-col w-full gap-[5px]"
                     id="landing-page-accordion-1"
                   >
-                    <button
-                      type="button"
+                    <a
                       className="flex flex-row h-[35px] md:h-[80px] cursor-pointer"
+                      href={RESUME_LINK}
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
                       <div className="h-full w-[5px] md:w-[10px] bg-[#E5E5E0] inline-block" />
 
@@ -377,7 +398,7 @@ export const LandingPage = () => {
                           id="landing-page-accordion-1-button-progress-bar"
                         />
                       </div>
-                    </button>
+                    </a>
 
                     <p
                       className="text-[14px] md:text-[22px] text-white font-spectral font-normal italic overflow-hidden"
@@ -393,9 +414,11 @@ export const LandingPage = () => {
                     className="flex flex-col w-full gap-[5px]"
                     id="landing-page-accordion-2"
                   >
-                    <button
-                      type="button"
+                    <a
                       className="flex flex-row h-[35px] md:h-[80px] cursor-pointer"
+                      href={LINKEDIN_LINK}
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
                       <div className="h-full w-[5px] md:w-[10px] bg-[#0072B1] inline-block" />
 
@@ -408,7 +431,7 @@ export const LandingPage = () => {
                           id="landing-page-accordion-2-button-progress-bar"
                         />
                       </div>
-                    </button>
+                    </a>
 
                     <p
                       className="text-[14px] md:text-[22px] text-white font-spectral font-normal italic overflow-hidden"

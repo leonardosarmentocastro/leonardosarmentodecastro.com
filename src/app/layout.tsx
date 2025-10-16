@@ -18,7 +18,9 @@ import "./globals.css";
 // Import styles of packages that you've installed.
 // All packages except `@mantine/hooks` require styles imports
 import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 import { useGSAP } from "@gsap/react";
+
 import {
   ColorSchemeScript,
   createTheme,
@@ -26,6 +28,7 @@ import {
   mantineHtmlProps,
 } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
+import { Notifications } from "@mantine/notifications";
 // GSAP (animations library)
 /////
 import gsap from "gsap";
@@ -66,8 +69,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Leonardo Sarmento de Castro",
-  description: "Personal website of Leonardo Sarmento de Castro",
+  title: "Leonardo Sarmento de Castro | SENIOR SOFTWARE ENGINEER",
+  description: "TYPESCRIPT | NODE.JS | REACT | AWS",
 };
 
 // @mantine
@@ -91,7 +94,10 @@ export default function RootLayout({
 
       <body className={` ${fonts} antialiased`}>
         <MantineProvider theme={theme}>
-          <ModalsProvider>{children}</ModalsProvider>
+          <ModalsProvider>
+            {children}
+            <Notifications />
+          </ModalsProvider>
         </MantineProvider>
       </body>
     </html>
