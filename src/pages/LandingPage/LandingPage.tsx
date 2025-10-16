@@ -35,7 +35,7 @@ export const LandingPage = () => {
 
   return (
     <>
-      <Modal opened={opened} onClose={close} centered>
+      <Modal opened={opened} onClose={close} centered size='auto'>
         <div className="flex flex-col gap-[20px] items-center">
           <h1 className="text-center font-jakarta-sans text-[24px] md:text-[32px] font-black">
             CONTACT ME
@@ -43,7 +43,7 @@ export const LandingPage = () => {
 
           <div className="flex flex-col gap-[10px] items-center w-full">
             <button
-              className="flex flex-col items-center bg-[#128c7e] rounded-[20px] px-[30px] py-[15px] w-full max-w-full cursor-pointer"
+              className="flex flex-col items-center bg-[#128c7e] rounded-[20px] px-[30px] py-[15px] w-full max-w-full cursor-pointer hover:scale-[1.02] transition-transform"
               type="button"
             >
               <IconBrandWhatsapp className="w-[32px] h-[32px] text-white mb-[10px]" />
@@ -57,7 +57,7 @@ export const LandingPage = () => {
             </button>
 
             <button
-              className="flex flex-col items-center bg-[#BB001B] rounded-[20px] px-[30px] py-[15px] max-w-full cursor-pointer"
+              className="flex flex-col items-center bg-[#BB001B] rounded-[20px] px-[30px] py-[15px] w-full max-w-full cursor-pointer hover:scale-[1.02] transition-transform"
               type="button"
             >
               <IconMail className="w-[32px] h-[32px] text-white mb-[10px]" />
@@ -103,10 +103,10 @@ export const LandingPage = () => {
                   est. 2011
                 </h3>
                 <h2 className="text-[14px] md:text-[20px] text-white font-spectral font-normal">
-                  FRONT-END AND FULL-STACK
+                  TYPESCRIPT | NODE.JS | REACT.JS | AWS
                 </h2>
                 <h2 className="text-[16px] md:text-[28px] text-white font-spectral font-bold">
-                  SENIOR SOFTWARE DEVELOPER
+                  SENIOR SOFTWARE ENGINEER
                 </h2>
                 <div className="w-full h-[1px] bg-white my-1" />
                 <h1 className="text-[24px] md:text-[48px] text-white font-[domine] font-normal">
