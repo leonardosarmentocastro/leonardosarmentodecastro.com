@@ -43,7 +43,6 @@ export const LandingPage = () => {
   // image cover fade in/out
   const images = [image1, image2, image3, image4];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
   useGSAP(() => {
     const tl = gsap.timeline({
       repeat: -1,
@@ -63,7 +62,97 @@ export const LandingPage = () => {
       .to("#landing-page-cover-image-element", { opacity: 1, duration: 3 })
       // Fade out: 1 second (opacity 1 → 0)
       .to("#landing-page-cover-image-element", { opacity: 0, duration: 3 });
-  }, [images.length]);
+
+    return () => {
+      tl.kill();
+    };
+  }, [images.length, setCurrentImageIndex]);
+
+  // page elements fade/slide in
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    const tl = gsap.timeline();
+
+    // vertical bars slide in
+    /////
+    mm.add("(min-width: 1024px)", () => {
+      tl.fromTo(
+        "#landing-page-content-container",
+        { opacity: 0, translateY: "100%" },
+        { opacity: 1, translateY: "0%", duration: 1, ease: "circ.out" },
+      );
+    }).add("(max-width: 1023px)", () => {
+      tl.fromTo(
+        "#landing-page-vertical-bar-1",
+        { translateX: "-100%" },
+        { translateX: "0%", duration: 1, ease: "circ.out" },
+      );
+    });
+
+    tl.fromTo(
+      ["#landing-page-vertical-bar-1"],
+      { translateY: "-100%" },
+      { translateY: "0%", duration: 1, ease: "circ.out" },
+    );
+
+    // headings slide in
+    /////
+    tl.fromTo(
+      [
+        "#landing-page-headings-establishment",
+        "#landing-page-headings-skills",
+        "#landing-page-headings-position",
+      ],
+      { opacity: 0, translateX: "-10%" },
+      {
+        opacity: 1,
+        translateX: "0%",
+        duration: 0.5,
+        ease: "slow",
+        stagger: 0.5,
+      },
+    );
+
+    tl.fromTo(
+      "#landing-page-headings-separator",
+      { width: "0%" },
+      { width: "100%", duration: 1, ease: "power2.out" },
+    );
+
+    tl.fromTo(
+      "#landing-page-headings-name",
+      { opacity: 0, translateX: "-5%" },
+      { opacity: 1, translateX: "0%", duration: 2, ease: "power2.out" },
+    );
+
+    // landing-page-accordions-container
+    /////
+    tl.fromTo(
+      "#landing-page-vertical-bar-2",
+      { translateY: "100%" },
+      { translateY: "0%", duration: 0.3, ease: "circ.out" },
+    );
+
+    tl.fromTo(
+      [
+        "#landing-page-accordion-1",
+        "#landing-page-accordion-2",
+        "#landing-page-accordion-3",
+      ],
+      { opacity: 0, translateX: "10%" },
+      {
+        opacity: 1,
+        translateX: "0%",
+        duration: 0.3,
+        ease: "power1.in",
+        stagger: 0.3,
+      },
+    );
+
+    return () => {
+      tl.kill();
+    };
+  });
 
   return (
     <>
@@ -126,34 +215,64 @@ export const LandingPage = () => {
           <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30" />
         </div>
 
-        <div className="absolute lg:static h-screen w-screen lg:w-auto top-0 left-0 z-10">
+        <div
+          className="absolute lg:static h-screen w-screen lg:w-auto top-0 left-0 z-10"
+          id="landing-page-content-container"
+        >
           <div className="flex flex-row min-h-screen min-w-screen bg-none lg:bg-[#fff]">
-            <div className="min-h-screen w-[10px] md:w-[20px] bg-[#74746C] block lg:hidden" />
+            <div
+              className="min-h-screen w-[10px] md:w-[20px] bg-[#74746C] block lg:hidden"
+              id="landing-page-vertical-bar-1"
+            />
 
             <div className="grid grid-rows-[1fr_auto_1fr] md:grid-rows-[.8fr_auto_1.2fr] lg:grid-rows-[.5fr_auto_1.5fr] gap-[30px] min-h-screen w-full lg:bg-none lg:bg-[rgba(0,0,0,.7)]">
               <div />
 
               <div className="px-[10px] md:px-[20px] md:max-w-[95%] max-w-full lg:max-w-[800px]">
-                <h3 className="text-[14px] md:text-[20px] text-white font-spectral font-normal italic">
+                <h3
+                  className="text-[14px] md:text-[20px] text-white font-spectral font-normal italic"
+                  id="landing-page-headings-establishment"
+                >
                   est. 2011
                 </h3>
-                <h2 className="text-[14px] md:text-[20px] text-white font-spectral font-normal">
+                <h2
+                  className="text-[14px] md:text-[20px] text-white font-spectral font-normal"
+                  id="landing-page-headings-skills"
+                >
                   TYPESCRIPT | NODE.JS | REACT.JS | AWS
                 </h2>
-                <h2 className="text-[16px] md:text-[28px] text-white font-spectral font-bold">
+                <h2
+                  className="text-[16px] md:text-[28px] text-white font-spectral font-bold"
+                  id="landing-page-headings-position"
+                >
                   SENIOR SOFTWARE ENGINEER
                 </h2>
-                <div className="w-full h-[1px] bg-white my-1" />
-                <h1 className="text-[24px] md:text-[48px] text-white font-[domine] font-normal">
+                <div
+                  className="w-full h-[1px] bg-white my-1"
+                  id="landing-page-headings-separator"
+                />
+                <h1
+                  className="text-[24px] md:text-[48px] text-white font-[domine] font-normal"
+                  id="landing-page-headings-name"
+                >
                   Leonardo Sarmento de Castro
                 </h1>
               </div>
 
               <div className="flex flex-row gap-[5px] md:gap-[10px] h-full max-w-full lg:max-w-[800px]">
-                <div className="h-full w-[5px] md:w-[10px] bg-[#E5E5E0]" />
+                <div
+                  className="h-full w-[5px] md:w-[10px] bg-[#E5E5E0]"
+                  id="landing-page-vertical-bar-2"
+                />
 
-                <div className="flex flex-col w-full gap-[10px]">
-                  <div className="flex flex-col w-full gap-[5px]">
+                <div
+                  className="flex flex-col w-full gap-[10px]"
+                  id="landing-page-accordions-container"
+                >
+                  <div
+                    className="flex flex-col w-full gap-[5px]"
+                    id="landing-page-accordion-1"
+                  >
                     {/* TODO: sanfonar botões (e animar suas barras de progresso) a cada 5s, mudando também a imagem de fundo */}
                     <button
                       type="button"
@@ -170,14 +289,17 @@ export const LandingPage = () => {
                     </button>
 
                     {/* TODO: substituir 14 anos por valor computado referente ao meu tempo de experiência */}
-                    <p className="text-[14px] md:text-[22px] text-white font-spectral font-normal italic">
+                    {/* <p className="text-[14px] md:text-[22px] text-white font-spectral font-normal italic">
                       I am a strongly committed and self-taught professional who
                       has been engaged in software development for more than a
                       decade, working in various business niches worldwide.
-                    </p>
+                    </p> */}
                   </div>
 
-                  <div className="flex flex-col w-full gap-[5px]">
+                  <div
+                    className="flex flex-col w-full gap-[5px]"
+                    id="landing-page-accordion-2"
+                  >
                     {/* TODO: sanfonar botões (e animar suas barras de progresso) a cada 5s, mudando também a imagem de fundo */}
                     <button
                       type="button"
@@ -198,7 +320,10 @@ export const LandingPage = () => {
                     </p> */}
                   </div>
 
-                  <div className="flex flex-col w-full gap-[5px]">
+                  <div
+                    className="flex flex-col w-full gap-[5px]"
+                    id="landing-page-accordion-3"
+                  >
                     {/* TODO: sanfonar botões (e animar suas barras de progresso) a cada 5s, mudando também a imagem de fundo */}
                     <button
                       type="button"
