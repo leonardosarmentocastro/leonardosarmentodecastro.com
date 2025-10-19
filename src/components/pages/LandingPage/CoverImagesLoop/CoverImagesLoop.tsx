@@ -3,13 +3,12 @@ import gsap from "gsap";
 import Image from "next/image";
 import { useState } from "react";
 
-import image1 from "@/../public/leonardo-01.jpg";
-import image2 from "@/../public/leonardo-02.jpg";
-import image3 from "@/../public/leonardo-03.jpg";
-import image4 from "@/../public/leonardo-04.jpg";
+import { LANDING_PAGE_COVER_IMAGES } from "@/components/pages/LandingPage/CoverImagesLoop/constants";
 
-const IMAGES = [image1, image2, image3, image4];
-
+// TODO: add a `app/loading.tsx` file to previously load images for smoother first load
+// references:
+// https://nextjs.org/docs/app/getting-started/linking-and-navigating#prefetching
+// https://nextjs.org/docs/app/getting-started/linking-and-navigating#slow-networks
 export const CoverImagesLoop = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -19,7 +18,9 @@ export const CoverImagesLoop = () => {
       repeat: -1,
       onRepeat: () => {
         // Change image when animation repeats
-        setCurrentImageIndex((prev) => (prev + 1) % IMAGES.length);
+        setCurrentImageIndex(
+          (prev) => (prev + 1) % LANDING_PAGE_COVER_IMAGES.length,
+        );
       },
     });
 
@@ -37,7 +38,7 @@ export const CoverImagesLoop = () => {
     return () => {
       tl.kill();
     };
-  }, [IMAGES.length, setCurrentImageIndex]);
+  }, [LANDING_PAGE_COVER_IMAGES.length, setCurrentImageIndex]);
 
   return (
     <div className="z-0 relative h-screen w-screen lg:w-auto">
@@ -46,7 +47,7 @@ export const CoverImagesLoop = () => {
         className="object-cover object-[center_20%] opacity-0"
         id="landing-page-cover-image-element"
         // TODO: optimize for first load
-        src={IMAGES[currentImageIndex]}
+        src={LANDING_PAGE_COVER_IMAGES[currentImageIndex]}
         priority
         fill
       />

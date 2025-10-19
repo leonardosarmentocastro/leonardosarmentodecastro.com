@@ -8,7 +8,7 @@ import { IconBrandWhatsapp, IconMail } from "@tabler/icons-react";
 import gsap from "gsap";
 import { useEffect, useState } from "react";
 
-import { CoverImagesLoop } from "@/components/pages/CoverImagesLoop/CoverImagesLoop";
+import { CoverImagesLoop } from "@/components/pages/LandingPage/CoverImagesLoop/CoverImagesLoop";
 
 const RESUME_LINK =
   "https://drive.google.com/file/d/1EDyG1whkW6vOvf_72x7ApOsl0EwXW6Up/view?usp=drive_link";
