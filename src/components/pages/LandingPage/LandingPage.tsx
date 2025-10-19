@@ -6,13 +6,9 @@ import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { IconBrandWhatsapp, IconMail } from "@tabler/icons-react";
 import gsap from "gsap";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
-import image1 from "@/../public/leonardo-01.jpg";
-import image2 from "@/../public/leonardo-02.jpg";
-import image3 from "@/../public/leonardo-03.jpg";
-import image4 from "@/../public/leonardo-04.jpg";
+import { CoverImagesLoop } from "@/components/pages/CoverImagesLoop/CoverImagesLoop";
 
 const RESUME_LINK =
   "https://drive.google.com/file/d/1EDyG1whkW6vOvf_72x7ApOsl0EwXW6Up/view?usp=drive_link";
@@ -37,6 +33,14 @@ const ACCORDIONS = [
   },
 ];
 
+// TODO: optimize images for first load (the image fails to change gradually on first load, as it is not cached yet)
+// TODO: improve accessibility (ARIA roles, keyboard navigation, etc.)
+// TODO: refactor GSAP code to be cleaner and more modular (encapsulate components and their animations, take advantage of SSR where possible, etc.)
+// TODO: add sort of analytics (e.g., track clicks on accordions, time spent on page, etc.)
+// TODO: improve SEO (meta tags, structured data, etc.)
+// TODO: change favicon
+// TODO: add tests (e.g., unit tests, integration tests, e2e tests, etc.)
+// TODO: add more content (e.g., portfolio, testimonials, blog, etc.)
 export const LandingPage = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const [currentTime, setCurrentTime] = useState("");
@@ -84,34 +88,6 @@ export const LandingPage = () => {
       { width: "0%" },
     );
   });
-
-  // image cover fade in/out infinite loop
-  const images = [image1, image2, image3, image4];
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  useGSAP(() => {
-    const tl = gsap.timeline({
-      repeat: -1,
-      onRepeat: () => {
-        // Change image when animation repeats
-        setCurrentImageIndex((prev) => (prev + 1) % images.length);
-      },
-    });
-
-    // Fade in: 3 seconds (opacity 0 → 1)
-    tl.fromTo(
-      "#landing-page-cover-image-element",
-      { opacity: 0 },
-      { opacity: 1, duration: 3 },
-    )
-      // Hold: 3 seconds (opacity stays at 1)
-      .to("#landing-page-cover-image-element", { opacity: 1, duration: 3 })
-      // Fade out: 1 second (opacity 1 → 0)
-      .to("#landing-page-cover-image-element", { opacity: 0, duration: 3 });
-
-    return () => {
-      tl.kill();
-    };
-  }, [images.length, setCurrentImageIndex]);
 
   // page elements fade/slide in
   useGSAP(() => {
@@ -307,21 +283,7 @@ export const LandingPage = () => {
       </Modal>
 
       <main className="block lg:grid grid-cols-[35%_65%] relative lg:static overflow-hidden bg-[#171717]">
-        <div
-          className="z-0 relative h-screen w-screen lg:w-auto"
-          id="landing-page-cover-image"
-        >
-          <Image
-            alt="Leonardo Sarmento de Castro"
-            className="object-cover object-[center_20%] opacity-0"
-            id="landing-page-cover-image-element"
-            src={images[currentImageIndex]}
-            priority
-            fill
-          />
-
-          <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30" />
-        </div>
+        <CoverImagesLoop />
 
         <div
           className="absolute lg:static h-screen w-screen lg:w-auto top-0 left-0 z-10"
