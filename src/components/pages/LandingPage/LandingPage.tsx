@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { CoverImagesLoop } from "@/components/pages/LandingPage/CoverImagesLoop/CoverImagesLoop";
 
 const RESUME_LINK =
-  "https://drive.google.com/file/d/1EDyG1whkW6vOvf_72x7ApOsl0EwXW6Up/view?usp=drive_link";
+  "https://drive.google.com/file/d/17bOTWpjYsRroPucnWTzxIT9Q5GZ88UG8/view?usp=sharing";
 const LINKEDIN_LINK =
   "https://www.linkedin.com/in/leonardo-sarmento-de-castro-a249b945/";
 
