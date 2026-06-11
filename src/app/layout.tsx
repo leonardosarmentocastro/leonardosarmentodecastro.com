@@ -33,6 +33,8 @@ import { Notifications } from "@mantine/notifications";
 /////
 import gsap from "gsap";
 
+import { AnalyticsProvider } from "@/components/AnalyticsProvider";
+
 gsap.registerPlugin(useGSAP);
 
 // fonts
@@ -94,10 +96,12 @@ export default function RootLayout({
 
       <body className={` ${fonts} antialiased`}>
         <MantineProvider theme={theme}>
-          <ModalsProvider>
-            {children}
-            <Notifications />
-          </ModalsProvider>
+          <AnalyticsProvider>
+            <ModalsProvider>
+              {children}
+              <Notifications />
+            </ModalsProvider>
+          </AnalyticsProvider>
         </MantineProvider>
       </body>
     </html>
