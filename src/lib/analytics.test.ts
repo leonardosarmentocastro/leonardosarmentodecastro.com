@@ -41,4 +41,14 @@ describe("initAnalytics", () => {
 
     expect(mockInit).not.toHaveBeenCalled();
   });
+
+  it("does not call posthog.init on non-production hostnames", async () => {
+    const { initAnalytics } = await loadAnalytics();
+    vi.stubEnv("NODE_ENV", "production");
+    setHostname("preview-abc.vercel.app");
+
+    initAnalytics();
+
+    expect(mockInit).not.toHaveBeenCalled();
+  });
 });
