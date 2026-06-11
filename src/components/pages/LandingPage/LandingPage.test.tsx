@@ -83,4 +83,22 @@ describe("LandingPage analytics", () => {
     expect(trackWhatsappClick).toHaveBeenCalledTimes(1);
     expect(trackContactModalDismiss).not.toHaveBeenCalled();
   });
+
+  it("fires email_clicked, copies email to clipboard, and does not fire dismiss when email link is clicked", async () => {
+    const writeText = vi
+      .spyOn(navigator.clipboard, "writeText")
+      .mockResolvedValue(undefined);
+
+    const user = userEvent.setup();
+    renderWithProviders(<LandingPage />);
+
+    await user.click(screen.getByRole("button", { name: /contact me/i }));
+    await user.click(screen.getByRole("link", { name: /send me an email/i }));
+
+    expect(trackEmailClick).toHaveBeenCalledTimes(1);
+    expect(writeText).toHaveBeenCalledWith(
+      "negocios.leonardosarmentocastro@gmail.com",
+    );
+    expect(trackContactModalDismiss).not.toHaveBeenCalled();
+  });
 });

@@ -12,6 +12,7 @@ import { CoverImagesLoop } from "@/components/pages/LandingPage/CoverImagesLoop/
 import {
   trackContactModalDismiss,
   trackContactModalOpen,
+  trackEmailClick,
   trackLinkedinClick,
   trackResumeClick,
   trackWhatsappClick,
@@ -61,6 +62,18 @@ export const LandingPage = () => {
   const handleWhatsappClick = () => {
     ctaClickedRef.current = true;
     trackWhatsappClick();
+  };
+
+  const handleEmailClick = () => {
+    ctaClickedRef.current = true;
+    trackEmailClick();
+    navigator.clipboard.writeText("negocios.leonardosarmentocastro@gmail.com");
+    notifications.show({
+      color: "red",
+      title: "Email copied",
+      message:
+        'The email "negocios.leonardosarmentocastro@gmail.com" has been copied to clipboard!',
+    });
   };
 
   useEffect(() => {
@@ -272,17 +285,7 @@ export const LandingPage = () => {
             <a
               className="flex flex-col items-center bg-[#BB001B] rounded-[20px] px-[30px] py-[15px] w-full max-w-full cursor-pointer hover:scale-[1.02] transition-transform"
               href="mailto:negocios.leonardosarmentocastro@gmail.com?subject=Project%20Opportunity%20Inquiry&body=Hello%20Leonardo%2C%0A%0AI%27m%20interested%20in%20discussing%20a%20potential%20project%20opportunity%20with%20you.%0A%0ABest%20regards"
-              onClick={(_e) => {
-                navigator.clipboard.writeText(
-                  "negocios.leonardosarmentocastro@gmail.com",
-                );
-                notifications.show({
-                  color: "red",
-                  title: "Email copied",
-                  message:
-                    'The email "negocios.leonardosarmentocastro@gmail.com" has been copied to clipboard!',
-                });
-              }}
+              onClick={handleEmailClick}
             >
               <IconMail className="w-[32px] h-[32px] text-white mb-[10px]" />
 
