@@ -40,4 +40,14 @@ describe("LandingPage analytics", () => {
 
     expect(trackResumeClick).toHaveBeenCalledTimes(1);
   });
+
+  it("fires linkedin_clicked when the LINKEDIN link is clicked", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<LandingPage />);
+
+    const link = screen.getByRole("link", { name: /linkedin/i });
+    await user.click(link);
+
+    expect(trackLinkedinClick).toHaveBeenCalledTimes(1);
+  });
 });

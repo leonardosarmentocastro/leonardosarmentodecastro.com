@@ -9,7 +9,7 @@ import gsap from "gsap";
 import { useEffect, useState } from "react";
 
 import { CoverImagesLoop } from "@/components/pages/LandingPage/CoverImagesLoop/CoverImagesLoop";
-import { trackResumeClick } from "@/lib/analytics";
+import { trackLinkedinClick, trackResumeClick } from "@/lib/analytics";
 
 const RESUME_LINK =
   "https://drive.google.com/file/d/17bOTWpjYsRroPucnWTzxIT9Q5GZ88UG8/view?usp=sharing";
@@ -382,6 +382,7 @@ export const LandingPage = () => {
                       href={LINKEDIN_LINK}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => trackLinkedinClick()}
                     >
                       <div className="h-full w-[5px] md:w-[10px] bg-[#0072B1] inline-block" />
 
