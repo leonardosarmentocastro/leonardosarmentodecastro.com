@@ -71,4 +71,15 @@ describe("initAnalytics", () => {
       capture_pageleave: false,
     });
   });
+
+  it("does not re-initialize posthog when called twice within the same module load", async () => {
+    const { initAnalytics } = await loadAnalytics();
+    vi.stubEnv("NODE_ENV", "production");
+    setHostname("leonardosarmentodecastro.com");
+
+    initAnalytics();
+    initAnalytics();
+
+    expect(mockInit).toHaveBeenCalledTimes(1);
+  });
 });
