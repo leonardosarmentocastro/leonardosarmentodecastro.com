@@ -60,4 +60,14 @@ describe("LandingPage analytics", () => {
 
     expect(trackContactModalOpen).toHaveBeenCalledTimes(1);
   });
+
+  it("fires contact_modal_dismissed when modal is closed via ESC without a CTA click", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<LandingPage />);
+
+    await user.click(screen.getByRole("button", { name: /contact me/i }));
+    await user.keyboard("{Escape}");
+
+    expect(trackContactModalDismiss).toHaveBeenCalledTimes(1);
+  });
 });

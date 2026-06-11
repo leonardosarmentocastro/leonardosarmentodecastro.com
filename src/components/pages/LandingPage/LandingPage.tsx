@@ -6,10 +6,11 @@ import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { IconBrandWhatsapp, IconMail } from "@tabler/icons-react";
 import gsap from "gsap";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { CoverImagesLoop } from "@/components/pages/LandingPage/CoverImagesLoop/CoverImagesLoop";
 import {
+  trackContactModalDismiss,
   trackContactModalOpen,
   trackLinkedinClick,
   trackResumeClick,
@@ -48,6 +49,13 @@ const ACCORDIONS = [
 export const LandingPage = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const [currentTime, setCurrentTime] = useState("");
+  const ctaClickedRef = useRef(false);
+
+  const handleModalClose = () => {
+    if (!ctaClickedRef.current) trackContactModalDismiss();
+    ctaClickedRef.current = false;
+    close();
+  };
 
   useEffect(() => {
     const updateTime = () => {
@@ -231,7 +239,7 @@ export const LandingPage = () => {
 
   return (
     <>
-      <Modal opened={opened} onClose={close} centered size="auto">
+      <Modal opened={opened} onClose={handleModalClose} centered size="auto">
         <div className="flex flex-col gap-[20px] items-center">
           <h1 className="text-center font-jakarta-sans text-[24px] md:text-[32px] font-black">
             CONTACT ME
