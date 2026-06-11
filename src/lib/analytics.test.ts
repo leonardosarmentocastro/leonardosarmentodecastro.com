@@ -1,0 +1,44 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+const { mockInit, mockCapture } = vi.hoisted(() => ({
+  mockInit: vi.fn(),
+  mockCapture: vi.fn(),
+}));
+
+vi.mock("posthog-js", () => ({
+  default: { init: mockInit, capture: mockCapture },
+}));
+
+const setHostname = (hostname: string) => {
+  Object.defineProperty(window, "location", {
+    value: { ...window.location, hostname },
+    writable: true,
+  });
+};
+
+const loadAnalytics = async () => {
+  vi.resetModules();
+  return await import("./analytics");
+};
+
+describe("initAnalytics", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "phc_test");
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "/ingest");
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it("does not call posthog.init in development", async () => {
+    const { initAnalytics } = await loadAnalytics();
+    vi.stubEnv("NODE_ENV", "development");
+    setHostname("leonardosarmentodecastro.com");
+
+    initAnalytics();
+
+    expect(mockInit).not.toHaveBeenCalled();
+  });
+});
