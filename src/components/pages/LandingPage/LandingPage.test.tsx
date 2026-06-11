@@ -50,4 +50,14 @@ describe("LandingPage analytics", () => {
 
     expect(trackLinkedinClick).toHaveBeenCalledTimes(1);
   });
+
+  it("fires contact_modal_opened when CONTACT ME is clicked", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<LandingPage />);
+
+    const button = screen.getByRole("button", { name: /contact me/i });
+    await user.click(button);
+
+    expect(trackContactModalOpen).toHaveBeenCalledTimes(1);
+  });
 });

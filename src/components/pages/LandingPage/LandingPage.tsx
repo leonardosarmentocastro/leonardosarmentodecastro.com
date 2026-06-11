@@ -9,7 +9,11 @@ import gsap from "gsap";
 import { useEffect, useState } from "react";
 
 import { CoverImagesLoop } from "@/components/pages/LandingPage/CoverImagesLoop/CoverImagesLoop";
-import { trackLinkedinClick, trackResumeClick } from "@/lib/analytics";
+import {
+  trackContactModalOpen,
+  trackLinkedinClick,
+  trackResumeClick,
+} from "@/lib/analytics";
 
 const RESUME_LINK =
   "https://drive.google.com/file/d/17bOTWpjYsRroPucnWTzxIT9Q5GZ88UG8/view?usp=sharing";
@@ -415,7 +419,10 @@ export const LandingPage = () => {
                     <button
                       type="button"
                       className="flex flex-row h-[35px] md:h-[80px] cursor-pointer"
-                      onClick={open}
+                      onClick={() => {
+                        trackContactModalOpen();
+                        open();
+                      }}
                     >
                       <div className="h-full w-[5px] md:w-[10px] bg-[#128C7E] inline-block" />
 
