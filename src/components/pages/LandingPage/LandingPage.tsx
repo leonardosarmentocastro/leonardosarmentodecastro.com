@@ -9,6 +9,7 @@ import gsap from "gsap";
 import { useEffect, useState } from "react";
 
 import { CoverImagesLoop } from "@/components/pages/LandingPage/CoverImagesLoop/CoverImagesLoop";
+import { trackResumeClick } from "@/lib/analytics";
 
 const RESUME_LINK =
   "https://drive.google.com/file/d/17bOTWpjYsRroPucnWTzxIT9Q5GZ88UG8/view?usp=sharing";
@@ -36,7 +37,6 @@ const ACCORDIONS = [
 // TODO: optimize images for first load (the image fails to change gradually on first load, as it is not cached yet)
 // TODO: improve accessibility (ARIA roles, keyboard navigation, etc.)
 // TODO: refactor GSAP code to be cleaner and more modular (encapsulate components and their animations, take advantage of SSR where possible, etc.)
-// TODO: add sort of analytics (e.g., track clicks on accordions, time spent on page, etc.)
 // TODO: improve SEO (meta tags, structured data, etc.)
 // TODO: change favicon
 // TODO: add tests (e.g., unit tests, integration tests, e2e tests, etc.)
@@ -348,6 +348,7 @@ export const LandingPage = () => {
                       href={RESUME_LINK}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => trackResumeClick()}
                     >
                       <div className="h-full w-[5px] md:w-[10px] bg-[#E5E5E0] inline-block" />
 
