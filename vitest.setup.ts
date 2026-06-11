@@ -16,3 +16,14 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: vi.fn(),
   })),
 });
+
+// jsdom 29's navigator.clipboard is implemented on the Navigator prototype and
+// resists per-test instance overrides. Stub it on the prototype here so tests
+// can `vi.spyOn(navigator.clipboard, "writeText")` reliably.
+Object.defineProperty(window.navigator, "clipboard", {
+  configurable: true,
+  value: {
+    writeText: vi.fn().mockResolvedValue(undefined),
+    readText: vi.fn().mockResolvedValue(""),
+  },
+});
