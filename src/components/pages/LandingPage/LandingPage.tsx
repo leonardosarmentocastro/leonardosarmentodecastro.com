@@ -14,6 +14,7 @@ import {
   trackContactModalOpen,
   trackLinkedinClick,
   trackResumeClick,
+  trackWhatsappClick,
 } from "@/lib/analytics";
 
 const RESUME_LINK =
@@ -55,6 +56,11 @@ export const LandingPage = () => {
     if (!ctaClickedRef.current) trackContactModalDismiss();
     ctaClickedRef.current = false;
     close();
+  };
+
+  const handleWhatsappClick = () => {
+    ctaClickedRef.current = true;
+    trackWhatsappClick();
   };
 
   useEffect(() => {
@@ -251,6 +257,7 @@ export const LandingPage = () => {
               href="https://wa.me/5512981276618?text=Hello%20Leonardo%2C%20I%27m%20interested%20in%20discussing%20a%20project%20opportunity%20with%20you."
               target="_blank"
               rel="noopener noreferrer"
+              onClick={handleWhatsappClick}
             >
               <IconBrandWhatsapp className="w-[32px] h-[32px] text-white mb-[10px]" />
 

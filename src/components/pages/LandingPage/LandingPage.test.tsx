@@ -70,4 +70,17 @@ describe("LandingPage analytics", () => {
 
     expect(trackContactModalDismiss).toHaveBeenCalledTimes(1);
   });
+
+  it("fires whatsapp_clicked and does not fire dismiss when WhatsApp link is clicked", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<LandingPage />);
+
+    await user.click(screen.getByRole("button", { name: /contact me/i }));
+    await user.click(
+      screen.getByRole("link", { name: /message me on whatsapp/i }),
+    );
+
+    expect(trackWhatsappClick).toHaveBeenCalledTimes(1);
+    expect(trackContactModalDismiss).not.toHaveBeenCalled();
+  });
 });
