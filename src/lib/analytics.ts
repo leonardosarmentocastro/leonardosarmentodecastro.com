@@ -12,6 +12,13 @@ export const initAnalytics = (): void => {
 
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
     api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST!,
+    ui_host: "https://us.posthog.com",
+    person_profiles: "never",
+    persistence: "memory",
+    disable_session_recording: true,
+    autocapture: false,
+    capture_pageview: true,
+    capture_pageleave: false,
   });
   initialized = true;
 };

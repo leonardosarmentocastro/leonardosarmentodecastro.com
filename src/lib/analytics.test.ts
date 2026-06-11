@@ -51,4 +51,24 @@ describe("initAnalytics", () => {
 
     expect(mockInit).not.toHaveBeenCalled();
   });
+
+  it("initializes posthog with cookieless config on the production domain", async () => {
+    const { initAnalytics } = await loadAnalytics();
+    vi.stubEnv("NODE_ENV", "production");
+    setHostname("leonardosarmentodecastro.com");
+
+    initAnalytics();
+
+    expect(mockInit).toHaveBeenCalledTimes(1);
+    expect(mockInit).toHaveBeenCalledWith("phc_test", {
+      api_host: "/ingest",
+      ui_host: "https://us.posthog.com",
+      person_profiles: "never",
+      persistence: "memory",
+      disable_session_recording: true,
+      autocapture: false,
+      capture_pageview: true,
+      capture_pageleave: false,
+    });
+  });
 });
