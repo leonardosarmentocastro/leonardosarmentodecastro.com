@@ -101,4 +101,24 @@ describe("LandingPage analytics", () => {
     );
     expect(trackContactModalDismiss).not.toHaveBeenCalled();
   });
+
+  it("fires dismiss again on a second open-and-dismiss cycle after a CTA click in the first cycle", async () => {
+    vi.spyOn(navigator.clipboard, "writeText").mockResolvedValue(undefined);
+
+    const user = userEvent.setup();
+    renderWithProviders(<LandingPage />);
+
+    await user.click(screen.getByRole("button", { name: /contact me/i }));
+    await user.click(
+      screen.getByRole("link", { name: /message me on whatsapp/i }),
+    );
+    await user.keyboard("{Escape}");
+
+    expect(trackContactModalDismiss).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole("button", { name: /contact me/i }));
+    await user.keyboard("{Escape}");
+
+    expect(trackContactModalDismiss).toHaveBeenCalledTimes(1);
+  });
 });
