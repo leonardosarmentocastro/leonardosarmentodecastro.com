@@ -82,6 +82,17 @@ describe("initAnalytics", () => {
 
     expect(mockInit).toHaveBeenCalledTimes(1);
   });
+
+  it("does not call posthog.init when NEXT_PUBLIC_POSTHOG_KEY is missing", async () => {
+    const { initAnalytics } = await loadAnalytics();
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "");
+    setHostname("leonardosarmentodecastro.com");
+
+    initAnalytics();
+
+    expect(mockInit).not.toHaveBeenCalled();
+  });
 });
 
 describe("event trackers", () => {
