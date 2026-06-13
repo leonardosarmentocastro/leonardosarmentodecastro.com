@@ -3,6 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/analytics/events", () => ({
   trackResumeClick: vi.fn(),
+  trackResumeModalDismiss: vi.fn(),
+  trackResumePdfClick: vi.fn(),
+  trackResumeWebClick: vi.fn(),
   trackContactModalOpen: vi.fn(),
   trackContactModalDismiss: vi.fn(),
   trackContactClick: vi.fn(),
@@ -13,6 +16,9 @@ import {
   trackContactModalDismiss,
   trackContactModalOpen,
   trackResumeClick,
+  trackResumeModalDismiss,
+  trackResumePdfClick,
+  trackResumeWebClick,
 } from "@/analytics/events";
 import { renderWithProviders, screen, waitFor } from "@/test/render";
 
@@ -27,14 +33,18 @@ afterEach(() => {
 });
 
 describe("LandingPage analytics", () => {
-  it("fires resume_clicked when the RESUME link is clicked", async () => {
+  it("fires resume_clicked when the RESUME button is clicked and opens the chooser modal", async () => {
     const user = userEvent.setup();
     renderWithProviders(<LandingPage />);
 
-    const link = screen.getByRole("link", { name: /resume/i });
-    await user.click(link);
+    const button = screen.getByRole("button", { name: /^resume$/i });
+    await user.click(button);
 
     expect(trackResumeClick).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("link", { name: /open pdf/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /view web version/i }),
+    ).toBeInTheDocument();
   });
 
   it("fires contact_clicked with channel=linkedin and location=landing_modal when the LINKEDIN link is clicked", async () => {
@@ -137,5 +147,37 @@ describe("LandingPage analytics", () => {
     await user.keyboard("{Escape}");
 
     expect(trackContactModalDismiss).toHaveBeenCalledTimes(1);
+  });
+
+  it("fires trackResumePdfClick when the PDF choice is clicked from the chooser modal", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<LandingPage />);
+
+    await user.click(screen.getByRole("button", { name: /^resume$/i }));
+    await user.click(screen.getByRole("link", { name: /open pdf/i }));
+
+    expect(trackResumePdfClick).toHaveBeenCalledTimes(1);
+    expect(trackResumeModalDismiss).not.toHaveBeenCalled();
+  });
+
+  it("fires trackResumeWebClick when the WEB choice is clicked from the chooser modal", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<LandingPage />);
+
+    await user.click(screen.getByRole("button", { name: /^resume$/i }));
+    await user.click(screen.getByRole("link", { name: /view web version/i }));
+
+    expect(trackResumeWebClick).toHaveBeenCalledTimes(1);
+    expect(trackResumeModalDismiss).not.toHaveBeenCalled();
+  });
+
+  it("fires trackResumeModalDismiss when the chooser modal is closed via ESC without a choice", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<LandingPage />);
+
+    await user.click(screen.getByRole("button", { name: /^resume$/i }));
+    await user.keyboard("{Escape}");
+
+    expect(trackResumeModalDismiss).toHaveBeenCalledTimes(1);
   });
 });

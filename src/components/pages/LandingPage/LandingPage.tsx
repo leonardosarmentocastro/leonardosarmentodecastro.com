@@ -12,9 +12,11 @@ import {
   trackContactModalDismiss,
   trackContactModalOpen,
   trackResumeClick,
+  trackResumeModalDismiss,
 } from "@/analytics/events";
 import { CoverImagesLoop } from "@/components/pages/LandingPage/CoverImagesLoop/CoverImagesLoop";
 import { RESUME } from "@/cv/data";
+import { ResumeOptionsModal } from "@/cv/ResumeOptionsModal";
 
 const ACCORDIONS = [
   {
@@ -44,8 +46,13 @@ const ACCORDIONS = [
 export const LandingPage = () => {
   const links = RESUME.hero.links;
   const [opened, { open, close }] = useDisclosure(false);
+  const [
+    resumeModalOpened,
+    { open: openResumeModal, close: closeResumeModal },
+  ] = useDisclosure(false);
   const [currentTime, setCurrentTime] = useState("");
   const ctaClickedRef = useRef(false);
+  const resumeChoiceClickedRef = useRef(false);
 
   const handleModalClose = () => {
     if (!ctaClickedRef.current) trackContactModalDismiss();
@@ -67,6 +74,16 @@ export const LandingPage = () => {
       title: "Email copied",
       message: `The email "${links.email}" has been copied to clipboard!`,
     });
+  };
+
+  const handleResumeModalClose = () => {
+    if (!resumeChoiceClickedRef.current) trackResumeModalDismiss();
+    resumeChoiceClickedRef.current = false;
+    closeResumeModal();
+  };
+
+  const handleResumeChoiceClick = () => {
+    resumeChoiceClickedRef.current = true;
   };
 
   useEffect(() => {
@@ -297,6 +314,12 @@ export const LandingPage = () => {
         </div>
       </Modal>
 
+      <ResumeOptionsModal
+        opened={resumeModalOpened}
+        onClose={handleResumeModalClose}
+        onChoiceClick={handleResumeChoiceClick}
+      />
+
       <main className="block lg:grid grid-cols-[35%_65%] relative lg:static overflow-hidden bg-[#171717]">
         <CoverImagesLoop />
 
@@ -358,12 +381,13 @@ export const LandingPage = () => {
                     className="flex flex-col w-full gap-[5px]"
                     id="landing-page-accordion-1"
                   >
-                    <a
+                    <button
+                      type="button"
                       className="flex flex-row h-[35px] md:h-[80px] cursor-pointer"
-                      href={links.resumePdf}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => trackResumeClick()}
+                      onClick={() => {
+                        trackResumeClick();
+                        openResumeModal();
+                      }}
                     >
                       <div className="h-full w-[5px] md:w-[10px] bg-[#E5E5E0] inline-block" />
 
@@ -376,7 +400,7 @@ export const LandingPage = () => {
                           id="landing-page-accordion-1-button-progress-bar"
                         />
                       </div>
-                    </a>
+                    </button>
 
                     <p
                       className="text-[14px] md:text-[22px] text-white font-spectral font-normal italic overflow-hidden"
