@@ -50,7 +50,7 @@ const main = async (): Promise<void> => {
       message: "Campaign slug? (lowercase, [a-z0-9-]+)",
       placeholder: "job-search-2026",
       validate: (raw) => {
-        if (raw.length === 0) return "Required.";
+        if (!raw) return "Required.";
         if (!SLUG_RE.test(raw))
           return "Use only lowercase letters, digits, and hyphens.";
       },
@@ -69,7 +69,7 @@ const main = async (): Promise<void> => {
         await text({
           message: "utm_content value",
           placeholder: "hero-cta",
-          validate: (raw) => (raw.length === 0 ? "Required." : undefined),
+          validate: (raw) => (!raw ? "Required." : undefined),
         }),
       )
     : undefined;
@@ -85,8 +85,10 @@ const main = async (): Promise<void> => {
         await text({
           message: "Path",
           placeholder: "/about",
-          validate: (raw) =>
-            raw.startsWith("/") ? undefined : 'Must start with "/".',
+          validate: (raw) => {
+            if (!raw) return "Required.";
+            return raw.startsWith("/") ? undefined : 'Must start with "/".';
+          },
         }),
       )
     : undefined;
@@ -104,6 +106,7 @@ const main = async (): Promise<void> => {
           message: "Base URL",
           placeholder: "https://leonardosarmentocastro.com",
           validate: (raw) => {
+            if (!raw) return "Required.";
             try {
               new URL(raw);
               return undefined;
