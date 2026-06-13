@@ -18,7 +18,7 @@ import {
   trackResumeClick,
   trackWhatsappClick,
 } from "@/analytics/events";
-import { renderWithProviders, screen } from "@/test/render";
+import { renderWithProviders, screen, waitFor } from "@/test/render";
 
 import { LandingPage } from "../LandingPage";
 
@@ -27,7 +27,12 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  vi.clearAllMocks();
+  // restoreAllMocks (not just clearAllMocks) unwinds vi.spyOn-installed
+  // spies back to their original implementations. clearAllMocks only
+  // resets call history, so without restore the per-test
+  // vi.spyOn(navigator.clipboard, "writeText") calls stack across tests
+  // and leak setup-file state between cases.
+  vi.restoreAllMocks();
 });
 
 describe("LandingPage analytics", () => {
@@ -115,6 +120,18 @@ describe("LandingPage analytics", () => {
     await user.keyboard("{Escape}");
 
     expect(trackContactModalDismiss).not.toHaveBeenCalled();
+
+    // Wait for the modal to actually leave the DOM before reopening it.
+    // Mantine's Modal close path involves a state flip plus transition
+    // teardown, parts of which schedule work via rAF/timers that the
+    // userEvent act() wrap does not fully flush in jsdom. Without this
+    // wait, the second "CONTACT ME" click below can land while cycle 1
+    // is still mid-close, racing a second onClose against the just-reset
+    // ctaClickedRef and causing trackContactModalDismiss to fire from
+    // cycle 1 instead of being suppressed by it.
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
+    );
 
     await user.click(screen.getByRole("button", { name: /contact me/i }));
     await user.keyboard("{Escape}");
