@@ -1,32 +1,5 @@
 import posthog from "posthog-js";
 
-const PROD_HOSTNAME = "leonardosarmentodecastro.com";
-
-let initialized = false;
-
-export const initAnalytics = (): void => {
-  if (initialized) return;
-  if (process.env.NODE_ENV !== "production") return;
-  if (typeof window === "undefined") return;
-  if (window.location.hostname !== PROD_HOSTNAME) return;
-
-  const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-  const apiHost = process.env.NEXT_PUBLIC_POSTHOG_HOST;
-  if (!key || !apiHost) return;
-
-  posthog.init(key, {
-    api_host: apiHost,
-    ui_host: "https://us.posthog.com",
-    person_profiles: "never",
-    persistence: "memory",
-    disable_session_recording: true,
-    autocapture: false,
-    capture_pageview: true,
-    capture_pageleave: false,
-  });
-  initialized = true;
-};
-
 export const trackResumeClick = (): void => {
   posthog.capture("resume_clicked", { destination: "google_drive" });
 };
