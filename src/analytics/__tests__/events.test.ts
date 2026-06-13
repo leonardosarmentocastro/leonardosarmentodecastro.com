@@ -18,12 +18,10 @@ describe("event trackers", () => {
     vi.clearAllMocks();
   });
 
-  it("trackResumeClick captures resume_clicked with destination=google_drive", async () => {
+  it("trackResumeClick captures resume_clicked with no props (modal-open semantics)", async () => {
     const { trackResumeClick } = await loadAnalytics();
     trackResumeClick();
-    expect(mockCapture).toHaveBeenCalledWith("resume_clicked", {
-      destination: "google_drive",
-    });
+    expect(mockCapture).toHaveBeenCalledWith("resume_clicked");
   });
 
   it("trackLinkedinClick captures linkedin_clicked with destination=linkedin_profile", async () => {

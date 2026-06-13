@@ -1,7 +1,7 @@
 import posthog from "posthog-js";
 
 export const trackResumeClick = (): void => {
-  posthog.capture("resume_clicked", { destination: "google_drive" });
+  posthog.capture("resume_clicked");
 };
 
 export const trackLinkedinClick = (): void => {
