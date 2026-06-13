@@ -6,8 +6,15 @@ import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { IconBrandWhatsapp, IconMail } from "@tabler/icons-react";
 import gsap from "gsap";
-import { useEffect, useState } from "react";
-
+import { useEffect, useRef, useState } from "react";
+import {
+  trackContactModalDismiss,
+  trackContactModalOpen,
+  trackEmailClick,
+  trackLinkedinClick,
+  trackResumeClick,
+  trackWhatsappClick,
+} from "@/analytics/events";
 import { CoverImagesLoop } from "@/components/pages/LandingPage/CoverImagesLoop/CoverImagesLoop";
 
 const RESUME_LINK =
@@ -36,7 +43,6 @@ const ACCORDIONS = [
 // TODO: optimize images for first load (the image fails to change gradually on first load, as it is not cached yet)
 // TODO: improve accessibility (ARIA roles, keyboard navigation, etc.)
 // TODO: refactor GSAP code to be cleaner and more modular (encapsulate components and their animations, take advantage of SSR where possible, etc.)
-// TODO: add sort of analytics (e.g., track clicks on accordions, time spent on page, etc.)
 // TODO: improve SEO (meta tags, structured data, etc.)
 // TODO: change favicon
 // TODO: add tests (e.g., unit tests, integration tests, e2e tests, etc.)
@@ -44,6 +50,30 @@ const ACCORDIONS = [
 export const LandingPage = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const [currentTime, setCurrentTime] = useState("");
+  const ctaClickedRef = useRef(false);
+
+  const handleModalClose = () => {
+    if (!ctaClickedRef.current) trackContactModalDismiss();
+    ctaClickedRef.current = false;
+    close();
+  };
+
+  const handleWhatsappClick = () => {
+    ctaClickedRef.current = true;
+    trackWhatsappClick();
+  };
+
+  const handleEmailClick = () => {
+    ctaClickedRef.current = true;
+    trackEmailClick();
+    navigator.clipboard.writeText("negocios.leonardosarmentocastro@gmail.com");
+    notifications.show({
+      color: "red",
+      title: "Email copied",
+      message:
+        'The email "negocios.leonardosarmentocastro@gmail.com" has been copied to clipboard!',
+    });
+  };
 
   useEffect(() => {
     const updateTime = () => {
@@ -227,7 +257,7 @@ export const LandingPage = () => {
 
   return (
     <>
-      <Modal opened={opened} onClose={close} centered size="auto">
+      <Modal opened={opened} onClose={handleModalClose} centered size="auto">
         <div className="flex flex-col gap-[20px] items-center">
           <h1 className="text-center font-jakarta-sans text-[24px] md:text-[32px] font-black">
             CONTACT ME
@@ -239,6 +269,7 @@ export const LandingPage = () => {
               href="https://wa.me/5512981276618?text=Hello%20Leonardo%2C%20I%27m%20interested%20in%20discussing%20a%20project%20opportunity%20with%20you."
               target="_blank"
               rel="noopener noreferrer"
+              onClick={handleWhatsappClick}
             >
               <IconBrandWhatsapp className="w-[32px] h-[32px] text-white mb-[10px]" />
 
@@ -253,17 +284,7 @@ export const LandingPage = () => {
             <a
               className="flex flex-col items-center bg-[#BB001B] rounded-[20px] px-[30px] py-[15px] w-full max-w-full cursor-pointer hover:scale-[1.02] transition-transform"
               href="mailto:negocios.leonardosarmentocastro@gmail.com?subject=Project%20Opportunity%20Inquiry&body=Hello%20Leonardo%2C%0A%0AI%27m%20interested%20in%20discussing%20a%20potential%20project%20opportunity%20with%20you.%0A%0ABest%20regards"
-              onClick={(_e) => {
-                navigator.clipboard.writeText(
-                  "negocios.leonardosarmentocastro@gmail.com",
-                );
-                notifications.show({
-                  color: "red",
-                  title: "Email copied",
-                  message:
-                    'The email "negocios.leonardosarmentocastro@gmail.com" has been copied to clipboard!',
-                });
-              }}
+              onClick={handleEmailClick}
             >
               <IconMail className="w-[32px] h-[32px] text-white mb-[10px]" />
 
@@ -348,6 +369,7 @@ export const LandingPage = () => {
                       href={RESUME_LINK}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => trackResumeClick()}
                     >
                       <div className="h-full w-[5px] md:w-[10px] bg-[#E5E5E0] inline-block" />
 
@@ -381,6 +403,7 @@ export const LandingPage = () => {
                       href={LINKEDIN_LINK}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => trackLinkedinClick()}
                     >
                       <div className="h-full w-[5px] md:w-[10px] bg-[#0072B1] inline-block" />
 
@@ -413,7 +436,10 @@ export const LandingPage = () => {
                     <button
                       type="button"
                       className="flex flex-row h-[35px] md:h-[80px] cursor-pointer"
-                      onClick={open}
+                      onClick={() => {
+                        trackContactModalOpen();
+                        open();
+                      }}
                     >
                       <div className="h-full w-[5px] md:w-[10px] bg-[#128C7E] inline-block" />
 

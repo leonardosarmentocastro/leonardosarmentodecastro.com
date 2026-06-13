@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# leonardosarmentodecastro.com
 
-## Getting Started
+Personal website of **Leonardo Sarmento de Castro** — Senior Software Engineer (TypeScript · Node.js · React · AWS).
 
-First, run the development server:
+Built with the Next.js App Router. Single landing page today, designed to grow into a small portfolio/blog over time.
+
+---
+
+## Stack
+
+| Concern             | Choice                                                                                  |
+| ------------------- | --------------------------------------------------------------------------------------- |
+| Framework           | [Next.js 15](https://nextjs.org) (App Router, Turbopack)                                |
+| UI runtime          | React 19, TypeScript (strict)                                                           |
+| Component library   | [Mantine 8](https://mantine.dev) (`@mantine/core`, `hooks`, `modals`, `notifications`) |
+| Styling             | Tailwind CSS v4, PostCSS, Mantine theme                                                 |
+| Animation           | [GSAP 3](https://gsap.com) via `@gsap/react`                                            |
+| Icons               | `@tabler/icons-react`                                                                   |
+| Analytics           | [PostHog](https://posthog.com) — see [`src/analytics/README.md`](./src/analytics/README.md) |
+| Testing             | [Vitest](https://vitest.dev) + Testing Library + jsdom                                  |
+| Lint / Format       | [Biome](https://biomejs.dev) (no ESLint, no Prettier)                                   |
+| Package manager     | **pnpm** (pinned via `packageManager` in `package.json`)                                |
+| Deploy              | [Vercel](https://vercel.com) — auto-deploy on push to `main`                            |
+
+---
+
+## Getting started
+
+Requirements:
+
+- Node.js 20+
+- pnpm 8+ (`corepack enable` is the easiest way to get the pinned version)
+
+Install and run:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+cp .env.example .env.local   # optional — only needed if you want PostHog analytics in dev
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Environment variables are documented in the domain folder that owns them. Today the only one is `NEXT_PUBLIC_POSTHOG_KEY` — see [`src/analytics/README.md`](./src/analytics/README.md).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Command            | What it does                                       |
+| ------------------ | -------------------------------------------------- |
+| `pnpm dev`         | Start the dev server with Turbopack                |
+| `pnpm build`       | Production build with Turbopack                    |
+| `pnpm start`       | Serve the production build                         |
+| `pnpm lint`        | `biome check --fix` (lint + safe autofixes)        |
+| `pnpm format`      | `biome format --write`                             |
+| `pnpm test`        | Vitest in watch mode                               |
+| `pnpm test:run`    | Vitest single run (used in CI / pre-merge checks)  |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project structure
 
-## Deploy on Vercel
+`src/` is organized **by feature/domain**, not by technical layer. Each domain owns its types, hooks, server code, components, and tests under one folder — and, when it has setup, configuration, or conventions worth explaining, **its own `README.md`**. Start there before reading the source.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+├── app/                          # Next.js App Router (routes, layout, sitemap, robots)
+│   ├── layout.tsx                # Mantine + fonts + global providers
+│   ├── page.tsx                  # Renders <LandingPage />
+│   ├── sitemap.ts
+│   └── robots.ts
+├── analytics/                    # PostHog event API — see src/analytics/README.md
+│   ├── README.md
+│   ├── events.ts
+│   └── __tests__/events.test.ts
+├── components/
+│   └── pages/
+│       └── LandingPage/          # Page-level UI lives with the page
+│           ├── LandingPage.tsx
+│           ├── CoverImagesLoop/
+│           └── __tests__/
+└── test/                         # Shared test utilities (render helpers, polyfills)
+    ├── render.tsx
+    └── jest-dom.d.ts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+instrumentation-client.ts         # Next.js convention: client bootstrap (PostHog init)
+next.config.ts                    # PostHog reverse-proxy rewrites under /ingest
+```
+
+Conventions enforced repo-wide (see `CLAUDE.md` for the full version):
+
+- No `src/services/`, `src/lib/`, `src/utils/`, `src/helpers/` — group by domain instead.
+- Generic primitives reused across features go under `src/components/`. Anything feature-specific lives in the feature folder.
+- Tests sit in a `__tests__/` subfolder next to the code they cover.
+- Path alias `@/*` → `src/*` (configured in `tsconfig.json`).
+- When a domain has non-trivial setup or external dependencies, add a `README.md` inside its folder rather than bloating this one.
+
+---
+
+## Testing
+
+- Test runner: **Vitest** with the jsdom environment.
+- React tests use `@testing-library/react` + `@testing-library/user-event`.
+- Shared render helpers live in `src/test/render.tsx`.
+- Tests are colocated under `__tests__/` within each domain folder.
+
+Run once:
+
+```bash
+pnpm test:run
+```
+
+Watch mode while developing:
+
+```bash
+pnpm test
+```
+
+TDD is the working style (red → green → refactor). Bug fixes start with a failing regression test.
+
+---
+
+## Branching & deploys
+
+- **`main` is auto-deployed to production on every push** via Vercel — including doc and config changes.
+- Never commit directly to `main`. Use `feat/...`, `fix/...`, `chore/...` branches and merge via PR after verification.
+- Commits are atomic: one feature increment, one refactor, one fix, or one doc update per commit. Each commit should leave the repo buildable and tests green.
+
+See `CLAUDE.md` for the full set of working conventions used by AI assistants in this repo.
+
+---
+
+## License
+
+Personal project — no license granted for reuse. Content and code © Leonardo Sarmento de Castro.
