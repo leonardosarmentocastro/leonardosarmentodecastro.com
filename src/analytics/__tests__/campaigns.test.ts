@@ -25,4 +25,17 @@ describe("buildCampaignUrl", () => {
       "https://leonardosarmentodecastro.com/?utm_source=linkedin&utm_medium=social&utm_campaign=needs+encoding+%26+stuff",
     );
   });
+
+  it("appends utm_content when content is provided", () => {
+    expect(
+      buildCampaignUrl({
+        source: "linkedin",
+        medium: "social",
+        campaign: "job-search-2026",
+        content: "hero-cta",
+      }),
+    ).toBe(
+      "https://leonardosarmentodecastro.com/?utm_source=linkedin&utm_medium=social&utm_campaign=job-search-2026&utm_content=hero-cta",
+    );
+  });
 });
