@@ -88,8 +88,8 @@ That's why `api_host` is set to `"/ingest"` in `instrumentation-client.ts`. Two 
 ### 1. Add the wrapper in `events.ts`
 
 ```ts
-export const trackResumeClick = (): void => {
-  posthog.capture("resume_clicked", { destination: "google_drive" });
+export const trackResumePdfClick = (): void => {
+  posthog.capture("resume_pdf_clicked", { destination: "google_drive" });
 };
 ```
 
@@ -99,6 +99,7 @@ Conventions:
 - Event name: `<subject>_<action>` in `snake_case` (PostHog's idiom).
 - Properties: lowercase `snake_case` keys; keep them small and stable.
 - Return type: explicit `void`.
+- When the same channel is reachable from multiple surfaces, add a `location` property rather than creating per-surface wrappers. See `trackContactClick` for the canonical example: one event (`contact_clicked`), one wrapper, with `channel` ("whatsapp" | "email" | "linkedin") and `location` ("landing_modal" | "cv_contact_section" | "cv_dock") as typed properties.
 
 ### 2. Add the test in `__tests__/events.test.ts`
 
