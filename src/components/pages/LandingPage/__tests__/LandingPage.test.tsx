@@ -1,7 +1,7 @@
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@/lib/analytics", () => ({
+vi.mock("@/analytics/events", () => ({
   trackResumeClick: vi.fn(),
   trackLinkedinClick: vi.fn(),
   trackContactModalOpen: vi.fn(),
@@ -17,10 +17,10 @@ import {
   trackLinkedinClick,
   trackResumeClick,
   trackWhatsappClick,
-} from "@/lib/analytics";
+} from "@/analytics/events";
 import { renderWithProviders, screen } from "@/test/render";
 
-import { LandingPage } from "./LandingPage";
+import { LandingPage } from "../LandingPage";
 
 beforeEach(() => {
   vi.clearAllMocks();

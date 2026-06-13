@@ -10,7 +10,7 @@ vi.mock("posthog-js", () => ({
 
 const loadAnalytics = async () => {
   vi.resetModules();
-  return await import("./analytics");
+  return await import("../events");
 };
 
 describe("event trackers", () => {

@@ -7,8 +7,6 @@ import { notifications } from "@mantine/notifications";
 import { IconBrandWhatsapp, IconMail } from "@tabler/icons-react";
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
-
-import { CoverImagesLoop } from "@/components/pages/LandingPage/CoverImagesLoop/CoverImagesLoop";
 import {
   trackContactModalDismiss,
   trackContactModalOpen,
@@ -16,7 +14,8 @@ import {
   trackLinkedinClick,
   trackResumeClick,
   trackWhatsappClick,
-} from "@/lib/analytics";
+} from "@/analytics/events";
+import { CoverImagesLoop } from "@/components/pages/LandingPage/CoverImagesLoop/CoverImagesLoop";
 
 const RESUME_LINK =
   "https://drive.google.com/file/d/17bOTWpjYsRroPucnWTzxIT9Q5GZ88UG8/view?usp=sharing";
