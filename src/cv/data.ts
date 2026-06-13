@@ -8,6 +8,7 @@ export const RESUME: Resume = {
     location: "São José dos Campos, São Paulo — Brazil",
     blurb:
       "Senior Software Engineer with 10+ years of experience building scalable, high-performance web applications and distributed systems using JavaScript, TypeScript, React, and Node.js. Experienced working closely with US product teams to deliver measurable improvements in performance, conversions, developer experience and product adoption.",
+    // TODO: replace public/cv/avatar.jpg with a real headshot.
     avatar: "/cv/avatar.jpg",
     links: {
       linkedin:
