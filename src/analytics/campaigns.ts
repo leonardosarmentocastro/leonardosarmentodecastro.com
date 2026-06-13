@@ -20,7 +20,8 @@ export type CampaignParams = {
 };
 
 export const buildCampaignUrl = (params: CampaignParams): string => {
-  const url = new URL(params.path ?? "/", "https://leonardosarmentodecastro.com");
+  const base = params.baseUrl ?? "https://leonardosarmentodecastro.com";
+  const url = new URL(params.path ?? "/", base);
   url.searchParams.set("utm_source", params.source);
   url.searchParams.set("utm_medium", params.medium);
   url.searchParams.set("utm_campaign", params.campaign);

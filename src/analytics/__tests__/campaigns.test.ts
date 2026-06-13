@@ -51,4 +51,17 @@ describe("buildCampaignUrl", () => {
       "https://leonardosarmentodecastro.com/about?utm_source=linkedin&utm_medium=social&utm_campaign=job-search-2026",
     );
   });
+
+  it("honours a custom baseUrl override (e.g. the shorter canonical host)", () => {
+    expect(
+      buildCampaignUrl({
+        source: "linkedin",
+        medium: "social",
+        campaign: "job-search-2026",
+        baseUrl: "https://leonardosarmentocastro.com",
+      }),
+    ).toBe(
+      "https://leonardosarmentocastro.com/?utm_source=linkedin&utm_medium=social&utm_campaign=job-search-2026",
+    );
+  });
 });
