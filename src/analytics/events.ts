@@ -23,3 +23,15 @@ export const trackWhatsappClick = (): void => {
 export const trackEmailClick = (): void => {
   posthog.capture("email_clicked", { channel: "email" });
 };
+
+export const trackResumeModalDismiss = (): void => {
+  posthog.capture("resume_modal_dismissed");
+};
+
+export const trackResumePdfClick = (): void => {
+  posthog.capture("resume_pdf_clicked", { destination: "google_drive" });
+};
+
+export const trackResumeWebClick = (): void => {
+  posthog.capture("resume_web_clicked", { destination: "cv_page" });
+};

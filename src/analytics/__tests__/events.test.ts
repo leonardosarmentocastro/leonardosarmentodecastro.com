@@ -59,4 +59,26 @@ describe("event trackers", () => {
       channel: "email",
     });
   });
+
+  it("trackResumeModalDismiss captures resume_modal_dismissed", async () => {
+    const { trackResumeModalDismiss } = await loadAnalytics();
+    trackResumeModalDismiss();
+    expect(mockCapture).toHaveBeenCalledWith("resume_modal_dismissed");
+  });
+
+  it("trackResumePdfClick captures resume_pdf_clicked with destination=google_drive", async () => {
+    const { trackResumePdfClick } = await loadAnalytics();
+    trackResumePdfClick();
+    expect(mockCapture).toHaveBeenCalledWith("resume_pdf_clicked", {
+      destination: "google_drive",
+    });
+  });
+
+  it("trackResumeWebClick captures resume_web_clicked with destination=cv_page", async () => {
+    const { trackResumeWebClick } = await loadAnalytics();
+    trackResumeWebClick();
+    expect(mockCapture).toHaveBeenCalledWith("resume_web_clicked", {
+      destination: "cv_page",
+    });
+  });
 });
