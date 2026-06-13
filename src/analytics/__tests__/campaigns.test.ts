@@ -38,4 +38,17 @@ describe("buildCampaignUrl", () => {
       "https://leonardosarmentodecastro.com/?utm_source=linkedin&utm_medium=social&utm_campaign=job-search-2026&utm_content=hero-cta",
     );
   });
+
+  it("honours a custom path override", () => {
+    expect(
+      buildCampaignUrl({
+        source: "linkedin",
+        medium: "social",
+        campaign: "job-search-2026",
+        path: "/about",
+      }),
+    ).toBe(
+      "https://leonardosarmentodecastro.com/about?utm_source=linkedin&utm_medium=social&utm_campaign=job-search-2026",
+    );
+  });
 });
