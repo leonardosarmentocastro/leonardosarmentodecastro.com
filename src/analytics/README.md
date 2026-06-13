@@ -116,6 +116,52 @@ Never import `posthog-js` directly from a component.
 
 ---
 
+## Traffic source attribution
+
+Inbound links to the site can be tagged with standard [UTM query parameters](https://en.wikipedia.org/wiki/UTM_parameters) so PostHog can answer questions like *"how many pageviews came from the LinkedIn post I made last week?"*.
+
+### How attribution works (no code involved)
+
+`posthog-js` auto-captures any `utm_*` query parameter on the URL onto the `$pageview` event as `$utm_source`, `$utm_medium`, `$utm_campaign`, `$utm_content`, etc. Because `capture_pageview: true` is already set in `instrumentation-client.ts`, a link like
+
+```
+https://leonardosarmentodecastro.com/?utm_source=linkedin&utm_medium=social&utm_campaign=job-search-2026
+```
+
+is fully attributed the moment a visitor lands on it. No SDK changes, no per-page wiring.
+
+### Generating a tagged URL — `pnpm campaign-url`
+
+Run the interactive wizard:
+
+```bash
+pnpm campaign-url
+```
+
+It walks you through `source`, `medium`, `campaign` (slug), and optional `utm_content` / `path` / base-URL overrides, then prints:
+
+1. The tagged URL — paste into your LinkedIn post, email signature, etc.
+2. A prefilled "New campaign issue" deep link — see below.
+
+`source` and `medium` are closed lists defined in `src/analytics/campaigns.ts` as `CAMPAIGN_SOURCES` and `CAMPAIGN_MEDIUMS`. To add a new value (e.g. `bluesky`), edit those arrays and re-run the wizard. This friction is intentional — it prevents `linkedin` / `LinkedIn` / `linked-in` fragmentation across years of campaigns.
+
+### Tracking each campaign as a GitHub issue
+
+Each campaign gets a GitHub issue using the **Campaign** template (`.github/ISSUE_TEMPLATE/campaign.yml`). The wizard's outro prints a deep link that prefills the title and URL — one click and you're on a half-filled "New issue" form.
+
+Convention:
+
+- **Label:** `campaign` (auto-applied by the template).
+- **Title:** `[campaign] <source>/<slug>` — mirrors the UTM values so the link between issue and PostHog data is unambiguous.
+- **Lifecycle:** open while actively driving traffic → closed once the retrospective is filled in. Closed issues are the campaign history.
+- **No per-campaign constants in code.** A typed export per campaign would trigger a Vercel production deploy for every post (see the project's branching note) and capture only the URL — issues capture the URL plus the draft, the live post link, and the retrospective.
+
+### Answering "how many came from LinkedIn?" in PostHog
+
+In PostHog: build a Trends insight on `$pageview` filtered by `$utm_source = "linkedin"` (and optionally `$utm_campaign = "job-search-2026"` for a single campaign). The same property is also available as a breakdown.
+
+---
+
 ## Files
 
 | File                       | Purpose                                                              |
