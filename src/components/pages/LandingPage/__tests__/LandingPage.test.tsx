@@ -27,12 +27,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  // restoreAllMocks (not just clearAllMocks) unwinds vi.spyOn-installed
-  // spies back to their original implementations. clearAllMocks only
-  // resets call history, so without restore the per-test
-  // vi.spyOn(navigator.clipboard, "writeText") calls stack across tests
-  // and leak setup-file state between cases.
-  vi.restoreAllMocks();
+  vi.clearAllMocks();
 });
 
 describe("LandingPage analytics", () => {
