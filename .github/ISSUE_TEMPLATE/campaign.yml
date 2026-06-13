@@ -1,0 +1,39 @@
+name: 📣 Campaign
+description: Track a tagged-URL campaign (e.g. a LinkedIn post) so its PostHog attribution has matching context.
+title: "[campaign] <source>/<slug>"
+labels:
+  - campaign
+body:
+  - type: input
+    id: url
+    attributes:
+      label: Tagged URL
+      description: Output of `pnpm campaign-url`.
+      placeholder: https://leonardosarmentodecastro.com/?utm_source=linkedin&utm_medium=social&utm_campaign=...
+    validations:
+      required: true
+  - type: textarea
+    id: where
+    attributes:
+      label: Where will this be posted?
+      description: Channel, audience, planned post date.
+      placeholder: |
+        Channel: LinkedIn
+        Audience: my professional network
+        Planned: 2026-07-01
+  - type: textarea
+    id: post
+    attributes:
+      label: Post draft or link to draft
+      description: Paste the draft text here or link to wherever it lives.
+  - type: input
+    id: live
+    attributes:
+      label: Live post URL
+      description: Fill this in after publishing.
+      placeholder: https://www.linkedin.com/posts/...
+  - type: textarea
+    id: retro
+    attributes:
+      label: Retrospective
+      description: Fill in ~30 days after posting. PostHog numbers (pageviews from this $utm_source), what worked, what didn't.
