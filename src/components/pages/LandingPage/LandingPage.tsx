@@ -8,12 +8,10 @@ import { IconBrandWhatsapp, IconMail } from "@tabler/icons-react";
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 import {
+  trackContactClick,
   trackContactModalDismiss,
   trackContactModalOpen,
-  trackEmailClick,
-  trackLinkedinClick,
   trackResumeClick,
-  trackWhatsappClick,
 } from "@/analytics/events";
 import { CoverImagesLoop } from "@/components/pages/LandingPage/CoverImagesLoop/CoverImagesLoop";
 
@@ -60,12 +58,12 @@ export const LandingPage = () => {
 
   const handleWhatsappClick = () => {
     ctaClickedRef.current = true;
-    trackWhatsappClick();
+    trackContactClick({ channel: "whatsapp", location: "landing_modal" });
   };
 
   const handleEmailClick = () => {
     ctaClickedRef.current = true;
-    trackEmailClick();
+    trackContactClick({ channel: "email", location: "landing_modal" });
     navigator.clipboard.writeText("negocios.leonardosarmentocastro@gmail.com");
     notifications.show({
       color: "red",
@@ -403,7 +401,12 @@ export const LandingPage = () => {
                       href={LINKEDIN_LINK}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={() => trackLinkedinClick()}
+                      onClick={() =>
+                        trackContactClick({
+                          channel: "linkedin",
+                          location: "landing_modal",
+                        })
+                      }
                     >
                       <div className="h-full w-[5px] md:w-[10px] bg-[#0072B1] inline-block" />
 
