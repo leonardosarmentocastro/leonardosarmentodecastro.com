@@ -33,6 +33,16 @@
   - `instrumentation-client.ts` / `instrumentation.ts` at the repo root — Next.js convention for client/server bootstrapping.
 - When a new feature is introduced, the default move is `mkdir src/<feature>/`. Only deviate if there's a concrete reason and call it out in the PR description.
 
+## Documentation
+
+- **Each domain folder owns its own `README.md`** when it has non-trivial setup, environment variables, external dependencies, security/privacy considerations, or conventions worth explaining (e.g. "how to add a new event"). The README lives at `src/<domain>/README.md` and is the **source of truth** for that domain. Canonical example: `src/analytics/README.md`.
+- **The top-level `README.md` is a map, not an encyclopedia.** It covers project-wide concerns only — stack, scripts, getting started, structure, testing, branching/deploys. For anything specific to a single domain, link to that domain's README instead of inlining the details. If you find yourself adding a domain-specific subsection to the top-level README, that content belongs in the domain README.
+- **Update (or create) the domain README in the same commit** that adds env vars, integrates a third-party service, changes a domain's public API, or introduces a convention worth following. Docs drift is fixed by treating them as part of the change, not as cleanup work.
+- **Env var conventions:**
+  - `.env.example` lists every variable the app reads, with empty values, committed to the repo.
+  - The variable's purpose, format (e.g. `phc_...`), secret-vs-public status, and failure mode when missing are documented in the **owning domain's README**, not in `.env.example` and not in the top-level README.
+  - Never prefix a secret with `NEXT_PUBLIC_`. Treat that prefix as "this will be shipped to every visitor's browser."
+
 ## Specs and plans
 
 - Brainstorming output lives in `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md`.
