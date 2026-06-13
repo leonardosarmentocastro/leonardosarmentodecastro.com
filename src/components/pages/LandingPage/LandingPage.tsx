@@ -14,11 +14,7 @@ import {
   trackResumeClick,
 } from "@/analytics/events";
 import { CoverImagesLoop } from "@/components/pages/LandingPage/CoverImagesLoop/CoverImagesLoop";
-
-const RESUME_LINK =
-  "https://drive.google.com/file/d/17bOTWpjYsRroPucnWTzxIT9Q5GZ88UG8/view?usp=sharing";
-const LINKEDIN_LINK =
-  "https://www.linkedin.com/in/leonardo-sarmento-de-castro-a249b945/";
+import { RESUME } from "@/cv/data";
 
 const ACCORDIONS = [
   {
@@ -46,6 +42,7 @@ const ACCORDIONS = [
 // TODO: add tests (e.g., unit tests, integration tests, e2e tests, etc.)
 // TODO: add more content (e.g., portfolio, testimonials, blog, etc.)
 export const LandingPage = () => {
+  const links = RESUME.hero.links;
   const [opened, { open, close }] = useDisclosure(false);
   const [currentTime, setCurrentTime] = useState("");
   const ctaClickedRef = useRef(false);
@@ -64,12 +61,11 @@ export const LandingPage = () => {
   const handleEmailClick = () => {
     ctaClickedRef.current = true;
     trackContactClick({ channel: "email", location: "landing_modal" });
-    navigator.clipboard.writeText("negocios.leonardosarmentocastro@gmail.com");
+    navigator.clipboard.writeText(links.email);
     notifications.show({
       color: "red",
       title: "Email copied",
-      message:
-        'The email "negocios.leonardosarmentocastro@gmail.com" has been copied to clipboard!',
+      message: `The email "${links.email}" has been copied to clipboard!`,
     });
   };
 
@@ -264,7 +260,7 @@ export const LandingPage = () => {
           <div className="flex flex-col gap-[10px] items-center w-full">
             <a
               className="flex flex-col items-center bg-[#128c7e] rounded-[20px] px-[30px] py-[15px] w-full max-w-full cursor-pointer hover:scale-[1.02] transition-transform"
-              href="https://wa.me/5512981276618?text=Hello%20Leonardo%2C%20I%27m%20interested%20in%20discussing%20a%20project%20opportunity%20with%20you."
+              href={links.whatsappMessage}
               target="_blank"
               rel="noopener noreferrer"
               onClick={handleWhatsappClick}
@@ -275,7 +271,7 @@ export const LandingPage = () => {
                 MESSAGE ME on WHATSAPP
               </span>
               <span className="text-white font-jakarta-sans font-bold text-[12px] md:text-[18px]">
-                +55 (12) 98127-6618
+                {links.whatsappDisplay}
               </span>
             </a>
 
@@ -290,7 +286,7 @@ export const LandingPage = () => {
                 SEND ME an EMAIL
               </span>
               <span className="text-white font-jakarta-sans font-bold text-[12px] md:text-[18px]">
-                negocios.leonardosarmentocastro@gmail.com
+                {links.email}
               </span>
             </a>
 
@@ -364,7 +360,7 @@ export const LandingPage = () => {
                   >
                     <a
                       className="flex flex-row h-[35px] md:h-[80px] cursor-pointer"
-                      href={RESUME_LINK}
+                      href={links.resumePdf}
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => trackResumeClick()}
@@ -398,7 +394,7 @@ export const LandingPage = () => {
                   >
                     <a
                       className="flex flex-row h-[35px] md:h-[80px] cursor-pointer"
-                      href={LINKEDIN_LINK}
+                      href={links.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() =>
