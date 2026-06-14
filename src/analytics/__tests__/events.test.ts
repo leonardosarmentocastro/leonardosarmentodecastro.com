@@ -18,20 +18,10 @@ describe("event trackers", () => {
     vi.clearAllMocks();
   });
 
-  it("trackResumeClick captures resume_clicked with destination=google_drive", async () => {
+  it("trackResumeClick captures resume_clicked with no props (modal-open semantics)", async () => {
     const { trackResumeClick } = await loadAnalytics();
     trackResumeClick();
-    expect(mockCapture).toHaveBeenCalledWith("resume_clicked", {
-      destination: "google_drive",
-    });
-  });
-
-  it("trackLinkedinClick captures linkedin_clicked with destination=linkedin_profile", async () => {
-    const { trackLinkedinClick } = await loadAnalytics();
-    trackLinkedinClick();
-    expect(mockCapture).toHaveBeenCalledWith("linkedin_clicked", {
-      destination: "linkedin_profile",
-    });
+    expect(mockCapture).toHaveBeenCalledWith("resume_clicked");
   });
 
   it("trackContactModalOpen captures contact_modal_opened", async () => {
@@ -46,19 +36,49 @@ describe("event trackers", () => {
     expect(mockCapture).toHaveBeenCalledWith("contact_modal_dismissed");
   });
 
-  it("trackWhatsappClick captures whatsapp_clicked with channel=whatsapp", async () => {
-    const { trackWhatsappClick } = await loadAnalytics();
-    trackWhatsappClick();
-    expect(mockCapture).toHaveBeenCalledWith("whatsapp_clicked", {
-      channel: "whatsapp",
+  it("trackResumeModalDismiss captures resume_modal_dismissed", async () => {
+    const { trackResumeModalDismiss } = await loadAnalytics();
+    trackResumeModalDismiss();
+    expect(mockCapture).toHaveBeenCalledWith("resume_modal_dismissed");
+  });
+
+  it("trackResumePdfClick captures resume_pdf_clicked with destination=google_drive", async () => {
+    const { trackResumePdfClick } = await loadAnalytics();
+    trackResumePdfClick();
+    expect(mockCapture).toHaveBeenCalledWith("resume_pdf_clicked", {
+      destination: "google_drive",
     });
   });
 
-  it("trackEmailClick captures email_clicked with channel=email", async () => {
-    const { trackEmailClick } = await loadAnalytics();
-    trackEmailClick();
-    expect(mockCapture).toHaveBeenCalledWith("email_clicked", {
+  it("trackResumeWebClick captures resume_web_clicked with destination=cv_page", async () => {
+    const { trackResumeWebClick } = await loadAnalytics();
+    trackResumeWebClick();
+    expect(mockCapture).toHaveBeenCalledWith("resume_web_clicked", {
+      destination: "cv_page",
+    });
+  });
+
+  it("trackContactClick captures contact_clicked with channel and location", async () => {
+    const { trackContactClick } = await loadAnalytics();
+    trackContactClick({ channel: "whatsapp", location: "landing_modal" });
+    expect(mockCapture).toHaveBeenCalledWith("contact_clicked", {
+      channel: "whatsapp",
+      location: "landing_modal",
+    });
+  });
+
+  it("trackContactClick forwards every channel/location combination unchanged", async () => {
+    const { trackContactClick } = await loadAnalytics();
+    trackContactClick({ channel: "email", location: "cv_contact_section" });
+    trackContactClick({ channel: "linkedin", location: "cv_dock" });
+
+    expect(mockCapture).toHaveBeenNthCalledWith(1, "contact_clicked", {
       channel: "email",
+      location: "cv_contact_section",
+    });
+    expect(mockCapture).toHaveBeenNthCalledWith(2, "contact_clicked", {
+      channel: "linkedin",
+      location: "cv_dock",
     });
   });
 });

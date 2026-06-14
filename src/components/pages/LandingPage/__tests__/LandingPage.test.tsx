@@ -3,20 +3,22 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/analytics/events", () => ({
   trackResumeClick: vi.fn(),
-  trackLinkedinClick: vi.fn(),
+  trackResumeModalDismiss: vi.fn(),
+  trackResumePdfClick: vi.fn(),
+  trackResumeWebClick: vi.fn(),
   trackContactModalOpen: vi.fn(),
   trackContactModalDismiss: vi.fn(),
-  trackWhatsappClick: vi.fn(),
-  trackEmailClick: vi.fn(),
+  trackContactClick: vi.fn(),
 }));
 
 import {
+  trackContactClick,
   trackContactModalDismiss,
   trackContactModalOpen,
-  trackEmailClick,
-  trackLinkedinClick,
   trackResumeClick,
-  trackWhatsappClick,
+  trackResumeModalDismiss,
+  trackResumePdfClick,
+  trackResumeWebClick,
 } from "@/analytics/events";
 import { renderWithProviders, screen, waitFor } from "@/test/render";
 
@@ -31,24 +33,31 @@ afterEach(() => {
 });
 
 describe("LandingPage analytics", () => {
-  it("fires resume_clicked when the RESUME link is clicked", async () => {
+  it("fires resume_clicked when the RESUME button is clicked and opens the chooser modal", async () => {
     const user = userEvent.setup();
     renderWithProviders(<LandingPage />);
 
-    const link = screen.getByRole("link", { name: /resume/i });
-    await user.click(link);
+    const button = screen.getByRole("button", { name: /^resume$/i });
+    await user.click(button);
 
     expect(trackResumeClick).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("link", { name: /open pdf/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /view web version/i }),
+    ).toBeInTheDocument();
   });
 
-  it("fires linkedin_clicked when the LINKEDIN link is clicked", async () => {
+  it("fires contact_clicked with channel=linkedin and location=landing_modal when the LINKEDIN link is clicked", async () => {
     const user = userEvent.setup();
     renderWithProviders(<LandingPage />);
 
     const link = screen.getByRole("link", { name: /linkedin/i });
     await user.click(link);
 
-    expect(trackLinkedinClick).toHaveBeenCalledTimes(1);
+    expect(trackContactClick).toHaveBeenCalledWith({
+      channel: "linkedin",
+      location: "landing_modal",
+    });
   });
 
   it("fires contact_modal_opened when CONTACT ME is clicked", async () => {
@@ -71,7 +80,7 @@ describe("LandingPage analytics", () => {
     expect(trackContactModalDismiss).toHaveBeenCalledTimes(1);
   });
 
-  it("fires whatsapp_clicked and does not fire dismiss when WhatsApp link is clicked", async () => {
+  it("fires contact_clicked with channel=whatsapp/location=landing_modal and does not fire dismiss when WhatsApp link is clicked", async () => {
     const user = userEvent.setup();
     renderWithProviders(<LandingPage />);
 
@@ -80,11 +89,14 @@ describe("LandingPage analytics", () => {
       screen.getByRole("link", { name: /message me on whatsapp/i }),
     );
 
-    expect(trackWhatsappClick).toHaveBeenCalledTimes(1);
+    expect(trackContactClick).toHaveBeenCalledWith({
+      channel: "whatsapp",
+      location: "landing_modal",
+    });
     expect(trackContactModalDismiss).not.toHaveBeenCalled();
   });
 
-  it("fires email_clicked, copies email to clipboard, and does not fire dismiss when email link is clicked", async () => {
+  it("fires contact_clicked with channel=email/location=landing_modal, copies email, and does not fire dismiss when email link is clicked", async () => {
     const writeText = vi
       .spyOn(navigator.clipboard, "writeText")
       .mockResolvedValue(undefined);
@@ -95,7 +107,10 @@ describe("LandingPage analytics", () => {
     await user.click(screen.getByRole("button", { name: /contact me/i }));
     await user.click(screen.getByRole("link", { name: /send me an email/i }));
 
-    expect(trackEmailClick).toHaveBeenCalledTimes(1);
+    expect(trackContactClick).toHaveBeenCalledWith({
+      channel: "email",
+      location: "landing_modal",
+    });
     expect(writeText).toHaveBeenCalledWith(
       "negocios.leonardosarmentocastro@gmail.com",
     );
@@ -132,5 +147,37 @@ describe("LandingPage analytics", () => {
     await user.keyboard("{Escape}");
 
     expect(trackContactModalDismiss).toHaveBeenCalledTimes(1);
+  });
+
+  it("fires trackResumePdfClick when the PDF choice is clicked from the chooser modal", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<LandingPage />);
+
+    await user.click(screen.getByRole("button", { name: /^resume$/i }));
+    await user.click(screen.getByRole("link", { name: /open pdf/i }));
+
+    expect(trackResumePdfClick).toHaveBeenCalledTimes(1);
+    expect(trackResumeModalDismiss).not.toHaveBeenCalled();
+  });
+
+  it("fires trackResumeWebClick when the WEB choice is clicked from the chooser modal", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<LandingPage />);
+
+    await user.click(screen.getByRole("button", { name: /^resume$/i }));
+    await user.click(screen.getByRole("link", { name: /view web version/i }));
+
+    expect(trackResumeWebClick).toHaveBeenCalledTimes(1);
+    expect(trackResumeModalDismiss).not.toHaveBeenCalled();
+  });
+
+  it("fires trackResumeModalDismiss when the chooser modal is closed via ESC without a choice", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<LandingPage />);
+
+    await user.click(screen.getByRole("button", { name: /^resume$/i }));
+    await user.keyboard("{Escape}");
+
+    expect(trackResumeModalDismiss).toHaveBeenCalledTimes(1);
   });
 });

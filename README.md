@@ -2,7 +2,7 @@
 
 Personal website of **Leonardo Sarmento de Castro** — Senior Software Engineer (TypeScript · Node.js · React · AWS).
 
-Built with the Next.js App Router. Single landing page today, designed to grow into a small portfolio/blog over time.
+Built with the Next.js App Router. Two routes today: the landing page (`/`) and the web version of the CV (`/cv`). Designed to grow into a small portfolio/blog over time.
 
 ---
 
@@ -68,12 +68,23 @@ src/
 ├── app/                          # Next.js App Router (routes, layout, sitemap, robots)
 │   ├── layout.tsx                # Mantine + fonts + global providers
 │   ├── page.tsx                  # Renders <LandingPage />
+│   ├── cv/page.tsx               # Renders <CVPage />
 │   ├── sitemap.ts
 │   └── robots.ts
 ├── analytics/                    # PostHog event API — see src/analytics/README.md
 │   ├── README.md
 │   ├── events.ts
 │   └── __tests__/events.test.ts
+├── cv/                           # CV domain — see src/cv/README.md
+│   ├── README.md
+│   ├── data.ts                   # Source of truth for CV content (RESUME)
+│   ├── types.ts
+│   ├── ResumeOptionsModal.tsx    # Shared "PDF vs WEB" chooser (mounted on /)
+│   ├── Dock/
+│   ├── sections/{Hero,About,Work,Education,Skills,Contact}/
+│   └── pages/CVPage/             # Page-level composition for the /cv route
+│       ├── CVPage.tsx
+│       └── __tests__/
 ├── components/
 │   └── pages/
 │       └── LandingPage/          # Page-level UI lives with the page

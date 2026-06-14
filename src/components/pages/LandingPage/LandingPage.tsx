@@ -8,19 +8,15 @@ import { IconBrandWhatsapp, IconMail } from "@tabler/icons-react";
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 import {
+  trackContactClick,
   trackContactModalDismiss,
   trackContactModalOpen,
-  trackEmailClick,
-  trackLinkedinClick,
   trackResumeClick,
-  trackWhatsappClick,
+  trackResumeModalDismiss,
 } from "@/analytics/events";
 import { CoverImagesLoop } from "@/components/pages/LandingPage/CoverImagesLoop/CoverImagesLoop";
-
-const RESUME_LINK =
-  "https://drive.google.com/file/d/17bOTWpjYsRroPucnWTzxIT9Q5GZ88UG8/view?usp=sharing";
-const LINKEDIN_LINK =
-  "https://www.linkedin.com/in/leonardo-sarmento-de-castro-a249b945/";
+import { RESUME } from "@/cv/data";
+import { ResumeOptionsModal } from "@/cv/ResumeOptionsModal";
 
 const ACCORDIONS = [
   {
@@ -48,9 +44,15 @@ const ACCORDIONS = [
 // TODO: add tests (e.g., unit tests, integration tests, e2e tests, etc.)
 // TODO: add more content (e.g., portfolio, testimonials, blog, etc.)
 export const LandingPage = () => {
+  const links = RESUME.hero.links;
   const [opened, { open, close }] = useDisclosure(false);
+  const [
+    resumeModalOpened,
+    { open: openResumeModal, close: closeResumeModal },
+  ] = useDisclosure(false);
   const [currentTime, setCurrentTime] = useState("");
   const ctaClickedRef = useRef(false);
+  const resumeChoiceClickedRef = useRef(false);
 
   const handleModalClose = () => {
     if (!ctaClickedRef.current) trackContactModalDismiss();
@@ -60,19 +62,28 @@ export const LandingPage = () => {
 
   const handleWhatsappClick = () => {
     ctaClickedRef.current = true;
-    trackWhatsappClick();
+    trackContactClick({ channel: "whatsapp", location: "landing_modal" });
   };
 
   const handleEmailClick = () => {
     ctaClickedRef.current = true;
-    trackEmailClick();
-    navigator.clipboard.writeText("negocios.leonardosarmentocastro@gmail.com");
+    trackContactClick({ channel: "email", location: "landing_modal" });
+    navigator.clipboard.writeText(links.email);
     notifications.show({
       color: "red",
       title: "Email copied",
-      message:
-        'The email "negocios.leonardosarmentocastro@gmail.com" has been copied to clipboard!',
+      message: `The email "${links.email}" has been copied to clipboard!`,
     });
+  };
+
+  const handleResumeModalClose = () => {
+    if (!resumeChoiceClickedRef.current) trackResumeModalDismiss();
+    resumeChoiceClickedRef.current = false;
+    closeResumeModal();
+  };
+
+  const handleResumeChoiceClick = () => {
+    resumeChoiceClickedRef.current = true;
   };
 
   useEffect(() => {
@@ -266,7 +277,7 @@ export const LandingPage = () => {
           <div className="flex flex-col gap-[10px] items-center w-full">
             <a
               className="flex flex-col items-center bg-[#128c7e] rounded-[20px] px-[30px] py-[15px] w-full max-w-full cursor-pointer hover:scale-[1.02] transition-transform"
-              href="https://wa.me/5512981276618?text=Hello%20Leonardo%2C%20I%27m%20interested%20in%20discussing%20a%20project%20opportunity%20with%20you."
+              href={links.whatsappMessage}
               target="_blank"
               rel="noopener noreferrer"
               onClick={handleWhatsappClick}
@@ -277,7 +288,7 @@ export const LandingPage = () => {
                 MESSAGE ME on WHATSAPP
               </span>
               <span className="text-white font-jakarta-sans font-bold text-[12px] md:text-[18px]">
-                +55 (12) 98127-6618
+                {links.whatsappDisplay}
               </span>
             </a>
 
@@ -292,7 +303,7 @@ export const LandingPage = () => {
                 SEND ME an EMAIL
               </span>
               <span className="text-white font-jakarta-sans font-bold text-[12px] md:text-[18px]">
-                negocios.leonardosarmentocastro@gmail.com
+                {links.email}
               </span>
             </a>
 
@@ -302,6 +313,12 @@ export const LandingPage = () => {
           </div>
         </div>
       </Modal>
+
+      <ResumeOptionsModal
+        opened={resumeModalOpened}
+        onClose={handleResumeModalClose}
+        onChoiceClick={handleResumeChoiceClick}
+      />
 
       <main className="block lg:grid grid-cols-[35%_65%] relative lg:static overflow-hidden bg-[#171717]">
         <CoverImagesLoop />
@@ -364,12 +381,13 @@ export const LandingPage = () => {
                     className="flex flex-col w-full gap-[5px]"
                     id="landing-page-accordion-1"
                   >
-                    <a
+                    <button
+                      type="button"
                       className="flex flex-row h-[35px] md:h-[80px] cursor-pointer"
-                      href={RESUME_LINK}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => trackResumeClick()}
+                      onClick={() => {
+                        trackResumeClick();
+                        openResumeModal();
+                      }}
                     >
                       <div className="h-full w-[5px] md:w-[10px] bg-[#E5E5E0] inline-block" />
 
@@ -382,7 +400,7 @@ export const LandingPage = () => {
                           id="landing-page-accordion-1-button-progress-bar"
                         />
                       </div>
-                    </a>
+                    </button>
 
                     <p
                       className="text-[14px] md:text-[22px] text-white font-spectral font-normal italic overflow-hidden"
@@ -400,10 +418,15 @@ export const LandingPage = () => {
                   >
                     <a
                       className="flex flex-row h-[35px] md:h-[80px] cursor-pointer"
-                      href={LINKEDIN_LINK}
+                      href={links.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={() => trackLinkedinClick()}
+                      onClick={() =>
+                        trackContactClick({
+                          channel: "linkedin",
+                          location: "landing_modal",
+                        })
+                      }
                     >
                       <div className="h-full w-[5px] md:w-[10px] bg-[#0072B1] inline-block" />
 
