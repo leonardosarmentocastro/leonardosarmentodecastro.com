@@ -29,7 +29,7 @@ export const CVPage = () => {
         gsap.to(`#${id}`, {
           opacity: 1,
           y: 0,
-          duration: 0.6,
+          duration: 0.8,
           ease: "power2.out",
           scrollTrigger: {
             trigger: `#${id}`,

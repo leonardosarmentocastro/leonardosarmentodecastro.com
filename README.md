@@ -81,15 +81,15 @@ src/
 │   ├── types.ts
 │   ├── ResumeOptionsModal.tsx    # Shared "PDF vs WEB" chooser (mounted on /)
 │   ├── Dock/
-│   └── sections/{Hero,About,Work,Education,Skills,Contact}/
+│   ├── sections/{Hero,About,Work,Education,Skills,Contact}/
+│   └── pages/CVPage/             # Page-level composition for the /cv route
+│       ├── CVPage.tsx
+│       └── __tests__/
 ├── components/
 │   └── pages/
-│       ├── LandingPage/          # Page-level UI lives with the page
-│       │   ├── LandingPage.tsx
-│       │   ├── CoverImagesLoop/
-│       │   └── __tests__/
-│       └── CVPage/
-│           ├── CVPage.tsx
+│       └── LandingPage/          # Page-level UI lives with the page
+│           ├── LandingPage.tsx
+│           ├── CoverImagesLoop/
 │           └── __tests__/
 └── test/                         # Shared test utilities (render helpers, polyfills)
     ├── render.tsx
