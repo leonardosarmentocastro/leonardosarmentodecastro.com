@@ -1,0 +1,70 @@
+name: 🎯 Work item
+description: Feature, bug fix, or improvement — structured for agent-ready implementation (output of /to-ticket).
+title: "type(scope): short subject"
+labels:
+  - needs-triage
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: Bug = something broken. Enhancement = new feature or improvement.
+      options:
+        - bug
+        - enhancement
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: One sentence — the user-visible or operational outcome when this is done.
+      placeholder: After generating a campaign URL, the wizard outro links to a pre-filled GitHub issue so the operator does not re-enter context manually.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Who is affected, what is wrong or missing, and why it matters. Describe the gap — not the fix.
+      placeholder: |
+        Campaign tracking lives in GitHub issues, but the wizard ends with only the tagged URL.
+        The operator must copy the URL, open the issue template, and re-type context the wizard already collected.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance criteria
+      description: Observable outcomes only — what, not how. Each line should be independently verifiable.
+      placeholder: |
+        - [ ] Completing the wizard shows the generated tagged URL on the confirmation step
+        - [ ] The confirmation step includes a clear action to open a pre-filled GitHub issue
+        - [ ] The flow works without requiring GitHub login inside the app
+    validations:
+      required: true
+  - type: textarea
+    id: edge_cases
+    attributes:
+      label: Edge cases
+      description: Boundary conditions, failure modes, ambiguous inputs, and expected behavior.
+      placeholder: |
+        - User closes the wizard before the outro — no issue link is shown (expected)
+        - Generated URL exceeds GitHub field limits — truncate with a note rather than failing silently
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Out of scope
+      description: Adjacent features or follow-ups explicitly not part of this ticket.
+      placeholder: |
+        - Creating the GitHub issue via API without user confirmation
+        - Auto-closing or updating existing related issues
+  - type: textarea
+    id: technical_context
+    attributes:
+      label: Technical context
+      description: Domain vocabulary, behavioral contracts, and obvious integration points. No file paths or line numbers.
+      placeholder: |
+        - Domain terms and related systems this touches
+        - Existing config shapes or behavioral contracts worth preserving
+        - Obvious integration points (interfaces and behaviors, not paths)
