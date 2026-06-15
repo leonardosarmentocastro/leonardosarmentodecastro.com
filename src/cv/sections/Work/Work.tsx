@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
 
-import { Accordion } from "@/components/ui/accordion";
+import { Accordion } from "@/components/ui/Accordion";
 import { RESUME } from "@/cv/data";
 import type { WorkExperience } from "@/cv/types";
 
@@ -23,6 +23,7 @@ import { workSpineFill, workSpineTrack } from "./work-colors";
 
 gsap.registerPlugin(ScrollTrigger);
 
+/** Toggle `.cv-checkpoint-reached` on each spine node as scroll progress passes it. */
 const syncCheckpointStates = (
   timeline: HTMLElement,
   progress: number,
@@ -45,6 +46,11 @@ const syncCheckpointStates = (
   }
 };
 
+/**
+ * One timeline row: spine node, date pill(s), and accordion card.
+ * Sticky overlap clusters use pointer-events-none on the row so a pinned card
+ * does not block clicks on parallel entries at the same scroll position.
+ */
 const TimelineEntryRow = ({
   entry,
   isOpen,
@@ -169,6 +175,7 @@ export const Work = () => {
   const items = buildTimelineItems(RESUME.workExperience, RESUME.milestones);
   const renderedStickyCompanies = new Set<string>();
 
+  // Skills modal → scrollToWorkEntry dispatches cv:open-work-entry; expand here.
   useEffect(() => {
     const handler = (e: Event) => {
       const id = (e as CustomEvent<string>).detail;
@@ -178,6 +185,7 @@ export const Work = () => {
     return () => document.removeEventListener("cv:open-work-entry", handler);
   }, []);
 
+  // Spine fill + card fade-in; reduced-motion users get all checkpoints active.
   useGSAP(() => {
     const mm = gsap.matchMedia();
     mm.add("(prefers-reduced-motion: no-preference)", () => {
@@ -289,6 +297,7 @@ export const Work = () => {
               entry.stickyThrough &&
               !renderedStickyCompanies.has(entry.company)
             ) {
+              // Parallel roles: pin the sticky entry while counterparts scroll past.
               const group = findStickyGroupForEntry(
                 entry,
                 RESUME.workExperience,
@@ -333,6 +342,7 @@ export const Work = () => {
             }
 
             if (isStickyCounterpart(entry, RESUME.workExperience)) {
+              // Rendered inside the sticky cluster above — skip duplicate row.
               return null;
             }
 
