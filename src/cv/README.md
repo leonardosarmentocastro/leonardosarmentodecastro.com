@@ -17,7 +17,15 @@ The CV domain. Owns the data, types, and UI building blocks for the `/cv` route 
 
 `data.ts` is the only file you need to touch for content changes. The UI re-renders automatically.
 
-- **New work entry:** prepend an object to `RESUME.workExperience`. Order is most-recent-first. Every entry must have `company`, `role`, `workMode`, `startDate`, `endDate`, `description`, `bullets`, and `technologies`. `via`, `location` are optional. The Work section interleaves milestones chronologically based on `startDate` years, so add a corresponding entry to `RESUME.milestones` if the role marks a career milestone.
+- **New work entry:** prepend an object to `RESUME.workExperience`. Order is most-recent-first. Every entry must have `company`, `role`, `workMode`, `startDate`, `endDate`, `description`, `bullets`, `technologies`, and `lane` (`"left"` | `"right"`). `via`, `location`, and `stickyThrough` are optional. The Work section interleaves milestones chronologically based on `startDate` years, so add a corresponding entry to `RESUME.milestones` if the role marks a career milestone.
+
+## Work timeline lanes
+
+Each `WorkExperience` entry requires `lane: "left" | "right"` for desktop layout.
+
+Optional `stickyThrough: "<Company>"` pins a parallel role on its lane while scrolling through overlapping entries until the named company's region ends (desktop only). Example: Écolheita freelancing overlaps PairTree/PureCars/Radical Imaging.
+
+Milestones render as horizontal dividers, not timeline cards.
 
 - **New skill:** append to `RESUME.skills`. `category` must be one of the `SkillCategory` enum values in `types.ts` — if you need a new category (e.g. `"Cloud"`), add it to both `SkillCategory` in `types.ts` **and** the `CATEGORY_ORDER` constant in `sections/Skills/Skills.tsx`.
 
