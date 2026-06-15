@@ -29,10 +29,14 @@ export const scrollToWorkEntry = (entry: WorkExperience): void => {
   ).matches;
 
   el.scrollIntoView({ behavior: motionOk ? "smooth" : "auto", block: "start" });
-  if (!motionOk) return;
+  if (motionOk) {
+    el.classList.add("cv-flash");
+    el.addEventListener("animationend", () => el.classList.remove("cv-flash"), {
+      once: true,
+    });
+  }
 
-  el.classList.add("cv-flash");
-  el.addEventListener("animationend", () => el.classList.remove("cv-flash"), {
-    once: true,
-  });
+  document.dispatchEvent(
+    new CustomEvent("cv:open-work-entry", { detail: workEntryAnchorId(entry) }),
+  );
 };

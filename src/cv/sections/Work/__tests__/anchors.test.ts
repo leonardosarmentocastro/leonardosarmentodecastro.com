@@ -68,4 +68,18 @@ describe("scrollToWorkEntry", () => {
   it("is a no-op when no matching element is mounted", () => {
     expect(() => scrollToWorkEntry(entry)).not.toThrow();
   });
+
+  it("dispatches a cv:open-work-entry CustomEvent with the anchor id as detail", () => {
+    mountTarget();
+    const received: string[] = [];
+    const listener = (e: Event) => {
+      received.push((e as CustomEvent<string>).detail);
+    };
+    document.addEventListener("cv:open-work-entry", listener);
+
+    scrollToWorkEntry(entry);
+
+    document.removeEventListener("cv:open-work-entry", listener);
+    expect(received).toEqual([workEntryAnchorId(entry)]);
+  });
 });
