@@ -55,7 +55,7 @@ export const CVPage = () => {
 
   return (
     <main className="bg-white text-neutral-900 min-h-screen">
-      <div className="max-w-[680px] mx-auto px-6 py-12 pb-32">
+      <div className="max-w-5xl mx-auto px-6 py-12 pb-32">
         <Hero />
         <hr className="my-12 border-neutral-200" />
         <About />
