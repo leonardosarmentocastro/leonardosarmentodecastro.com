@@ -15,30 +15,30 @@ export const WORK_COLORS = {
 export const workCardCollapsed =
   "bg-white border border-neutral-200 text-neutral-900 shadow-sm";
 
-/** Expanded accordion card — stays light, emphasized border */
+/** Expanded accordion card — full dark active theme */
 export const workCardExpanded =
-  "bg-white border border-neutral-900 text-neutral-900 shadow-md";
+  "bg-neutral-900 border-neutral-900 text-white shadow-md";
 
-/** Muted metadata */
+/** Muted metadata on light card */
 export const workMeta = "text-neutral-500";
 
-/** Tech badge */
+/** Muted metadata on dark card */
+export const workMetaOnDark = "text-neutral-400";
+
+/** Tech badge on light card */
 export const workBadge =
   "bg-neutral-100 text-neutral-800 border-transparent hover:bg-neutral-100";
 
-/** Date pill — primary (black) */
-export const workDatePillPrimary =
-  "bg-neutral-900 text-white text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap";
+/** Tech badge on dark card */
+export const workBadgeOnDark =
+  "bg-neutral-800 text-neutral-100 border-transparent hover:bg-neutral-800";
 
-/** Date pill — secondary (gray) */
-export const workDatePillSecondary =
-  "bg-neutral-200 text-neutral-700 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap";
+/** Date pill — default (scroll not yet reached) */
+export const workDatePillDefault =
+  "cv-date-pill bg-neutral-200 text-neutral-700 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap transition-colors duration-300";
 
 /** Spine track / node inactive */
 export const workSpineTrack = "bg-neutral-300";
 
 /** Spine progress fill */
 export const workSpineFill = "bg-neutral-900";
-
-/** Timeline node dot */
-export const workSpineNode = "bg-neutral-400";

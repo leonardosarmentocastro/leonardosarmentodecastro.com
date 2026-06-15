@@ -17,4 +17,11 @@ describe("WorkMilestoneDivider", () => {
     expect(screen.queryByRole("separator")).not.toBeInTheDocument();
     expect(screen.queryByTestId(/work-entry/)).not.toBeInTheDocument();
   });
+
+  it("uses a white background to mask the spine behind milestone text", () => {
+    renderWithProviders(
+      <WorkMilestoneDivider text="2026 — Looking for new opportunities." />,
+    );
+    expect(screen.getByTestId("work-milestone")).toHaveClass("bg-white");
+  });
 });

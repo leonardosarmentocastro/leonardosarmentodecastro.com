@@ -17,40 +17,38 @@ import {
 } from "./timeline-layout";
 import { WorkMilestoneDivider } from "./WorkMilestoneDivider";
 import { WorkTimelineDatePill, WorkTimelineItem } from "./WorkTimelineItem";
-import { workSpineFill, workSpineNode, workSpineTrack } from "./work-colors";
+import { WorkTimelineNode } from "./WorkTimelineNode";
+import { workSpineFill, workSpineTrack } from "./work-colors";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const TimelineEntryRow = ({
   entry,
   isOpen,
-  inlineDate = false,
 }: {
   entry: WorkExperience;
   isOpen: boolean;
-  inlineDate?: boolean;
 }) => {
-  const open = isOpen;
-
-  if (inlineDate) {
-    return <WorkTimelineItem entry={entry} isOpen={open} showInlineDate />;
-  }
+  const checkpointId = workEntryAnchorId(entry);
 
   return (
-    <div className="md:grid md:grid-cols-[1fr_auto_1fr] md:gap-x-2 md:items-start">
-      <div className="md:col-start-1">
+    <div
+      className="cv-work-checkpoint md:grid md:grid-cols-[1fr_auto_1fr] md:gap-x-2 md:items-start"
+      data-checkpoint-id={checkpointId}
+    >
+      <div className="md:col-start-1 min-w-0">
         {entry.lane === "right" ? (
           <WorkTimelineDatePill entry={entry} align="end" />
         ) : (
-          <WorkTimelineItem entry={entry} isOpen={open} />
+          <WorkTimelineItem entry={entry} isOpen={isOpen} />
         )}
       </div>
-      <div className="hidden md:flex md:col-start-2 w-3 justify-center">
-        <div className={`w-2.5 h-2.5 rounded-full ${workSpineNode} mt-6`} />
+      <div className="hidden md:flex md:col-start-2 w-4 h-7 items-center justify-center self-start shrink-0">
+        <WorkTimelineNode checkpointId={checkpointId} />
       </div>
-      <div className="md:col-start-3">
+      <div className="md:col-start-3 min-w-0">
         {entry.lane === "right" ? (
-          <WorkTimelineItem entry={entry} isOpen={open} />
+          <WorkTimelineItem entry={entry} isOpen={isOpen} />
         ) : (
           <WorkTimelineDatePill entry={entry} align="start" />
         )}
@@ -112,7 +110,23 @@ export const Work = () => {
           },
         );
       });
+
+      gsap.utils.toArray<HTMLElement>(".cv-work-checkpoint").forEach((row) => {
+        ScrollTrigger.create({
+          trigger: row,
+          start: "top 58%",
+          onEnter: () => row.classList.add("cv-checkpoint-reached"),
+          onLeaveBack: () => row.classList.remove("cv-checkpoint-reached"),
+        });
+      });
     });
+
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      gsap.utils.toArray<HTMLElement>(".cv-work-checkpoint").forEach((row) => {
+        row.classList.add("cv-checkpoint-reached");
+      });
+    });
+
     return () => mm.revert();
   }, []);
 
@@ -172,29 +186,24 @@ export const Work = () => {
                 return (
                   <div
                     key={`sticky-${entry.company}`}
-                    className="md:grid md:grid-cols-[1fr_auto_1fr] md:gap-x-2 md:items-start"
+                    className="flex flex-col gap-10"
                     data-testid="work-sticky-cluster"
                   >
                     <div className="md:sticky md:top-24 md:self-start">
-                      <WorkTimelineItem
+                      <TimelineEntryRow
                         entry={entry}
                         isOpen={openValues.includes(workEntryAnchorId(entry))}
-                        showInlineDate
                       />
                     </div>
-                    <div className="hidden md:block w-3" aria-hidden />
-                    <div className="flex flex-col gap-10">
-                      {group.counterpartEntries.map((counterpart) => (
-                        <WorkTimelineItem
-                          key={counterpart.company}
-                          entry={counterpart}
-                          isOpen={openValues.includes(
-                            workEntryAnchorId(counterpart),
-                          )}
-                          showInlineDate
-                        />
-                      ))}
-                    </div>
+                    {group.counterpartEntries.map((counterpart) => (
+                      <TimelineEntryRow
+                        key={counterpart.company}
+                        entry={counterpart}
+                        isOpen={openValues.includes(
+                          workEntryAnchorId(counterpart),
+                        )}
+                      />
+                    ))}
                   </div>
                 );
               }

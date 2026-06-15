@@ -66,6 +66,17 @@ describe("Work", () => {
     ).toHaveAttribute("aria-expanded", "true");
   });
 
+  it("applies full dark theme when accordion is expanded", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Work />);
+    const first = RESUME.workExperience[0];
+    const card = screen.getByTestId(`work-entry-${first.company}`);
+    await user.click(within(card).getByRole("button"));
+    expect(card.querySelector("[data-slot=card]")).toHaveClass(
+      "bg-neutral-900",
+    );
+  });
+
   it("exposes an accessible, pointer-styled accordion trigger per entry", () => {
     renderWithProviders(<Work />);
     const first = RESUME.workExperience[0];
@@ -75,6 +86,16 @@ describe("Work", () => {
     });
     expect(trigger).toHaveClass("cursor-pointer");
     expect(trigger).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("renders double-ring timeline nodes aligned with date pills", () => {
+    renderWithProviders(<Work />);
+    const first = RESUME.workExperience[0];
+    const node = screen.getByTestId(
+      `work-timeline-node-${workEntryAnchorId(first)}`,
+    );
+    expect(node).toHaveClass("cv-timeline-node-outer");
+    expect(node.querySelector(".cv-timeline-node-inner")).toBeInTheDocument();
   });
 
   it("assigns data-lane from entry data", () => {
