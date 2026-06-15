@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { RESUME } from "@/cv/data";
 import { renderWithProviders, screen, within } from "@/test/render";
-
+import { workEntryAnchorId } from "../anchors";
 import { Work } from "../Work";
 
 describe("Work", () => {
@@ -39,6 +39,14 @@ describe("Work", () => {
     renderWithProviders(<Work />);
     for (const m of RESUME.milestones) {
       expect(screen.getByText(m.text)).toBeInTheDocument();
+    }
+  });
+
+  it("anchors each work entry with its workEntryAnchorId", () => {
+    renderWithProviders(<Work />);
+    for (const w of RESUME.workExperience) {
+      const card = screen.getByTestId(`work-entry-${w.company}`);
+      expect(card).toHaveAttribute("id", workEntryAnchorId(w));
     }
   });
 });

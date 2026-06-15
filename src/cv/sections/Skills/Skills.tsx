@@ -1,9 +1,18 @@
 "use client";
 
 import { IconStar, IconStarFilled } from "@tabler/icons-react";
+import { useState } from "react";
 
+import {
+  trackSkillExperienceClick,
+  trackSkillExperiencesOpen,
+} from "@/analytics/events";
 import { RESUME } from "@/cv/data";
-import type { Skill, SkillCategory } from "@/cv/types";
+import { scrollToWorkEntry } from "@/cv/sections/Work/anchors";
+import type { Skill, SkillCategory, WorkExperience } from "@/cv/types";
+
+import { experiencesForSkill } from "./matching";
+import { SkillExperiencesModal } from "./SkillExperiencesModal";
 
 const CATEGORY_ORDER: ReadonlyArray<SkillCategory> = [
   "Language",
@@ -61,28 +70,77 @@ const Dots = ({ filled, total }: { filled: number; total: number }) => {
   );
 };
 
-const SkillCard = ({ skill }: { skill: Skill }) => (
-  <div
-    data-testid={`skill-card-${skill.name}`}
-    className="border border-neutral-200 rounded-lg p-4 flex flex-col gap-1"
-  >
-    <header className="flex flex-row justify-between items-baseline gap-2">
+/** Card body, built only from phrasing content so it is valid inside a button. */
+const SkillCardInner = ({ skill }: { skill: Skill }) => (
+  <>
+    <span className="flex flex-row justify-between items-baseline gap-2">
       <span className="text-sm font-semibold">{skill.name}</span>
       <span className="flex flex-row items-center gap-1">
         <span className="text-xs text-neutral-500">{skill.level}</span>
         <Stars count={skill.stars} />
       </span>
-    </header>
-    <p className="text-xs text-neutral-500">{skill.area}</p>
-    <p className="text-xs text-neutral-500">
+    </span>
+    <span className="block text-xs text-neutral-500">{skill.area}</span>
+    <span className="block text-xs text-neutral-500">
       {skill.years} years · {skill.since}
-    </p>
+    </span>
     <Dots filled={skill.filledDots} total={skill.totalDots} />
-  </div>
+  </>
 );
+
+const CARD_CLASS =
+  "border border-neutral-200 rounded-lg p-4 flex flex-col gap-1";
+
+const SkillCard = ({
+  skill,
+  onOpen,
+}: {
+  skill: Skill;
+  onOpen: (skill: Skill) => void;
+}) => {
+  const interactive =
+    experiencesForSkill(skill, RESUME.workExperience).length > 0;
+
+  if (!interactive) {
+    return (
+      <div data-testid={`skill-card-${skill.name}`} className={CARD_CLASS}>
+        <SkillCardInner skill={skill} />
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      data-testid={`skill-card-${skill.name}`}
+      aria-haspopup="dialog"
+      onClick={() => onOpen(skill)}
+      className={`${CARD_CLASS} text-left w-full cursor-pointer hover:border-neutral-400 hover:shadow-sm transition`}
+    >
+      <SkillCardInner skill={skill} />
+    </button>
+  );
+};
 
 export const Skills = () => {
   const groups = groupByCategory(RESUME.skills);
+  const [activeSkill, setActiveSkill] = useState<Skill | null>(null);
+
+  const handleOpen = (skill: Skill) => {
+    setActiveSkill(skill);
+    trackSkillExperiencesOpen({ skill: skill.name });
+  };
+
+  const handleExperienceClick = (entry: WorkExperience) => {
+    if (activeSkill) {
+      trackSkillExperienceClick({
+        skill: activeSkill.name,
+        company: entry.company,
+      });
+    }
+    setActiveSkill(null);
+    scrollToWorkEntry(entry);
+  };
 
   return (
     <section id="skills" className="flex flex-col gap-6">
@@ -94,11 +152,16 @@ export const Skills = () => {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {group.items.map((skill) => (
-              <SkillCard key={skill.name} skill={skill} />
+              <SkillCard key={skill.name} skill={skill} onOpen={handleOpen} />
             ))}
           </div>
         </div>
       ))}
+      <SkillExperiencesModal
+        skill={activeSkill}
+        onClose={() => setActiveSkill(null)}
+        onExperienceClick={handleExperienceClick}
+      />
     </section>
   );
 };

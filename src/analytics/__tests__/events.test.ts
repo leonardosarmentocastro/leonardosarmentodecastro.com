@@ -81,4 +81,21 @@ describe("event trackers", () => {
       location: "cv_dock",
     });
   });
+
+  it("trackSkillExperiencesOpen captures skill_experiences_opened with the skill", async () => {
+    const { trackSkillExperiencesOpen } = await loadAnalytics();
+    trackSkillExperiencesOpen({ skill: "JavaScript" });
+    expect(mockCapture).toHaveBeenCalledWith("skill_experiences_opened", {
+      skill: "JavaScript",
+    });
+  });
+
+  it("trackSkillExperienceClick captures skill_experience_clicked with skill and company", async () => {
+    const { trackSkillExperienceClick } = await loadAnalytics();
+    trackSkillExperienceClick({ skill: "JavaScript", company: "Pinterest" });
+    expect(mockCapture).toHaveBeenCalledWith("skill_experience_clicked", {
+      skill: "JavaScript",
+      company: "Pinterest",
+    });
+  });
 });

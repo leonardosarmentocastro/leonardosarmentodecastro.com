@@ -4,6 +4,7 @@ import { Badge } from "@mantine/core";
 
 import { RESUME } from "@/cv/data";
 import type { Milestone, WorkExperience } from "@/cv/types";
+import { workEntryAnchorId } from "./anchors";
 
 const parseStartYear = (startDate: string): number => {
   const match = startDate.match(/\d{4}/);
@@ -47,8 +48,9 @@ const interleave = (
 
 const WorkEntry = ({ entry }: { entry: WorkExperience }) => (
   <article
+    id={workEntryAnchorId(entry)}
     data-testid={`work-entry-${entry.company}`}
-    className="flex flex-col gap-2"
+    className="flex flex-col gap-2 scroll-mt-24"
   >
     <header className="flex flex-row justify-between items-baseline gap-4">
       <h3 className="text-base font-semibold">{entry.company}</h3>

@@ -457,6 +457,7 @@ export const RESUME: Resume = {
       filledDots: 2,
       totalDots: 10,
       since: "2024 until now",
+      aliases: ["Claude Code", "Cursor", "GitHub Copilot"],
     },
     {
       name: "JavaScript",
@@ -468,6 +469,7 @@ export const RESUME: Resume = {
       filledDots: 10,
       totalDots: 10,
       since: "2011 until now",
+      aliases: ["JavaScript"],
     },
     {
       name: "TypeScript",
@@ -479,6 +481,7 @@ export const RESUME: Resume = {
       filledDots: 8,
       totalDots: 10,
       since: "2017 until now",
+      aliases: ["TypeScript"],
     },
     {
       name: "Python",
@@ -490,6 +493,7 @@ export const RESUME: Resume = {
       filledDots: 2,
       totalDots: 10,
       since: "2024 until now",
+      aliases: ["Python"],
     },
     {
       name: "Ruby (on Rails)",
@@ -501,6 +505,7 @@ export const RESUME: Resume = {
       filledDots: 2,
       totalDots: 10,
       since: "2015 — 2017",
+      aliases: ["Ruby on Rails"],
     },
     {
       name: "React.js",
@@ -512,6 +517,7 @@ export const RESUME: Resume = {
       filledDots: 8,
       totalDots: 10,
       since: "2018 until now",
+      aliases: ["React.js"],
     },
     {
       name: "React Native",
@@ -523,6 +529,7 @@ export const RESUME: Resume = {
       filledDots: 4,
       totalDots: 10,
       since: "2021 — 2025",
+      aliases: ["React Native"],
     },
     {
       name: "Next.js, Vite, TanStack",
@@ -534,6 +541,7 @@ export const RESUME: Resume = {
       filledDots: 2,
       totalDots: 10,
       since: "2024 until now",
+      aliases: ["Next.js", "Vite", "TanStack"],
     },
     {
       name: "Figma",
@@ -545,6 +553,7 @@ export const RESUME: Resume = {
       filledDots: 4,
       totalDots: 10,
       since: "2021 until now",
+      aliases: ["Figma"],
     },
     {
       name: "Node.js",
@@ -556,6 +565,7 @@ export const RESUME: Resume = {
       filledDots: 8,
       totalDots: 10,
       since: "2017 until now",
+      aliases: ["Node.js"],
     },
     {
       name: "MongoDB / Redis (NoSQL)",
@@ -567,6 +577,7 @@ export const RESUME: Resume = {
       filledDots: 8,
       totalDots: 10,
       since: "2016 — 2024",
+      aliases: ["MongoDB", "Redis"],
     },
     {
       name: "PostgreSQL / MySQL (SQL)",
@@ -578,6 +589,7 @@ export const RESUME: Resume = {
       filledDots: 5,
       totalDots: 10,
       since: "2011 — 2015, 2024 — 2025",
+      aliases: ["PostgreSQL", "MySQL"],
     },
     {
       name: "CMS (Sanity, Payload, etc)",
@@ -589,6 +601,7 @@ export const RESUME: Resume = {
       filledDots: 1,
       totalDots: 10,
       since: "2024 — 2025",
+      aliases: ["Sanity", "Sanity.io"],
     },
     {
       name: "AWS",
@@ -600,6 +613,7 @@ export const RESUME: Resume = {
       filledDots: 3,
       totalDots: 10,
       since: "2022 — 2025",
+      aliases: ["AWS"],
     },
     {
       name: "Docker",
@@ -611,6 +625,7 @@ export const RESUME: Resume = {
       filledDots: 9,
       totalDots: 10,
       since: "2018 until now",
+      aliases: ["Docker"],
     },
     {
       name: "Git and CI/CD",
@@ -622,6 +637,14 @@ export const RESUME: Resume = {
       filledDots: 9,
       totalDots: 10,
       since: "2017 until now",
+      aliases: [
+        "Git",
+        "GitHub Actions",
+        "Gitlab CI",
+        "Buildkite",
+        "Codeship",
+        "SVN",
+      ],
     },
   ],
 

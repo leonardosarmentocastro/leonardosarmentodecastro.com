@@ -20,6 +20,7 @@ export type Skill = {
   filledDots: number;
   totalDots: 10;
   since: string;
+  aliases: string[];
 };
 
 export type WorkExperience = {
