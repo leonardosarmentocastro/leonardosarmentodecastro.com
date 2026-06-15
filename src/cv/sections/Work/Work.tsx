@@ -81,7 +81,10 @@ export const Work = () => {
     <section id="work" className="flex flex-col gap-8">
       <h2 className="text-xl font-semibold tracking-tight">Work Experience</h2>
 
-      <div ref={timelineRef} className="relative">
+      <div ref={timelineRef} className="relative pl-8 md:pl-0">
+        {/* Mobile left spine */}
+        <div className="md:hidden absolute left-3 top-0 bottom-0 w-0.5 bg-[#7B7B7B]" />
+
         {/* Center spine — desktop */}
         <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2">
           <div className={`absolute inset-0 ${workSpineTrack}`} />
