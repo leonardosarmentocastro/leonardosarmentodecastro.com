@@ -18,6 +18,7 @@
 - Package manager: **pnpm** (locked via `package.json` `packageManager` field). Do not use `npm` or `yarn` in this repo.
 - Linter/formatter: **Biome** (`pnpm lint`, `pnpm format`). Do not introduce ESLint or Prettier.
 - Path alias: `@/*` → `src/*` (configured in `tsconfig.json`).
+- When adding a technology to `data.ts`, follow the icon workflow in `src/cv/README.md` — the guard test in `src/cv/__tests__/icons.test.ts` will fail if the alias is not mapped or explicitly opted out.
 
 ## Code organization
 
