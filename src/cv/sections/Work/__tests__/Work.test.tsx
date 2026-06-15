@@ -98,6 +98,27 @@ describe("Work", () => {
     expect(node.querySelector(".cv-timeline-node-inner")).toBeInTheDocument();
   });
 
+  it("uses light tech badges on expanded dark cards", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Work />);
+    const entry = screen.getByTestId("work-entry-Pinterest");
+    await user.click(within(entry).getByRole("button"));
+    const badge = within(entry)
+      .getByText("React.js")
+      .closest("[data-slot='badge']");
+    expect(badge).toHaveClass("bg-neutral-100");
+    expect(badge).toHaveClass("text-neutral-900");
+  });
+
+  it("places overlap cluster date pills above their cards", () => {
+    renderWithProviders(<Work />);
+    const pill = screen.getByTestId("work-date-pill-Écolheita");
+    const entry = screen.getByTestId("work-entry-Écolheita");
+    expect(
+      pill.compareDocumentPosition(entry) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
   it("assigns data-lane from entry data", () => {
     renderWithProviders(<Work />);
     const ecolheita = screen.getByTestId("work-entry-Écolheita");

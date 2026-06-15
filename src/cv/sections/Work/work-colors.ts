@@ -29,9 +29,9 @@ export const workMetaOnDark = "text-neutral-400";
 export const workBadge =
   "bg-neutral-100 text-neutral-800 border-transparent hover:bg-neutral-100";
 
-/** Tech badge on dark card */
+/** Tech badge on dark card — light pills for contrast */
 export const workBadgeOnDark =
-  "bg-neutral-800 text-neutral-100 border-transparent hover:bg-neutral-800";
+  "bg-neutral-100 text-neutral-900 border-transparent hover:bg-neutral-100";
 
 /** Date pill — default (scroll not yet reached) */
 export const workDatePillDefault =

@@ -22,35 +22,101 @@ import { workSpineFill, workSpineTrack } from "./work-colors";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const syncCheckpointStates = (
+  timeline: HTMLElement,
+  progress: number,
+): void => {
+  const fillEdge = progress * timeline.offsetHeight;
+
+  for (const row of timeline.querySelectorAll<HTMLElement>(
+    ".cv-work-checkpoint",
+  )) {
+    const node = row.querySelector<HTMLElement>(".cv-timeline-node-outer");
+    if (!node) continue;
+
+    const timelineTop = timeline.getBoundingClientRect().top;
+    const nodeCenterY =
+      node.getBoundingClientRect().top +
+      node.getBoundingClientRect().height / 2 -
+      timelineTop;
+
+    row.classList.toggle("cv-checkpoint-reached", fillEdge >= nodeCenterY);
+  }
+};
+
 const TimelineEntryRow = ({
   entry,
   isOpen,
+  /** Overlap cluster: pill above card (same column) to avoid z-fighting */
+  dateOnCard = false,
 }: {
   entry: WorkExperience;
   isOpen: boolean;
+  dateOnCard?: boolean;
 }) => {
   const checkpointId = workEntryAnchorId(entry);
+  const pillTowardSpine = entry.lane === "left" ? "end" : "start";
+
+  const nodeColumn = (
+    <div className="hidden md:flex md:col-start-2 w-4 h-7 items-center justify-center self-start shrink-0 relative z-10">
+      <WorkTimelineNode checkpointId={checkpointId} />
+    </div>
+  );
+
+  if (dateOnCard) {
+    const cardColumn = (
+      <>
+        <WorkTimelineDatePill
+          entry={entry}
+          align={pillTowardSpine}
+          className="relative z-20"
+        />
+        <WorkTimelineItem entry={entry} isOpen={isOpen} />
+      </>
+    );
+
+    return (
+      <div
+        className="cv-work-checkpoint md:grid md:grid-cols-[1fr_auto_1fr] md:gap-x-2 md:items-start w-full"
+        data-checkpoint-id={checkpointId}
+      >
+        <div className="md:col-start-1 min-w-0">
+          {entry.lane === "left" ? cardColumn : null}
+        </div>
+        {nodeColumn}
+        <div className="md:col-start-3 min-w-0">
+          {entry.lane === "right" ? cardColumn : null}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
-      className="cv-work-checkpoint md:grid md:grid-cols-[1fr_auto_1fr] md:gap-x-2 md:items-start"
+      className="cv-work-checkpoint md:grid md:grid-cols-[1fr_auto_1fr] md:gap-x-2 md:items-start w-full"
       data-checkpoint-id={checkpointId}
     >
       <div className="md:col-start-1 min-w-0">
         {entry.lane === "right" ? (
-          <WorkTimelineDatePill entry={entry} align="end" />
+          <WorkTimelineDatePill
+            entry={entry}
+            align="end"
+            className="relative z-20"
+          />
         ) : (
           <WorkTimelineItem entry={entry} isOpen={isOpen} />
         )}
       </div>
-      <div className="hidden md:flex md:col-start-2 w-4 h-7 items-center justify-center self-start shrink-0">
-        <WorkTimelineNode checkpointId={checkpointId} />
-      </div>
+      {nodeColumn}
       <div className="md:col-start-3 min-w-0">
         {entry.lane === "right" ? (
           <WorkTimelineItem entry={entry} isOpen={isOpen} />
         ) : (
-          <WorkTimelineDatePill entry={entry} align="start" />
+          <WorkTimelineDatePill
+            entry={entry}
+            align="start"
+            className="relative z-20"
+          />
         )}
       </div>
     </div>
@@ -78,6 +144,8 @@ export const Work = () => {
     mm.add("(prefers-reduced-motion: no-preference)", () => {
       if (!timelineRef.current || !progressRef.current) return;
 
+      const timeline = timelineRef.current;
+
       gsap.fromTo(
         progressRef.current,
         { scaleY: 0 },
@@ -85,10 +153,11 @@ export const Work = () => {
           scaleY: 1,
           ease: "none",
           scrollTrigger: {
-            trigger: timelineRef.current,
+            trigger: timeline,
             start: "top center",
             end: "bottom center",
             scrub: true,
+            onUpdate: (self) => syncCheckpointStates(timeline, self.progress),
           },
         },
       );
@@ -110,21 +179,15 @@ export const Work = () => {
           },
         );
       });
-
-      gsap.utils.toArray<HTMLElement>(".cv-work-checkpoint").forEach((row) => {
-        ScrollTrigger.create({
-          trigger: row,
-          start: "top 58%",
-          onEnter: () => row.classList.add("cv-checkpoint-reached"),
-          onLeaveBack: () => row.classList.remove("cv-checkpoint-reached"),
-        });
-      });
     });
 
     mm.add("(prefers-reduced-motion: reduce)", () => {
-      gsap.utils.toArray<HTMLElement>(".cv-work-checkpoint").forEach((row) => {
+      if (!timelineRef.current) return;
+      for (const row of timelineRef.current.querySelectorAll(
+        ".cv-work-checkpoint",
+      )) {
         row.classList.add("cv-checkpoint-reached");
-      });
+      }
     });
 
     return () => mm.revert();
@@ -137,13 +200,13 @@ export const Work = () => {
       </h2>
 
       <div ref={timelineRef} className="relative pl-8 md:pl-0">
-        {/* Mobile left spine */}
+        {/* Mobile left spine — behind nodes */}
         <div
-          className={`md:hidden absolute left-3 top-0 bottom-0 w-0.5 ${workSpineTrack}`}
+          className={`md:hidden absolute left-3 top-0 bottom-0 w-0.5 z-0 ${workSpineTrack}`}
         />
 
-        {/* Center spine — desktop */}
-        <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2">
+        {/* Center spine — desktop, behind checkpoint nodes */}
+        <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 z-0 pointer-events-none">
           <div className={`absolute inset-0 ${workSpineTrack}`} />
           <div
             ref={progressRef}
@@ -156,7 +219,7 @@ export const Work = () => {
           multiple
           value={openValues}
           onValueChange={setOpenValues}
-          className="flex flex-col gap-10"
+          className="relative z-10 flex flex-col gap-10"
         >
           {items.map((item, i) => {
             if (item.kind === "milestone") {
@@ -186,12 +249,13 @@ export const Work = () => {
                 return (
                   <div
                     key={`sticky-${entry.company}`}
-                    className="flex flex-col gap-10"
+                    className="flex flex-col gap-10 w-full"
                     data-testid="work-sticky-cluster"
                   >
-                    <div className="md:sticky md:top-24 md:self-start">
+                    <div className="md:sticky md:top-24 w-full z-10">
                       <TimelineEntryRow
                         entry={entry}
+                        dateOnCard
                         isOpen={openValues.includes(workEntryAnchorId(entry))}
                       />
                     </div>
@@ -199,6 +263,7 @@ export const Work = () => {
                       <TimelineEntryRow
                         key={counterpart.company}
                         entry={counterpart}
+                        dateOnCard
                         isOpen={openValues.includes(
                           workEntryAnchorId(counterpart),
                         )}

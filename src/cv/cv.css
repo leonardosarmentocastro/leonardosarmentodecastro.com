@@ -14,6 +14,8 @@
 
 /* Timeline checkpoint — default (unreached) */
 .cv-work-checkpoint .cv-timeline-node-outer {
+  position: relative;
+  z-index: 10;
   background-color: #e5e5e5;
   transition: background-color 0.3s ease;
 }
