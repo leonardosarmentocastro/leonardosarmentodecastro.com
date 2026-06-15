@@ -15,7 +15,7 @@
 /* Timeline checkpoint — default (unreached) */
 .cv-work-checkpoint .cv-timeline-node-outer {
   position: relative;
-  z-index: 10;
+  z-index: 1;
   background-color: #e5e5e5;
   transition: background-color 0.3s ease;
 }
@@ -32,6 +32,11 @@
 
 .cv-work-checkpoint.cv-checkpoint-reached .cv-timeline-node-inner {
   background-color: #171717;
+}
+
+/* Ping ring — visible only when checkpoint reached (motion-safe via Tailwind) */
+.cv-work-checkpoint:not(.cv-checkpoint-reached) .cv-timeline-node-ping {
+  display: none;
 }
 
 /* Date pill scroll states (default gray → dark when reached) */
