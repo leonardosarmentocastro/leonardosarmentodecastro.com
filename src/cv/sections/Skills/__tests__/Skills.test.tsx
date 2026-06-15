@@ -1,3 +1,4 @@
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import { RESUME } from "@/cv/data";
@@ -51,5 +52,22 @@ describe("Skills", () => {
       expect(filled).toBe(skill.filledDots);
       expect(empty).toBe(skill.totalDots - skill.filledDots);
     }
+  });
+
+  it("renders a skill that has matches as a button", () => {
+    renderWithProviders(<Skills />);
+    expect(screen.getByTestId("skill-card-JavaScript").tagName).toBe("BUTTON");
+  });
+
+  it("opens the experiences dialog for the clicked skill", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Skills />);
+
+    await user.click(screen.getByTestId("skill-card-JavaScript"));
+
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+    expect(
+      screen.getByText(/where i used javascript/i),
+    ).toBeInTheDocument();
   });
 });
