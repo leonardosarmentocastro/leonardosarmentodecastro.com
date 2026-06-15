@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { RESUME } from "@/cv/data";
-import { renderWithProviders, screen, within } from "@/test/render";
+import { act, renderWithProviders, screen, within } from "@/test/render";
 import { workEntryAnchorId } from "../anchors";
 import { Work } from "../Work";
 
@@ -64,5 +64,23 @@ describe("Work", () => {
     // "Pinterest Gestalt" is in UNMAPPED_ALIASES — badge renders text only
     const entry = screen.getByTestId("work-entry-Pinterest");
     expect(within(entry).getByText("Pinterest Gestalt")).toBeInTheDocument();
+  });
+
+  it("opens the matching accordion when cv:open-work-entry is dispatched", () => {
+    renderWithProviders(<Work />);
+    const first = RESUME.workExperience[0];
+    const anchorId = workEntryAnchorId(first);
+    const card = screen.getByTestId(`work-entry-${first.company}`);
+    const button = within(card).getByRole("button");
+
+    expect(button).toHaveAttribute("aria-expanded", "false");
+
+    act(() => {
+      document.dispatchEvent(
+        new CustomEvent("cv:open-work-entry", { detail: anchorId }),
+      );
+    });
+
+    expect(button).toHaveAttribute("aria-expanded", "true");
   });
 });
