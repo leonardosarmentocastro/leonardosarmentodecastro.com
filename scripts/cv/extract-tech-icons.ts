@@ -75,11 +75,17 @@ const REQUESTED_ICONS = [
  * tech-stack-icons bundle. Keys are either unquoted JS identifiers (react)
  * or double-quoted strings for names with special chars ("c#", "c++").
  * Every SVG ends with </svg>, which is used as the reliable end marker.
+ *
+ * Patterns are anchored with a leading ',' or '{' to prevent matching a key
+ * as a suffix of a longer icon name (e.g. "js" must not match "alpinejs",
+ * "react" must not match "preact", "php" must not match "cakephp").
  */
 function extractSvg(content: string, iconKey: string): string | null {
   const patterns = [
-    `"${iconKey}":{svg:{light:'`,
-    `${iconKey}:{svg:{light:'`,
+    `,"${iconKey}":{svg:{light:'`,
+    `{"${iconKey}":{svg:{light:'`,
+    `,${iconKey}:{svg:{light:'`,
+    `{${iconKey}:{svg:{light:'`,
   ];
 
   for (const pattern of patterns) {
@@ -100,10 +106,7 @@ function extractSvg(content: string, iconKey: string): string | null {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "../..");
-const pkgPath = resolve(
-  ROOT,
-  "node_modules/tech-stack-icons/dist/index.js",
-);
+const pkgPath = resolve(ROOT, "node_modules/tech-stack-icons/dist/index.js");
 const outPath = resolve(ROOT, "src/cv/tech-icon-svgs.ts");
 
 const content = readFileSync(pkgPath, "utf-8");
