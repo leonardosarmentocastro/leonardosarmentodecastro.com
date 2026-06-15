@@ -27,6 +27,10 @@ The CV domain. Owns the data, types, and UI building blocks for the `/cv` route 
 
 - **Updated contact info:** update `RESUME.hero.links`. The landing page and `/cv` page both read from this object — there are no other sources.
 
+## Skill → experiences
+
+Each skill declares `aliases` (the exact `technologies[]` strings that represent it). `experiencesForSkill` (`sections/Skills/matching.ts`) maps a skill to the jobs that used it. Clicking a skill card opens `SkillExperiencesModal`; clicking a job there closes it and calls `scrollToWorkEntry` (`sections/Work/anchors.ts`), which smooth-scrolls to the entry's anchor (`workEntryAnchorId`) and flashes it (`.cv-flash`, in `src/app/globals.css`) — both gated behind `prefers-reduced-motion`. To add a skill, include its `aliases` so it links to the right jobs. Analytics: `skill_experiences_opened` and `skill_experience_clicked`.
+
 ## Resume options dialog
 
 `ResumeOptionsModal.tsx` is a Mantine `Modal` with two stacked CTAs: open the PDF on Google Drive, or navigate to `/cv`. It's mounted in:
