@@ -8,7 +8,9 @@ import {
   trackSkillExperiencesOpen,
 } from "@/analytics/events";
 import { RESUME } from "@/cv/data";
+import { getTechIconSvg } from "@/cv/icons";
 import { scrollToWorkEntry } from "@/cv/sections/Work/anchors";
+import { TechIcon } from "@/cv/TechIcon";
 import type { Skill, SkillCategory, WorkExperience } from "@/cv/types";
 
 import { experiencesForSkill } from "./matching";
@@ -71,22 +73,32 @@ const Dots = ({ filled, total }: { filled: number; total: number }) => {
 };
 
 /** Card body, built only from phrasing content so it is valid inside a button. */
-const SkillCardInner = ({ skill }: { skill: Skill }) => (
-  <>
-    <span className="flex flex-row justify-between items-baseline gap-2">
-      <span className="text-sm font-semibold">{skill.name}</span>
-      <span className="flex flex-row items-center gap-1">
-        <span className="text-xs text-neutral-500">{skill.level}</span>
-        <Stars count={skill.stars} />
+const SkillCardInner = ({ skill }: { skill: Skill }) => {
+  const hasIcons = skill.aliases.some((a) => getTechIconSvg(a) != null);
+  return (
+    <>
+      {hasIcons && (
+        <span className="flex flex-row items-center gap-1.5">
+          {skill.aliases.map((alias) => (
+            <TechIcon key={alias} alias={alias} size={18} />
+          ))}
+        </span>
+      )}
+      <span className="flex flex-row justify-between items-baseline gap-2">
+        <span className="text-sm font-semibold">{skill.name}</span>
+        <span className="flex flex-row items-center gap-1">
+          <span className="text-xs text-neutral-500">{skill.level}</span>
+          <Stars count={skill.stars} />
+        </span>
       </span>
-    </span>
-    <span className="block text-xs text-neutral-500">{skill.area}</span>
-    <span className="block text-xs text-neutral-500">
-      {skill.years} years · {skill.since}
-    </span>
-    <Dots filled={skill.filledDots} total={skill.totalDots} />
-  </>
-);
+      <span className="block text-xs text-neutral-500">{skill.area}</span>
+      <span className="block text-xs text-neutral-500">
+        {skill.years} years · {skill.since}
+      </span>
+      <Dots filled={skill.filledDots} total={skill.totalDots} />
+    </>
+  );
+};
 
 const CARD_CLASS =
   "border border-neutral-200 rounded-lg p-4 flex flex-col gap-1";

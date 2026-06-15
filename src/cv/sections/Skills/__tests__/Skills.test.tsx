@@ -68,4 +68,21 @@ describe("Skills", () => {
     expect(await screen.findByRole("dialog")).toBeInTheDocument();
     expect(screen.getByText(/where i used javascript/i)).toBeInTheDocument();
   });
+
+  it("renders a tech icon for each skill alias that has a mapping", () => {
+    renderWithProviders(<Skills />);
+    // "JavaScript" skill has alias "JavaScript" → "js" icon
+    const card = screen.getByTestId("skill-card-JavaScript");
+    const icons = card.querySelectorAll('span[aria-hidden="true"]');
+    expect(icons.length).toBeGreaterThan(0);
+    expect(icons[0]?.innerHTML).toContain("<svg");
+  });
+
+  it("renders multiple icons for compound skills with several mapped aliases", () => {
+    renderWithProviders(<Skills />);
+    // "MongoDB / Redis (NoSQL)" skill has aliases ["MongoDB", "Redis"] — both mapped
+    const card = screen.getByTestId("skill-card-MongoDB / Redis (NoSQL)");
+    const icons = card.querySelectorAll('span[aria-hidden="true"]');
+    expect(icons.length).toBeGreaterThanOrEqual(2);
+  });
 });
