@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { Accordion } from "@/components/ui/accordion";
 import { RESUME } from "@/cv/data";
+import type { WorkExperience } from "@/cv/types";
 
 import { workEntryAnchorId } from "./anchors";
 import {
@@ -15,10 +16,48 @@ import {
   isStickyCounterpart,
 } from "./timeline-layout";
 import { WorkMilestoneDivider } from "./WorkMilestoneDivider";
-import { WorkTimelineItem } from "./WorkTimelineItem";
-import { workSpineFill, workSpineTrack } from "./work-colors";
+import { WorkTimelineDatePill, WorkTimelineItem } from "./WorkTimelineItem";
+import { workSpineFill, workSpineNode, workSpineTrack } from "./work-colors";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const TimelineEntryRow = ({
+  entry,
+  isOpen,
+  inlineDate = false,
+}: {
+  entry: WorkExperience;
+  isOpen: boolean;
+  inlineDate?: boolean;
+}) => {
+  const open = isOpen;
+
+  if (inlineDate) {
+    return <WorkTimelineItem entry={entry} isOpen={open} showInlineDate />;
+  }
+
+  return (
+    <div className="md:grid md:grid-cols-[1fr_auto_1fr] md:gap-x-2 md:items-start">
+      <div className="md:col-start-1">
+        {entry.lane === "right" ? (
+          <WorkTimelineDatePill entry={entry} align="end" />
+        ) : (
+          <WorkTimelineItem entry={entry} isOpen={open} />
+        )}
+      </div>
+      <div className="hidden md:flex md:col-start-2 w-3 justify-center">
+        <div className={`w-2.5 h-2.5 rounded-full ${workSpineNode} mt-6`} />
+      </div>
+      <div className="md:col-start-3">
+        {entry.lane === "right" ? (
+          <WorkTimelineItem entry={entry} isOpen={open} />
+        ) : (
+          <WorkTimelineDatePill entry={entry} align="start" />
+        )}
+      </div>
+    </div>
+  );
+};
 
 export const Work = () => {
   const [openValues, setOpenValues] = useState<string[]>([]);
@@ -79,11 +118,15 @@ export const Work = () => {
 
   return (
     <section id="work" className="flex flex-col gap-8">
-      <h2 className="text-xl font-semibold tracking-tight">Work Experience</h2>
+      <h2 className="text-xl font-semibold tracking-tight text-neutral-900">
+        Work Experience
+      </h2>
 
       <div ref={timelineRef} className="relative pl-8 md:pl-0">
         {/* Mobile left spine */}
-        <div className="md:hidden absolute left-3 top-0 bottom-0 w-0.5 bg-[#7B7B7B]" />
+        <div
+          className={`md:hidden absolute left-3 top-0 bottom-0 w-0.5 ${workSpineTrack}`}
+        />
 
         {/* Center spine — desktop */}
         <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2">
@@ -129,13 +172,14 @@ export const Work = () => {
                 return (
                   <div
                     key={`sticky-${entry.company}`}
-                    className="md:grid md:grid-cols-[1fr_auto_1fr] md:gap-4 md:items-start"
+                    className="md:grid md:grid-cols-[1fr_auto_1fr] md:gap-x-2 md:items-start"
                     data-testid="work-sticky-cluster"
                   >
                     <div className="md:sticky md:top-24 md:self-start">
                       <WorkTimelineItem
                         entry={entry}
                         isOpen={openValues.includes(workEntryAnchorId(entry))}
+                        showInlineDate
                       />
                     </div>
                     <div className="hidden md:block w-3" aria-hidden />
@@ -147,6 +191,7 @@ export const Work = () => {
                           isOpen={openValues.includes(
                             workEntryAnchorId(counterpart),
                           )}
+                          showInlineDate
                         />
                       ))}
                     </div>
@@ -160,42 +205,11 @@ export const Work = () => {
             }
 
             return (
-              <div
+              <TimelineEntryRow
                 key={`${entry.company}-${entry.startDate}`}
-                className="md:grid md:grid-cols-[1fr_auto_1fr] md:gap-4 md:items-start"
-              >
-                <div
-                  className={
-                    entry.lane === "left" ? "md:col-start-1" : "md:col-start-3"
-                  }
-                >
-                  {entry.lane === "left" ? (
-                    <WorkTimelineItem
-                      entry={entry}
-                      isOpen={openValues.includes(workEntryAnchorId(entry))}
-                    />
-                  ) : (
-                    <div className="hidden md:block" />
-                  )}
-                </div>
-                <div className="hidden md:flex md:col-start-2 w-3 justify-center">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#7B7B7B] mt-6" />
-                </div>
-                <div
-                  className={
-                    entry.lane === "right" ? "md:col-start-3" : "md:col-start-1"
-                  }
-                >
-                  {entry.lane === "right" ? (
-                    <WorkTimelineItem
-                      entry={entry}
-                      isOpen={openValues.includes(workEntryAnchorId(entry))}
-                    />
-                  ) : (
-                    <div className="hidden md:block" />
-                  )}
-                </div>
-              </div>
+                entry={entry}
+                isOpen={openValues.includes(workEntryAnchorId(entry))}
+              />
             );
           })}
         </Accordion>

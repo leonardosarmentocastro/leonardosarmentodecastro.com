@@ -12,12 +12,12 @@ import type { WorkExperience } from "@/cv/types";
 
 import { workEntryAnchorId } from "./anchors";
 import {
-  workBadgeOnDark,
-  workBadgeOnLight,
+  workBadge,
   workCardCollapsed,
   workCardExpanded,
-  workDatePill,
-  workMetaOnDark,
+  workDatePillPrimary,
+  workDatePillSecondary,
+  workMeta,
 } from "./work-colors";
 
 const metadataLine = (entry: WorkExperience): string =>
@@ -25,23 +25,51 @@ const metadataLine = (entry: WorkExperience): string =>
     .filter(Boolean)
     .join(" · ");
 
+type DatePillProps = {
+  entry: WorkExperience;
+  /** Pill flush toward the center spine */
+  align: "start" | "end";
+  className?: string;
+};
+
+/** Date pill on the opposite side of the spine from the card (desktop). */
+export const WorkTimelineDatePill = ({
+  entry,
+  align,
+  className = "",
+}: DatePillProps) => {
+  const period = `${entry.startDate} — ${entry.endDate}`;
+  const pillClass =
+    entry.lane === "right" ? workDatePillPrimary : workDatePillSecondary;
+
+  return (
+    <div
+      className={`hidden md:flex mb-2 ${
+        align === "end" ? "justify-end" : "justify-start"
+      } ${className}`}
+      data-testid={`work-date-pill-${entry.company}`}
+    >
+      <span className={pillClass}>{period}</span>
+    </div>
+  );
+};
+
 type Props = {
   entry: WorkExperience;
   isOpen: boolean;
-  /** md+: opposite side date pill */
-  showSpineDate?: boolean;
+  /** When true, pill renders above the card (sticky cluster fallback). */
+  showInlineDate?: boolean;
 };
 
 export const WorkTimelineItem = ({
   entry,
   isOpen,
-  showSpineDate = true,
+  showInlineDate = false,
 }: Props) => {
   const anchorId = workEntryAnchorId(entry);
   const period = `${entry.startDate} — ${entry.endDate}`;
   const cardClass = isOpen ? workCardExpanded : workCardCollapsed;
-  const badgeClass = isOpen ? workBadgeOnDark : workBadgeOnLight;
-  const metaClass = isOpen ? workMetaOnDark : "text-[#7B7B7B]";
+  const triggerLabel = `Toggle ${entry.company} work experience details`;
 
   return (
     <div
@@ -50,36 +78,36 @@ export const WorkTimelineItem = ({
       data-lane={entry.lane}
       className="scroll-mt-24 cv-work-item"
     >
-      {showSpineDate && (
-        <div
-          className={`hidden md:flex mb-2 ${
-            entry.lane === "left" ? "justify-end pr-4" : "justify-start pl-4"
-          }`}
-          data-testid={`work-date-pill-${entry.company}`}
-        >
-          <span className={workDatePill}>{period}</span>
-        </div>
+      {showInlineDate && (
+        <WorkTimelineDatePill
+          entry={entry}
+          align={entry.lane === "left" ? "start" : "end"}
+          className="md:flex"
+        />
       )}
 
-      <Card className={`${cardClass} transition-colors duration-200`}>
+      <Card className={`${cardClass} transition-shadow duration-200`}>
         <AccordionItem value={anchorId} className="border-none">
-          <AccordionTrigger className="px-4 py-3 hover:no-underline [&[data-state=open]>svg]:rotate-180">
+          <AccordionTrigger
+            aria-label={triggerLabel}
+            className="cursor-pointer px-4 py-3 hover:no-underline hover:bg-neutral-50/80 focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 rounded-xl [&[data-state=open]>svg]:rotate-180"
+          >
             <div className="flex flex-col items-start gap-1 text-left w-full pr-2">
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 w-full">
-                <span className="text-base font-semibold">{entry.company}</span>
-                <span className={`text-xs ${metaClass} md:hidden`}>
+                <span className="text-base font-semibold text-neutral-900">
+                  {entry.company}
+                </span>
+                <span className={`text-xs ${workMeta} md:hidden`}>
                   {period}
                 </span>
               </div>
-              <span className={`text-sm ${metaClass}`}>
+              <span className={`text-sm ${workMeta}`}>
                 {metadataLine(entry)}
               </span>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="px-4 pb-4">
-            <p className={`text-sm mb-3 ${isOpen ? "text-white/90" : ""}`}>
-              {entry.description}
-            </p>
+          <AccordionContent className="px-4 pb-4 text-neutral-600">
+            <p className="text-sm mb-3">{entry.description}</p>
             <ul className="list-disc list-outside ml-5 text-sm space-y-1 mb-4">
               {entry.bullets.map((b) => (
                 <li key={b}>{b}</li>
@@ -90,7 +118,7 @@ export const WorkTimelineItem = ({
                 <Badge
                   key={t}
                   variant="secondary"
-                  className={`gap-2 ${badgeClass}`}
+                  className={`gap-2 ${workBadge}`}
                 >
                   <TechIcon alias={t} size={14} />
                   {t}

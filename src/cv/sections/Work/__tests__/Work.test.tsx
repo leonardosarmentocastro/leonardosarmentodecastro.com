@@ -66,6 +66,17 @@ describe("Work", () => {
     ).toHaveAttribute("aria-expanded", "true");
   });
 
+  it("exposes an accessible, pointer-styled accordion trigger per entry", () => {
+    renderWithProviders(<Work />);
+    const first = RESUME.workExperience[0];
+    const card = screen.getByTestId(`work-entry-${first.company}`);
+    const trigger = within(card).getByRole("button", {
+      name: new RegExp(`toggle ${first.company}`, "i"),
+    });
+    expect(trigger).toHaveClass("cursor-pointer");
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+  });
+
   it("assigns data-lane from entry data", () => {
     renderWithProviders(<Work />);
     const ecolheita = screen.getByTestId("work-entry-Écolheita");
