@@ -21,19 +21,26 @@ The CV domain. Owns the data, types, and UI building blocks for the `/cv` route 
 
 ## Work timeline lanes
 
-Each `WorkExperience` entry requires `lane: "left" | "right"` for desktop layout.
+Each `WorkExperience` entry requires `lane: "left" | "right"` for desktop layout. Cards alternate sides of a center spine; mobile collapses to a left-aligned spine with date pills beside each node.
 
-Optional `stickyThrough: "<Company>"` pins a parallel role on its lane while scrolling through overlapping entries until the named company's region ends (desktop only). Example: Écolheita freelancing overlaps PairTree/PureCars/Radical Imaging.
+Optional `stickyThrough: "<Company>"` pins a parallel role on its lane while scrolling through overlapping entries until the named company's region ends (desktop only). Example: Écolheita freelancing overlaps PairTree/PureCars/Radical Imaging. Sticky clusters use `pointer-events-none` on row wrappers so pinned cards do not block clicks on parallel entries at the same scroll height.
 
-Milestones render as horizontal dividers, not timeline cards.
+Milestones render as horizontal dividers, not timeline cards. A **today** origin marker sits at the top of the spine (always active, no ping animation).
 
-- **New skill:** append to `RESUME.skills`. `category` must be one of the `SkillCategory` enum values in `types.ts` — if you need a new category (e.g. `"Cloud"`), add it to both `SkillCategory` in `types.ts` **and** the `CATEGORY_ORDER` constant in `sections/Skills/Skills.tsx`.
+Scroll-driven spine fill and card fade-ins use GSAP `ScrollTrigger` (`prefers-reduced-motion: reduce` marks all checkpoints reached immediately). Domain styles for checkpoints and flash animation live in `src/cv/cv.css`.
 
-- **New education entry:** append to `RESUME.education`.
+### Skill → work navigation
 
-- **New milestone:** add to `RESUME.milestones`. Order is most-recent-first by `year`.
+Each skill declares `aliases` (the exact `technologies[]` strings that represent it). `experiencesForSkill` (`sections/Skills/matching.ts`) maps a skill to the jobs that used it. Clicking a skill card opens `SkillExperiencesModal`; clicking a job there closes it and calls `scrollToWorkEntry` (`sections/Work/anchors.ts`), which:
 
-- **Updated contact info:** update `RESUME.hero.links`. The landing page and `/cv` page both read from this object — there are no other sources.
+1. Smooth-scrolls to the entry's anchor (`workEntryAnchorId`) and flashes it (`.cv-flash`, in `src/cv/cv.css`) — both gated behind `prefers-reduced-motion`.
+2. Dispatches `cv:open-work-entry` with the anchor id. `Work.tsx` listens on `document` and adds that id to the multi-open accordion so the job details are visible on arrival (decouples Skills modal from Work state without prop-drilling).
+
+To add a skill, include its `aliases` so it links to the right jobs. Analytics: `skill_experiences_opened` and `skill_experience_clicked`.
+
+### shadcn/ui in Work
+
+Work timeline cards use shadcn/ui primitives under `src/components/ui/` (`Accordion`, `Card`, `Badge`). Add new components with `pnpm dlx shadcn@latest add <component>` — theme/CSS changes land in `src/vendor/shadcn/styles.css` (see `components.json`). The `cn()` helper is in `src/lib/utils.ts`.
 
 ## Adding a new technology
 
@@ -62,9 +69,17 @@ step — that failure is the signal to act.
 To browse available icon names visit https://tech-stack-icons.com or search the
 `IconName` TypeScript type (autocomplete works with the devDep installed).
 
+- **New skill:** append to `RESUME.skills`. `category` must be one of the `SkillCategory` enum values in `types.ts` — if you need a new category (e.g. `"Cloud"`), add it to both `SkillCategory` in `types.ts` **and** the `CATEGORY_ORDER` constant in `sections/Skills/Skills.tsx`.
+
+- **New education entry:** append to `RESUME.education`.
+
+- **New milestone:** add to `RESUME.milestones`. Order is most-recent-first by `year`.
+
+- **Updated contact info:** update `RESUME.hero.links`. The landing page and `/cv` page both read from this object — there are no other sources.
+
 ## Skill → experiences
 
-Each skill declares `aliases` (the exact `technologies[]` strings that represent it). `experiencesForSkill` (`sections/Skills/matching.ts`) maps a skill to the jobs that used it. Clicking a skill card opens `SkillExperiencesModal`; clicking a job there closes it and calls `scrollToWorkEntry` (`sections/Work/anchors.ts`), which smooth-scrolls to the entry's anchor (`workEntryAnchorId`) and flashes it (`.cv-flash`, in `src/app/globals.css`) — both gated behind `prefers-reduced-motion`. To add a skill, include its `aliases` so it links to the right jobs. Analytics: `skill_experiences_opened` and `skill_experience_clicked`.
+See **Skill → work navigation** under [Work timeline lanes](#work-timeline-lanes) above.
 
 ## Resume options dialog
 
