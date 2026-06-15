@@ -58,12 +58,14 @@ type Props = {
   isOpen: boolean;
   /** When true, pill renders above the card (sticky cluster fallback). */
   showInlineDate?: boolean;
+  className?: string;
 };
 
 export const WorkTimelineItem = ({
   entry,
   isOpen,
   showInlineDate = false,
+  className = "",
 }: Props) => {
   const anchorId = workEntryAnchorId(entry);
   const period = `${entry.startDate} — ${entry.endDate}`;
@@ -77,7 +79,7 @@ export const WorkTimelineItem = ({
       id={anchorId}
       data-testid={`work-entry-${entry.company}`}
       data-lane={entry.lane}
-      className="scroll-mt-24 cv-work-item"
+      className={`scroll-mt-24 cv-work-item ${className}`}
     >
       {showInlineDate && (
         <WorkTimelineDatePill

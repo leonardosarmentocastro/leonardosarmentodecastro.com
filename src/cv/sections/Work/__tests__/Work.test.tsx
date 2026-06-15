@@ -88,13 +88,25 @@ describe("Work", () => {
     expect(trigger).toHaveAttribute("aria-expanded", "false");
   });
 
+  it("renders a ping ring on timeline nodes when checkpoint is reached", () => {
+    renderWithProviders(<Work />);
+    const first = RESUME.workExperience[0];
+    const row = screen
+      .getByTestId(`work-timeline-node-${workEntryAnchorId(first)}`)
+      .closest(".cv-work-checkpoint");
+    expect(row?.querySelector(".cv-timeline-node-ping")).toBeInTheDocument();
+    row?.classList.add("cv-checkpoint-reached");
+    const ping = row?.querySelector(".cv-timeline-node-ping");
+    expect(ping).toHaveClass("motion-safe:animate-ping");
+  });
+
   it("renders double-ring timeline nodes aligned with date pills", () => {
     renderWithProviders(<Work />);
     const first = RESUME.workExperience[0];
     const node = screen.getByTestId(
       `work-timeline-node-${workEntryAnchorId(first)}`,
     );
-    expect(node).toHaveClass("cv-timeline-node-outer");
+    expect(node.querySelector(".cv-timeline-node-outer")).toBeInTheDocument();
     expect(node.querySelector(".cv-timeline-node-inner")).toBeInTheDocument();
   });
 
@@ -117,6 +129,58 @@ describe("Work", () => {
     expect(
       pill.compareDocumentPosition(entry) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
+  });
+
+  it("isolates pointer events to each card in the sticky overlap cluster", () => {
+    renderWithProviders(<Work />);
+    const cluster = screen.getByTestId("work-sticky-cluster");
+    expect(cluster).toHaveClass("pointer-events-none");
+
+    for (const company of [
+      "Écolheita",
+      "PairTree",
+      "PureCars",
+      "Radical Imaging",
+    ]) {
+      const entry = within(cluster).getByTestId(`work-entry-${company}`);
+      const row = entry.closest(".cv-work-checkpoint");
+      expect(row).toHaveClass("pointer-events-none");
+      expect(entry.parentElement).toHaveClass("pointer-events-auto");
+      expect(entry.parentElement).toHaveClass("relative");
+      expect(entry.parentElement).toHaveClass("z-30");
+    }
+
+    for (const company of ["PairTree", "PureCars", "Radical Imaging"]) {
+      const entry = within(cluster).getByTestId(`work-entry-${company}`);
+      const counterpartShell = entry.closest(
+        ".cv-work-checkpoint",
+      )?.parentElement;
+      expect(counterpartShell).toHaveClass("pointer-events-none");
+    }
+  });
+
+  it("expands both sticky and counterpart entries independently", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Work />);
+
+    const ecolheita = screen.getByTestId("work-entry-Écolheita");
+    const pairTree = screen.getByTestId("work-entry-PairTree");
+
+    await user.click(
+      within(ecolheita).getByRole("button", { name: /toggle écolheita/i }),
+    );
+    await user.click(
+      within(pairTree).getByRole("button", { name: /toggle pairtree/i }),
+    );
+
+    expect(within(ecolheita).getByRole("button")).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+    expect(within(pairTree).getByRole("button")).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
   });
 
   it("assigns data-lane from entry data", () => {

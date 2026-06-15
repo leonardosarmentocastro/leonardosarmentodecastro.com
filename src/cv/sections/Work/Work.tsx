@@ -49,42 +49,59 @@ const TimelineEntryRow = ({
   isOpen,
   /** Overlap cluster: pill above card (same column) to avoid z-fighting */
   dateOnCard = false,
+  /** Overlap cluster: limit hit target to the card column only */
+  stickyPointerPassThrough = false,
 }: {
   entry: WorkExperience;
   isOpen: boolean;
   dateOnCard?: boolean;
+  stickyPointerPassThrough?: boolean;
 }) => {
   const checkpointId = workEntryAnchorId(entry);
   const pillTowardSpine = entry.lane === "left" ? "end" : "start";
+  const cardColClass = stickyPointerPassThrough
+    ? "pointer-events-auto relative z-30"
+    : undefined;
+  const emptyColClass = stickyPointerPassThrough
+    ? "pointer-events-none"
+    : undefined;
 
   const nodeColumn = (
-    <div className="hidden md:flex md:col-start-2 w-4 h-7 items-center justify-center self-start shrink-0 relative z-10">
+    <div
+      className={`hidden md:flex md:col-start-2 w-4 h-7 items-center justify-center self-start shrink-0 relative z-10 ${emptyColClass ?? ""}`}
+    >
       <WorkTimelineNode checkpointId={checkpointId} />
     </div>
   );
 
+  const rowClass = stickyPointerPassThrough ? "pointer-events-none" : "";
+
   if (dateOnCard) {
     const cardColumn = (
-      <>
+      <div className={cardColClass}>
         <WorkTimelineDatePill
           entry={entry}
           align={pillTowardSpine}
           className="relative z-20"
         />
         <WorkTimelineItem entry={entry} isOpen={isOpen} />
-      </>
+      </div>
     );
 
     return (
       <div
-        className="cv-work-checkpoint md:grid md:grid-cols-[1fr_auto_1fr] md:gap-x-2 md:items-start w-full"
+        className={`cv-work-checkpoint md:grid md:grid-cols-[1fr_auto_1fr] md:gap-x-2 md:items-start w-full ${rowClass}`}
         data-checkpoint-id={checkpointId}
       >
-        <div className="md:col-start-1 min-w-0">
+        <div
+          className={`md:col-start-1 min-w-0 ${entry.lane === "right" ? emptyColClass : ""}`}
+        >
           {entry.lane === "left" ? cardColumn : null}
         </div>
         {nodeColumn}
-        <div className="md:col-start-3 min-w-0">
+        <div
+          className={`md:col-start-3 min-w-0 ${entry.lane === "left" ? emptyColClass : ""}`}
+        >
           {entry.lane === "right" ? cardColumn : null}
         </div>
       </div>
@@ -93,10 +110,12 @@ const TimelineEntryRow = ({
 
   return (
     <div
-      className="cv-work-checkpoint md:grid md:grid-cols-[1fr_auto_1fr] md:gap-x-2 md:items-start w-full"
+      className={`cv-work-checkpoint md:grid md:grid-cols-[1fr_auto_1fr] md:gap-x-2 md:items-start w-full ${rowClass}`}
       data-checkpoint-id={checkpointId}
     >
-      <div className="md:col-start-1 min-w-0">
+      <div
+        className={`md:col-start-1 min-w-0 ${entry.lane === "right" && stickyPointerPassThrough ? emptyColClass : ""}`}
+      >
         {entry.lane === "right" ? (
           <WorkTimelineDatePill
             entry={entry}
@@ -104,13 +123,23 @@ const TimelineEntryRow = ({
             className="relative z-20"
           />
         ) : (
-          <WorkTimelineItem entry={entry} isOpen={isOpen} />
+          <WorkTimelineItem
+            entry={entry}
+            isOpen={isOpen}
+            className={cardColClass}
+          />
         )}
       </div>
       {nodeColumn}
-      <div className="md:col-start-3 min-w-0">
+      <div
+        className={`md:col-start-3 min-w-0 ${entry.lane === "left" && stickyPointerPassThrough ? emptyColClass : ""}`}
+      >
         {entry.lane === "right" ? (
-          <WorkTimelineItem entry={entry} isOpen={isOpen} />
+          <WorkTimelineItem
+            entry={entry}
+            isOpen={isOpen}
+            className={cardColClass}
+          />
         ) : (
           <WorkTimelineDatePill
             entry={entry}
@@ -249,25 +278,31 @@ export const Work = () => {
                 return (
                   <div
                     key={`sticky-${entry.company}`}
-                    className="flex flex-col gap-10 w-full"
+                    className="flex flex-col gap-10 w-full pointer-events-none"
                     data-testid="work-sticky-cluster"
                   >
-                    <div className="md:sticky md:top-24 w-full z-10">
+                    <div className="md:sticky md:top-24 w-full z-[5] pointer-events-none">
                       <TimelineEntryRow
                         entry={entry}
                         dateOnCard
+                        stickyPointerPassThrough
                         isOpen={openValues.includes(workEntryAnchorId(entry))}
                       />
                     </div>
                     {group.counterpartEntries.map((counterpart) => (
-                      <TimelineEntryRow
+                      <div
                         key={counterpart.company}
-                        entry={counterpart}
-                        dateOnCard
-                        isOpen={openValues.includes(
-                          workEntryAnchorId(counterpart),
-                        )}
-                      />
+                        className="relative z-20 pointer-events-none"
+                      >
+                        <TimelineEntryRow
+                          entry={counterpart}
+                          dateOnCard
+                          stickyPointerPassThrough
+                          isOpen={openValues.includes(
+                            workEntryAnchorId(counterpart),
+                          )}
+                        />
+                      </div>
                     ))}
                   </div>
                 );
