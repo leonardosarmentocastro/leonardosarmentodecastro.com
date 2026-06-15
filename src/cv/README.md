@@ -27,6 +27,33 @@ The CV domain. Owns the data, types, and UI building blocks for the `/cv` route 
 
 - **Updated contact info:** update `RESUME.hero.links`. The landing page and `/cv` page both read from this object — there are no other sources.
 
+## Adding a new technology
+
+When you add a technology string to `RESUME.workExperience[*].technologies` or
+`RESUME.skills[*].aliases` in `data.ts`, you **must** also update the icon
+mapping. The test in `src/cv/__tests__/icons.test.ts` will fail if you miss this
+step — that failure is the signal to act.
+
+**Three cases:**
+
+1. **An icon exists in `tech-stack-icons`** — add the alias → key entry to
+   `ALIAS_TO_ICON` in `src/cv/icons.ts`, add the icon key to `REQUESTED_ICONS`
+   in `scripts/cv/extract-tech-icons.ts`, then run:
+   ```
+   pnpm extract-tech-icons
+   ```
+   Commit both `src/cv/icons.ts` and the regenerated `src/cv/tech-icon-svgs.ts`.
+
+2. **No icon exists** — add the alias string to `UNMAPPED_ALIASES` in
+   `src/cv/icons.ts`. No script run needed; the badge renders text-only.
+
+3. **A previously unmapped alias gains an icon** (e.g., the library adds one) —
+   move it from `UNMAPPED_ALIASES` to `ALIAS_TO_ICON`, add the key to
+   `REQUESTED_ICONS`, and run `pnpm extract-tech-icons`.
+
+To browse available icon names visit https://tech-stack-icons.com or search the
+`IconName` TypeScript type (autocomplete works with the devDep installed).
+
 ## Skill → experiences
 
 Each skill declares `aliases` (the exact `technologies[]` strings that represent it). `experiencesForSkill` (`sections/Skills/matching.ts`) maps a skill to the jobs that used it. Clicking a skill card opens `SkillExperiencesModal`; clicking a job there closes it and calls `scrollToWorkEntry` (`sections/Work/anchors.ts`), which smooth-scrolls to the entry's anchor (`workEntryAnchorId`) and flashes it (`.cv-flash`, in `src/app/globals.css`) — both gated behind `prefers-reduced-motion`. To add a skill, include its `aliases` so it links to the right jobs. Analytics: `skill_experiences_opened` and `skill_experience_clicked`.
