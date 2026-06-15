@@ -29,6 +29,13 @@ export const scrollToWorkEntry = (entry: WorkExperience): void => {
   ).matches;
 
   el.scrollIntoView({ behavior: motionOk ? "smooth" : "auto", block: "start" });
+
+  document.dispatchEvent(
+    new CustomEvent("cv:open-work-entry", {
+      detail: workEntryAnchorId(entry),
+    }),
+  );
+
   if (!motionOk) return;
 
   el.classList.add("cv-flash");
