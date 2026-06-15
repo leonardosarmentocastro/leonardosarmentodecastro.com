@@ -137,13 +137,12 @@ export const Work = () => {
   return (
     <section id="work" className="flex flex-col gap-8">
       <h2 className="text-xl font-semibold tracking-tight">Work Experience</h2>
-      <Timeline>
+      <Timeline bulletSize={48} lineWidth={3}>
         {items.map((item, i) =>
           item.kind === "work" ? (
             <Timeline.Item
               key={`${item.entry.company}-${item.entry.startDate}`}
               bullet={<CompanyLogo company={item.entry.company} />}
-              bulletSize={36}
             >
               <WorkEntry
                 entry={item.entry}

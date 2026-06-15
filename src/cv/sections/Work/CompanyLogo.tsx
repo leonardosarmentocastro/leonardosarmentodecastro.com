@@ -32,8 +32,8 @@ export const CompanyLogo = ({ company }: Props) => {
   return (
     <Image
       src={src}
-      width={36}
-      height={36}
+      width={48}
+      height={48}
       alt={company}
       className="rounded-full"
       onError={() => setHasError(true)}
