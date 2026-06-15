@@ -26,7 +26,24 @@ Apply the `to-ticket` skill (`~/.claude/skills/to-ticket/SKILL.md`).
 
    Wrap the body in a single fenced markdown block for copy-paste.
 
-   If the user asked to publish:
+   **After the ticket block**, append a short **Next steps** section (3–4 lines max):
+
+   > **Publish to GitHub?** Say "publish" and I'll create the issue with `gh`, or run:
+   >
+   > ```bash
+   > gh issue create --title "type(scope): subject" --body "$(cat <<'EOF'
+   > <body>
+   > EOF
+   > )" --label "needs-triage" --label "<bug|enhancement>"
+   > ```
+   >
+   > Or paste into GitHub → **New issue** → **Work item** template.
+   >
+   > **Design next?** Run `/ticket-to-brainstorm` (or `/ticket-to-brainstorm #N` after publishing).
+
+   Do not run `gh issue create` unless the user explicitly asks to publish.
+
+   If the user asked to publish, run the command and return the issue URL:
 
    ```bash
    gh issue create --title "type(scope): subject" --body "$(cat <<'EOF'
@@ -40,4 +57,4 @@ Apply the `to-ticket` skill (`~/.claude/skills/to-ticket/SKILL.md`).
    - No file paths or line numbers in the ticket body
    - Do not write code, specs in `docs/superpowers/specs/`, or implementation plans
    - Do not publish with `gh` unless explicitly requested
-   - Return only the title + markdown block(s)
+   - Always include the **Next steps** publish suggestion after the ticket block
