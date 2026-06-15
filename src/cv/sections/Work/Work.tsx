@@ -18,6 +18,7 @@ import {
 import { WorkMilestoneDivider } from "./WorkMilestoneDivider";
 import { WorkTimelineDatePill, WorkTimelineItem } from "./WorkTimelineItem";
 import { WorkTimelineNode } from "./WorkTimelineNode";
+import { WorkTimelineTodayMarker } from "./WorkTimelineTodayMarker";
 import { workSpineFill, workSpineTrack } from "./work-colors";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -65,89 +66,97 @@ const TimelineEntryRow = ({
   const emptyColClass = stickyPointerPassThrough
     ? "pointer-events-none"
     : undefined;
+  const rowClass = stickyPointerPassThrough ? "pointer-events-none" : "";
+  const cardColumnClass = [
+    "min-w-0",
+    entry.lane === "left" ? "md:col-start-1" : "md:col-start-3",
+    cardColClass,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const nodeColumn = (
     <div
-      className={`hidden md:flex md:col-start-2 w-4 h-7 items-center justify-center self-start shrink-0 relative z-10 ${emptyColClass ?? ""}`}
+      className={`absolute -left-[1.6875rem] top-0 flex h-7 w-4 items-center justify-center z-10 md:static md:col-start-2 md:self-start shrink-0 ${emptyColClass ?? ""}`}
     >
       <WorkTimelineNode checkpointId={checkpointId} />
     </div>
   );
 
-  const rowClass = stickyPointerPassThrough ? "pointer-events-none" : "";
-
-  if (dateOnCard) {
-    const cardColumn = (
-      <div className={cardColClass}>
+  const cardContent = (
+    <>
+      {dateOnCard ? (
         <WorkTimelineDatePill
           entry={entry}
           align={pillTowardSpine}
           className="relative z-20"
+          placement="shared"
         />
-        <WorkTimelineItem entry={entry} isOpen={isOpen} />
-      </div>
-    );
-
-    return (
-      <div
-        className={`cv-work-checkpoint md:grid md:grid-cols-[1fr_auto_1fr] md:gap-x-2 md:items-start w-full ${rowClass}`}
-        data-checkpoint-id={checkpointId}
-      >
-        <div
-          className={`md:col-start-1 min-w-0 ${entry.lane === "right" ? emptyColClass : ""}`}
-        >
-          {entry.lane === "left" ? cardColumn : null}
-        </div>
-        {nodeColumn}
-        <div
-          className={`md:col-start-3 min-w-0 ${entry.lane === "left" ? emptyColClass : ""}`}
-        >
-          {entry.lane === "right" ? cardColumn : null}
-        </div>
-      </div>
-    );
-  }
+      ) : null}
+      <WorkTimelineItem
+        entry={entry}
+        isOpen={isOpen}
+        suppressMobilePeriod
+        className={stickyPointerPassThrough ? undefined : cardColClass}
+      />
+    </>
+  );
 
   return (
     <div
-      className={`cv-work-checkpoint md:grid md:grid-cols-[1fr_auto_1fr] md:gap-x-2 md:items-start w-full ${rowClass}`}
+      className={`cv-work-checkpoint relative md:grid md:grid-cols-[1fr_auto_1fr] md:gap-x-2 md:items-start w-full ${rowClass}`}
       data-checkpoint-id={checkpointId}
     >
-      <div
-        className={`md:col-start-1 min-w-0 ${entry.lane === "right" && stickyPointerPassThrough ? emptyColClass : ""}`}
-      >
-        {entry.lane === "right" ? (
+      {nodeColumn}
+
+      {!dateOnCard ? (
+        <WorkTimelineDatePill
+          entry={entry}
+          align="start"
+          className="relative z-20 flex md:hidden"
+          placement="mobile"
+        />
+      ) : null}
+
+      {!dateOnCard && entry.lane === "right" ? (
+        <div
+          className={`hidden md:block md:col-start-1 min-w-0 ${emptyColClass ?? ""}`}
+        >
           <WorkTimelineDatePill
             entry={entry}
             align="end"
-            className="relative z-20"
+            className="relative z-20 hidden md:flex"
+            placement="desktop"
           />
-        ) : (
-          <WorkTimelineItem
-            entry={entry}
-            isOpen={isOpen}
-            className={cardColClass}
-          />
-        )}
-      </div>
-      {nodeColumn}
-      <div
-        className={`md:col-start-3 min-w-0 ${entry.lane === "left" && stickyPointerPassThrough ? emptyColClass : ""}`}
-      >
-        {entry.lane === "right" ? (
-          <WorkTimelineItem
-            entry={entry}
-            isOpen={isOpen}
-            className={cardColClass}
-          />
-        ) : (
+        </div>
+      ) : null}
+
+      {!dateOnCard && entry.lane === "left" ? (
+        <div
+          className={`hidden md:block md:col-start-3 min-w-0 ${emptyColClass ?? ""}`}
+        >
           <WorkTimelineDatePill
             entry={entry}
             align="start"
-            className="relative z-20"
+            className="relative z-20 hidden md:flex"
+            placement="desktop"
           />
-        )}
-      </div>
+        </div>
+      ) : null}
+
+      {dateOnCard && entry.lane === "left" ? (
+        <div
+          className={`hidden md:block md:col-start-3 min-w-0 ${emptyColClass ?? ""}`}
+        />
+      ) : null}
+
+      {dateOnCard && entry.lane === "right" ? (
+        <div
+          className={`hidden md:block md:col-start-1 min-w-0 ${emptyColClass ?? ""}`}
+        />
+      ) : null}
+
+      <div className={cardColumnClass}>{cardContent}</div>
     </div>
   );
 };
@@ -155,7 +164,8 @@ const TimelineEntryRow = ({
 export const Work = () => {
   const [openValues, setOpenValues] = useState<string[]>([]);
   const timelineRef = useRef<HTMLDivElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
+  const desktopProgressRef = useRef<HTMLDivElement>(null);
+  const mobileProgressRef = useRef<HTMLDivElement>(null);
   const items = buildTimelineItems(RESUME.workExperience, RESUME.milestones);
   const renderedStickyCompanies = new Set<string>();
 
@@ -171,25 +181,31 @@ export const Work = () => {
   useGSAP(() => {
     const mm = gsap.matchMedia();
     mm.add("(prefers-reduced-motion: no-preference)", () => {
-      if (!timelineRef.current || !progressRef.current) return;
+      if (!timelineRef.current) return;
 
       const timeline = timelineRef.current;
+      const progressEls = [
+        desktopProgressRef.current,
+        mobileProgressRef.current,
+      ].filter((el): el is HTMLDivElement => el !== null);
 
-      gsap.fromTo(
-        progressRef.current,
-        { scaleY: 0 },
-        {
-          scaleY: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: timeline,
-            start: "top center",
-            end: "bottom center",
-            scrub: true,
-            onUpdate: (self) => syncCheckpointStates(timeline, self.progress),
+      if (progressEls.length > 0) {
+        gsap.fromTo(
+          progressEls,
+          { scaleY: 0 },
+          {
+            scaleY: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: timeline,
+              start: "top center",
+              end: "bottom center",
+              scrub: true,
+              onUpdate: (self) => syncCheckpointStates(timeline, self.progress),
+            },
           },
-        },
-      );
+        );
+      }
 
       gsap.utils.toArray<HTMLElement>(".cv-work-item").forEach((el) => {
         gsap.fromTo(
@@ -229,20 +245,27 @@ export const Work = () => {
       </h2>
 
       <div ref={timelineRef} className="relative pl-8 md:pl-0">
-        {/* Mobile left spine — behind nodes */}
-        <div
-          className={`md:hidden absolute left-3 top-0 bottom-0 w-0.5 z-0 ${workSpineTrack}`}
-        />
-
-        {/* Center spine — desktop, behind checkpoint nodes */}
-        <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 z-0 pointer-events-none">
+        {/* Mobile left spine — starts at today dot center (h-7 row) */}
+        <div className="md:hidden absolute left-3 top-3.5 bottom-0 w-0.5 z-0 pointer-events-none">
           <div className={`absolute inset-0 ${workSpineTrack}`} />
           <div
-            ref={progressRef}
+            ref={mobileProgressRef}
+            className={`absolute inset-0 origin-top ${workSpineFill}`}
+            data-testid="work-spine-progress-mobile"
+          />
+        </div>
+
+        {/* Center spine — desktop; starts at today dot center (h-7 row) */}
+        <div className="hidden md:block absolute left-1/2 top-3.5 bottom-0 w-0.5 -translate-x-1/2 z-0 pointer-events-none">
+          <div className={`absolute inset-0 ${workSpineTrack}`} />
+          <div
+            ref={desktopProgressRef}
             className={`absolute inset-0 origin-top ${workSpineFill}`}
             data-testid="work-spine-progress"
           />
         </div>
+
+        <WorkTimelineTodayMarker />
 
         <Accordion
           multiple

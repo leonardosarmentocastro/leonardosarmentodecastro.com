@@ -34,8 +34,9 @@
   background-color: #171717;
 }
 
-/* Ping ring — visible only when checkpoint reached (motion-safe via Tailwind) */
-.cv-work-checkpoint:not(.cv-checkpoint-reached) .cv-timeline-node-ping {
+/* Ping ring — hidden until reached; today origin never pings */
+.cv-work-checkpoint:not(.cv-checkpoint-reached) .cv-timeline-node-ping,
+.cv-work-checkpoint.cv-timeline-today .cv-timeline-node-ping {
   display: none;
 }
 

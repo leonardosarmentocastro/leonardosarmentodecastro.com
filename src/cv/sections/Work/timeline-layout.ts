@@ -15,6 +15,25 @@ const MONTHS: Record<string, number> = {
   Dec: 12,
 };
 
+const MONTH_SHORT = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+] as const;
+
+/** Month + year label for the timeline origin dot (matches work entry date style). */
+export const formatTodayTimelineDate = (date: Date = new Date()): string =>
+  `${MONTH_SHORT[date.getMonth()]} ${date.getFullYear()}`;
+
 export type ParsedDate = { year: number; month: number };
 
 export type TimelineItem =

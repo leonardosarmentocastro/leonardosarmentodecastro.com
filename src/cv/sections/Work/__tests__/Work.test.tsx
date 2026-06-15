@@ -1,6 +1,6 @@
 import { act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { RESUME } from "@/cv/data";
 import { renderWithProviders, screen, within } from "@/test/render";
@@ -120,6 +120,51 @@ describe("Work", () => {
       .closest("[data-slot='badge']");
     expect(badge).toHaveClass("bg-neutral-100");
     expect(badge).toHaveClass("text-neutral-900");
+  });
+
+  it("renders a today marker at the top of the timeline", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 5, 15));
+
+    renderWithProviders(<Work />);
+
+    const today = screen.getByTestId("work-timeline-today");
+    expect(today).toHaveClass("cv-checkpoint-reached");
+    expect(today).toHaveClass("cv-timeline-today");
+    expect(screen.getByTestId("work-date-pill-today")).toHaveTextContent(
+      "Jun 2026",
+    );
+    expect(screen.getByTestId("work-timeline-node-today")).toBeInTheDocument();
+
+    const milestone = screen.getAllByTestId("work-milestone")[0];
+    expect(
+      today.compareDocumentPosition(milestone) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+
+    vi.useRealTimers();
+  });
+
+  it("renders mobile timeline nodes, date pills, and spine progress", () => {
+    renderWithProviders(<Work />);
+    const first = RESUME.workExperience[0];
+
+    const node = screen.getByTestId(
+      `work-timeline-node-${workEntryAnchorId(first)}`,
+    );
+    expect(node.closest(".absolute")).toHaveClass("-left-[1.6875rem]");
+
+    const mobilePill = screen.getByTestId(
+      `work-date-pill-mobile-${first.company}`,
+    );
+    expect(mobilePill).toHaveClass("flex");
+    expect(mobilePill).toHaveClass("md:hidden");
+    expect(mobilePill.querySelector(".cv-date-pill")).toBeInTheDocument();
+
+    expect(
+      screen.getByTestId("work-spine-progress-mobile"),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId("work-spine-progress")).toBeInTheDocument();
   });
 
   it("places overlap cluster date pills above their cards", () => {

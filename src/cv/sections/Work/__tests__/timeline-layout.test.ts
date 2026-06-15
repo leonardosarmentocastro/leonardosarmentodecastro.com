@@ -7,6 +7,7 @@ import {
   buildTimelineItems,
   datesOverlap,
   findStickyGroupForEntry,
+  formatTodayTimelineDate,
   parseWorkDate,
 } from "../timeline-layout";
 
@@ -15,6 +16,12 @@ const workEntry = (company: string): WorkExperience => {
   expect(entry).toBeDefined();
   return entry as WorkExperience;
 };
+
+describe("formatTodayTimelineDate", () => {
+  it("formats month and year like work entry dates", () => {
+    expect(formatTodayTimelineDate(new Date(2026, 5, 15))).toBe("Jun 2026");
+  });
+});
 
 describe("parseWorkDate", () => {
   it("parses Mon YYYY strings", () => {

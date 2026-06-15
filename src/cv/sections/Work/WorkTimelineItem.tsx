@@ -31,22 +31,31 @@ type DatePillProps = {
   /** Pill flush toward the center spine */
   align: "start" | "end";
   className?: string;
+  /** Distinguishes mobile vs desktop pills when both exist in the DOM. */
+  placement?: "mobile" | "desktop" | "shared";
 };
 
-/** Date pill on the opposite side of the spine from the card (desktop). */
+/** Date pill beside the spine (desktop opposite) or above the card (mobile). */
 export const WorkTimelineDatePill = ({
   entry,
   align,
   className = "",
+  placement = "shared",
 }: DatePillProps) => {
   const period = `${entry.startDate} — ${entry.endDate}`;
+  const testId =
+    placement === "mobile"
+      ? `work-date-pill-mobile-${entry.company}`
+      : placement === "desktop"
+        ? `work-date-pill-desktop-${entry.company}`
+        : `work-date-pill-${entry.company}`;
 
   return (
     <div
-      className={`hidden md:flex mb-2 h-7 items-center ${
+      className={`mb-2 flex h-7 items-center ${
         align === "end" ? "justify-end" : "justify-start"
       } ${className}`}
-      data-testid={`work-date-pill-${entry.company}`}
+      data-testid={testId}
     >
       <span className={workDatePillDefault}>{period}</span>
     </div>
@@ -58,6 +67,8 @@ type Props = {
   isOpen: boolean;
   /** When true, pill renders above the card (sticky cluster fallback). */
   showInlineDate?: boolean;
+  /** Hide inline period in header when a pill is shown above the card on mobile. */
+  suppressMobilePeriod?: boolean;
   className?: string;
 };
 
@@ -65,6 +76,7 @@ export const WorkTimelineItem = ({
   entry,
   isOpen,
   showInlineDate = false,
+  suppressMobilePeriod = false,
   className = "",
 }: Props) => {
   const anchorId = workEntryAnchorId(entry);
@@ -85,7 +97,7 @@ export const WorkTimelineItem = ({
         <WorkTimelineDatePill
           entry={entry}
           align={entry.lane === "left" ? "start" : "end"}
-          className="md:flex"
+          className="mb-2"
         />
       )}
 
@@ -106,9 +118,11 @@ export const WorkTimelineItem = ({
                 >
                   {entry.company}
                 </span>
-                <span className={`text-xs ${metaClass} md:hidden`}>
-                  {period}
-                </span>
+                {!suppressMobilePeriod && (
+                  <span className={`text-xs ${metaClass} md:hidden`}>
+                    {period}
+                  </span>
+                )}
               </div>
               <span className={`text-sm ${metaClass}`}>
                 {metadataLine(entry)}
