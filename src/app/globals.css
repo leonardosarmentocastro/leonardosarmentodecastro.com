@@ -31,16 +31,3 @@ body {
     var(--font-quicksand), var(--font-jakarta-sans), sans-serif;
 }
 
-@keyframes cv-flash {
-  0% {
-    background-color: rgba(251, 191, 36, 0.25);
-  }
-  100% {
-    background-color: transparent;
-  }
-}
-
-.cv-flash {
-  animation: cv-flash 1.2s ease-out;
-  border-radius: 0.5rem;
-}
