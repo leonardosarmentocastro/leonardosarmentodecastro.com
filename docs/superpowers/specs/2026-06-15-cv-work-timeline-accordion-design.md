@@ -78,7 +78,7 @@ export const COMPANY_LOGOS: Record<string, string> = {
   "Daitan Group":     "/cv/companies/daitan-group.png",
   Dextra:             "/cv/companies/dextra.png",
   "Coyô":             "/cv/companies/coyo.png",
-  "CI&T":             "/cv/companies/cit.png",
+  "CI&T":             "/cv/companies/ciandt.png",
   ACTi:               "/cv/companies/acti.png",
   VPSA:               "/cv/companies/vpsa.png",
   Dash:               "/cv/companies/dash.png",
