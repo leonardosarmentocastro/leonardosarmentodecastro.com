@@ -8,7 +8,7 @@ import {
   trackSkillExperiencesOpen,
 } from "@/analytics/events";
 import { RESUME } from "@/cv/data";
-import { getTechIconSvg } from "@/cv/icons";
+import { getUniqueIconAliases } from "@/cv/icons";
 import { scrollToWorkEntry } from "@/cv/sections/Work/anchors";
 import { TechIcon } from "@/cv/TechIcon";
 import type { Skill, SkillCategory, WorkExperience } from "@/cv/types";
@@ -74,12 +74,12 @@ const Dots = ({ filled, total }: { filled: number; total: number }) => {
 
 /** Card body, built only from phrasing content so it is valid inside a button. */
 const SkillCardInner = ({ skill }: { skill: Skill }) => {
-  const hasIcons = skill.aliases.some((a) => getTechIconSvg(a) != null);
+  const iconAliases = getUniqueIconAliases(skill.aliases);
   return (
     <>
-      {hasIcons && (
+      {iconAliases.length > 0 && (
         <span className="flex flex-row items-center gap-1.5">
-          {skill.aliases.map((alias) => (
+          {iconAliases.map((alias) => (
             <TechIcon key={alias} alias={alias} size={18} />
           ))}
         </span>

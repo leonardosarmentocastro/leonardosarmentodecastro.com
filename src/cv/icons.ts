@@ -52,13 +52,13 @@ export const ALIAS_TO_ICON: Partial<Record<string, string>> = {
   Redis: "redis",
   Redux: "redux",
   "Ruby on Rails": "rails",
+  Payload: "payload",
   Sanity: "sanity",
   "Sanity.io": "sanity",
   Scala: "scala",
   SVN: "subversion",
   Tailwind: "tailwindcss",
   "Tailwind.css": "tailwindcss",
-  TanStack: "tanstack",
   Turborepo: "turborepo",
   TypeScript: "typescript",
   Vite: "vitejs",
@@ -76,6 +76,7 @@ export const UNMAPPED_ALIASES = new Set([
   "open source software",
   "Pinterest Gestalt",
   "SQL Server",
+  "TanStack",
   "Vercel",
   "Webdriver.io",
 ]);
@@ -84,4 +85,16 @@ export function getTechIconSvg(alias: string): string | null {
   const key = ALIAS_TO_ICON[alias];
   if (!key) return null;
   return TECH_ICON_SVGS[key] ?? null;
+}
+
+// Returns aliases filtered to one per unique icon key, preserving first-seen order.
+// Prevents duplicate icons when two aliases map to the same key (e.g. "Sanity" and "Sanity.io").
+export function getUniqueIconAliases(aliases: readonly string[]): string[] {
+  const seen = new Set<string>();
+  return aliases.filter((alias) => {
+    const key = ALIAS_TO_ICON[alias];
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }

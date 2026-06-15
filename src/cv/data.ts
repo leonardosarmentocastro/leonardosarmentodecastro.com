@@ -601,7 +601,7 @@ export const RESUME: Resume = {
       filledDots: 1,
       totalDots: 10,
       since: "2024 — 2025",
-      aliases: ["Sanity", "Sanity.io"],
+      aliases: ["Sanity", "Sanity.io", "Payload"],
     },
     {
       name: "AWS",
