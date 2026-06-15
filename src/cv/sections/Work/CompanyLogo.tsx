@@ -22,7 +22,7 @@ export const CompanyLogo = ({ company }: Props) => {
     return (
       <div
         aria-hidden="true"
-        className="w-6 h-6 rounded-full bg-neutral-200 flex items-center justify-center text-neutral-600 text-[9px] font-semibold select-none"
+        className="w-9 h-9 rounded-full bg-neutral-200 flex items-center justify-center text-neutral-600 text-[11px] font-semibold select-none"
       >
         {getInitials(company)}
       </div>
@@ -32,8 +32,8 @@ export const CompanyLogo = ({ company }: Props) => {
   return (
     <Image
       src={src}
-      width={24}
-      height={24}
+      width={36}
+      height={36}
       alt={company}
       className="rounded-full"
       onError={() => setHasError(true)}

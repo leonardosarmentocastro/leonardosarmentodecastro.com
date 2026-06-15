@@ -67,10 +67,11 @@ const WorkEntry = ({ entry, openValue, setOpenValue }: WorkEntryProps) => {
       <Accordion
         value={openValue === anchorId ? anchorId : null}
         onChange={setOpenValue}
+        classNames={{ control: "hover:!bg-neutral-100" }}
       >
         <Accordion.Item value={anchorId}>
           <Accordion.Control>
-            <div className="flex flex-row justify-between items-baseline gap-4 flex-wrap">
+            <div className="flex flex-row justify-between items-baseline gap-4 flex-wrap pr-3">
               <span className="text-base font-semibold">{entry.company}</span>
               <span className="text-xs text-neutral-500 whitespace-nowrap">
                 {entry.startDate} — {entry.endDate}
@@ -142,6 +143,7 @@ export const Work = () => {
             <Timeline.Item
               key={`${item.entry.company}-${item.entry.startDate}`}
               bullet={<CompanyLogo company={item.entry.company} />}
+              bulletSize={36}
             >
               <WorkEntry
                 entry={item.entry}
