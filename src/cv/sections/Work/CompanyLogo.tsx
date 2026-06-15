@@ -21,7 +21,7 @@ export const CompanyLogo = ({ company }: Props) => {
   if (!src || hasError) {
     return (
       <div
-        aria-label={company}
+        aria-hidden="true"
         className="w-6 h-6 rounded-full bg-neutral-200 flex items-center justify-center text-neutral-600 text-[9px] font-semibold select-none"
       >
         {getInitials(company)}
