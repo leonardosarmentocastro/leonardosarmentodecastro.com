@@ -11,3 +11,42 @@
   animation: cv-flash 1.2s ease-out;
   border-radius: 0.5rem;
 }
+
+/* Timeline checkpoint — default (unreached) */
+.cv-work-checkpoint .cv-timeline-node-outer {
+  position: relative;
+  z-index: 1;
+  background-color: #e5e5e5;
+  transition: background-color 0.3s ease;
+}
+
+.cv-work-checkpoint .cv-timeline-node-inner {
+  background-color: #a3a3a3;
+  transition: background-color 0.3s ease;
+}
+
+/* Timeline checkpoint — reached by scroll progress */
+.cv-work-checkpoint.cv-checkpoint-reached .cv-timeline-node-outer {
+  background-color: #d4d4d4;
+}
+
+.cv-work-checkpoint.cv-checkpoint-reached .cv-timeline-node-inner {
+  background-color: #171717;
+}
+
+/* Ping ring — hidden until reached; today origin never pings */
+.cv-work-checkpoint:not(.cv-checkpoint-reached) .cv-timeline-node-ping,
+.cv-work-checkpoint.cv-timeline-today .cv-timeline-node-ping {
+  display: none;
+}
+
+/* Date pill scroll states (default gray → dark when reached) */
+.cv-work-checkpoint .cv-date-pill {
+  background-color: #e5e5e5;
+  color: #404040;
+}
+
+.cv-work-checkpoint.cv-checkpoint-reached .cv-date-pill {
+  background-color: #171717;
+  color: #ffffff;
+}

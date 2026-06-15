@@ -1,121 +1,360 @@
 "use client";
 
-import { Badge } from "@mantine/core";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef, useState } from "react";
 
+import { Accordion } from "@/components/ui/Accordion";
 import { RESUME } from "@/cv/data";
-import { TechIcon } from "@/cv/TechIcon";
-import type { Milestone, WorkExperience } from "@/cv/types";
-import { workEntryAnchorId } from "./anchors";
+import type { WorkExperience } from "@/cv/types";
 
-const parseStartYear = (startDate: string): number => {
-  const match = startDate.match(/\d{4}/);
-  if (!match) throw new Error(`Cannot parse year from startDate: ${startDate}`);
-  return Number(match[0]);
+import { workEntryAnchorId } from "./anchors";
+import {
+  buildTimelineItems,
+  findStickyGroupForEntry,
+  isStickyCounterpart,
+} from "./timeline-layout";
+import { WorkMilestoneDivider } from "./WorkMilestoneDivider";
+import { WorkTimelineDatePill, WorkTimelineItem } from "./WorkTimelineItem";
+import { WorkTimelineNode } from "./WorkTimelineNode";
+import { WorkTimelineTodayMarker } from "./WorkTimelineTodayMarker";
+import { workSpineFill, workSpineTrack } from "./work-colors";
+
+gsap.registerPlugin(ScrollTrigger);
+
+/** Toggle `.cv-checkpoint-reached` on each spine node as scroll progress passes it. */
+const syncCheckpointStates = (
+  timeline: HTMLElement,
+  progress: number,
+): void => {
+  const fillEdge = progress * timeline.offsetHeight;
+
+  for (const row of timeline.querySelectorAll<HTMLElement>(
+    ".cv-work-checkpoint",
+  )) {
+    const node = row.querySelector<HTMLElement>(".cv-timeline-node-outer");
+    if (!node) continue;
+
+    const timelineTop = timeline.getBoundingClientRect().top;
+    const nodeCenterY =
+      node.getBoundingClientRect().top +
+      node.getBoundingClientRect().height / 2 -
+      timelineTop;
+
+    row.classList.toggle("cv-checkpoint-reached", fillEdge >= nodeCenterY);
+  }
 };
 
 /**
- * Walk most-recent-first work entries, interleaving milestones in
- * chronological order. A milestone slots BEFORE the first work entry
- * whose start year is <= the milestone's year.
+ * One timeline row: spine node, date pill(s), and accordion card.
+ * Sticky overlap clusters use pointer-events-none on the row so a pinned card
+ * does not block clicks on parallel entries at the same scroll position.
  */
-const interleave = (
-  entries: ReadonlyArray<WorkExperience>,
-  milestones: ReadonlyArray<Milestone>,
-): Array<
-  | { kind: "work"; entry: WorkExperience }
-  | { kind: "milestone"; milestone: Milestone }
-> => {
-  const result: Array<
-    | { kind: "work"; entry: WorkExperience }
-    | { kind: "milestone"; milestone: Milestone }
-  > = [];
-  const remaining = [...milestones]; // already sorted most-recent-first
+const TimelineEntryRow = ({
+  entry,
+  isOpen,
+  /** Overlap cluster: pill above card (same column) to avoid z-fighting */
+  dateOnCard = false,
+  /** Overlap cluster: limit hit target to the card column only */
+  stickyPointerPassThrough = false,
+}: {
+  entry: WorkExperience;
+  isOpen: boolean;
+  dateOnCard?: boolean;
+  stickyPointerPassThrough?: boolean;
+}) => {
+  const checkpointId = workEntryAnchorId(entry);
+  const pillTowardSpine = entry.lane === "left" ? "end" : "start";
+  const cardColClass = stickyPointerPassThrough
+    ? "pointer-events-auto relative z-30"
+    : undefined;
+  const emptyColClass = stickyPointerPassThrough
+    ? "pointer-events-none"
+    : undefined;
+  const rowClass = stickyPointerPassThrough ? "pointer-events-none" : "";
+  const cardColumnClass = [
+    "min-w-0",
+    entry.lane === "left" ? "md:col-start-1" : "md:col-start-3",
+    cardColClass,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
-  for (const entry of entries) {
-    const startYear = parseStartYear(entry.startDate);
-    while (remaining.length > 0 && remaining[0].year > startYear) {
-      const next = remaining.shift();
-      if (next) result.push({ kind: "milestone", milestone: next });
-    }
-    result.push({ kind: "work", entry });
-  }
+  const nodeColumn = (
+    <div
+      className={`absolute -left-[1.6875rem] top-0 flex h-7 w-4 items-center justify-center z-10 md:static md:col-start-2 md:self-start shrink-0 ${emptyColClass ?? ""}`}
+    >
+      <WorkTimelineNode checkpointId={checkpointId} />
+    </div>
+  );
 
-  for (const milestone of remaining) {
-    result.push({ kind: "milestone", milestone });
-  }
+  const cardContent = (
+    <>
+      {dateOnCard ? (
+        <WorkTimelineDatePill
+          entry={entry}
+          align={pillTowardSpine}
+          className="relative z-20"
+          placement="shared"
+        />
+      ) : null}
+      <WorkTimelineItem
+        entry={entry}
+        isOpen={isOpen}
+        suppressMobilePeriod
+        className={stickyPointerPassThrough ? undefined : cardColClass}
+      />
+    </>
+  );
 
-  return result;
+  return (
+    <div
+      className={`cv-work-checkpoint relative md:grid md:grid-cols-[1fr_auto_1fr] md:gap-x-2 md:items-start w-full ${rowClass}`}
+      data-checkpoint-id={checkpointId}
+    >
+      {nodeColumn}
+
+      {!dateOnCard ? (
+        <WorkTimelineDatePill
+          entry={entry}
+          align="start"
+          className="relative z-20 flex md:hidden"
+          placement="mobile"
+        />
+      ) : null}
+
+      {!dateOnCard && entry.lane === "right" ? (
+        <div
+          className={`hidden md:block md:col-start-1 min-w-0 ${emptyColClass ?? ""}`}
+        >
+          <WorkTimelineDatePill
+            entry={entry}
+            align="end"
+            className="relative z-20 hidden md:flex"
+            placement="desktop"
+          />
+        </div>
+      ) : null}
+
+      {!dateOnCard && entry.lane === "left" ? (
+        <div
+          className={`hidden md:block md:col-start-3 min-w-0 ${emptyColClass ?? ""}`}
+        >
+          <WorkTimelineDatePill
+            entry={entry}
+            align="start"
+            className="relative z-20 hidden md:flex"
+            placement="desktop"
+          />
+        </div>
+      ) : null}
+
+      {dateOnCard && entry.lane === "left" ? (
+        <div
+          className={`hidden md:block md:col-start-3 min-w-0 ${emptyColClass ?? ""}`}
+        />
+      ) : null}
+
+      {dateOnCard && entry.lane === "right" ? (
+        <div
+          className={`hidden md:block md:col-start-1 min-w-0 ${emptyColClass ?? ""}`}
+        />
+      ) : null}
+
+      <div className={cardColumnClass}>{cardContent}</div>
+    </div>
+  );
 };
 
-const WorkEntry = ({ entry }: { entry: WorkExperience }) => (
-  <article
-    id={workEntryAnchorId(entry)}
-    data-testid={`work-entry-${entry.company}`}
-    className="flex flex-col gap-2 scroll-mt-24"
-  >
-    <header className="flex flex-row justify-between items-baseline gap-4">
-      <h3 className="text-base font-semibold">{entry.company}</h3>
-      <span className="text-xs text-neutral-500 whitespace-nowrap">
-        {entry.startDate} — {entry.endDate}
-      </span>
-    </header>
-    <p className="text-sm text-neutral-700">
-      {entry.role}
-      {entry.via ? (
-        <span className="text-neutral-500"> · {entry.via}</span>
-      ) : null}
-      <span className="text-neutral-500"> · {entry.workMode}</span>
-      {entry.location ? (
-        <span className="text-neutral-500"> · {entry.location}</span>
-      ) : null}
-    </p>
-    <p className="text-sm text-neutral-600">{entry.description}</p>
-    <ul className="list-disc list-outside ml-5 text-sm text-neutral-700 space-y-1">
-      {entry.bullets.map((b) => (
-        <li key={b}>{b}</li>
-      ))}
-    </ul>
-    <div className="text-xs text-neutral-600 mt-1">
-      <span className="font-semibold">Technologies: </span>
-      <br className="mb-2" />
-      <span className="inline-flex flex-wrap gap-2 align-middle">
-        {entry.technologies.map((t) => (
-          <Badge key={t} size="md" color="gray" variant="light" className="!p-3">
-            <span className="inline-flex items-center gap-2">
-              <TechIcon alias={t} size={14} />
-              {t}
-            </span>
-          </Badge>
-        ))}
-      </span>
-    </div>
-  </article>
-);
-
-const MilestoneRow = ({ milestone }: { milestone: Milestone }) => (
-  <p className="text-xs italic text-neutral-500 my-2">{milestone.text}</p>
-);
-
 export const Work = () => {
-  const items = interleave(RESUME.workExperience, RESUME.milestones);
+  const [openValues, setOpenValues] = useState<string[]>([]);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const desktopProgressRef = useRef<HTMLDivElement>(null);
+  const mobileProgressRef = useRef<HTMLDivElement>(null);
+  const items = buildTimelineItems(RESUME.workExperience, RESUME.milestones);
+  const renderedStickyCompanies = new Set<string>();
+
+  // Skills modal → scrollToWorkEntry dispatches cv:open-work-entry; expand here.
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const id = (e as CustomEvent<string>).detail;
+      setOpenValues((prev) => (prev.includes(id) ? prev : [...prev, id]));
+    };
+    document.addEventListener("cv:open-work-entry", handler);
+    return () => document.removeEventListener("cv:open-work-entry", handler);
+  }, []);
+
+  // Spine fill + card fade-in; reduced-motion users get all checkpoints active.
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      if (!timelineRef.current) return;
+
+      const timeline = timelineRef.current;
+      const progressEls = [
+        desktopProgressRef.current,
+        mobileProgressRef.current,
+      ].filter((el): el is HTMLDivElement => el !== null);
+
+      if (progressEls.length > 0) {
+        gsap.fromTo(
+          progressEls,
+          { scaleY: 0 },
+          {
+            scaleY: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: timeline,
+              start: "top center",
+              end: "bottom center",
+              scrub: true,
+              onUpdate: (self) => syncCheckpointStates(timeline, self.progress),
+            },
+          },
+        );
+      }
+
+      gsap.utils.toArray<HTMLElement>(".cv-work-item").forEach((el) => {
+        gsap.fromTo(
+          el,
+          { opacity: 0, y: 12 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: el,
+              start: "top 85%",
+              toggleActions: "play none none none",
+            },
+          },
+        );
+      });
+    });
+
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      if (!timelineRef.current) return;
+      for (const row of timelineRef.current.querySelectorAll(
+        ".cv-work-checkpoint",
+      )) {
+        row.classList.add("cv-checkpoint-reached");
+      }
+    });
+
+    return () => mm.revert();
+  }, []);
 
   return (
     <section id="work" className="flex flex-col gap-8">
-      <h2 className="text-xl font-semibold tracking-tight">Work Experience</h2>
-      <div className="flex flex-col gap-8">
-        {items.map((item, i) =>
-          item.kind === "work" ? (
-            <WorkEntry
-              key={`${item.entry.company}-${item.entry.startDate}`}
-              entry={item.entry}
-            />
-          ) : (
-            <MilestoneRow
-              key={`${item.milestone.year}-${i}`}
-              milestone={item.milestone}
-            />
-          ),
-        )}
+      <h2 className="text-xl font-semibold tracking-tight text-neutral-900">
+        Work Experience
+      </h2>
+
+      <div ref={timelineRef} className="relative pl-8 md:pl-0">
+        {/* Mobile left spine — starts at today dot center (h-7 row) */}
+        <div className="md:hidden absolute left-3 top-3.5 bottom-0 w-0.5 z-0 pointer-events-none">
+          <div className={`absolute inset-0 ${workSpineTrack}`} />
+          <div
+            ref={mobileProgressRef}
+            className={`absolute inset-0 origin-top ${workSpineFill}`}
+            data-testid="work-spine-progress-mobile"
+          />
+        </div>
+
+        {/* Center spine — desktop; starts at today dot center (h-7 row) */}
+        <div className="hidden md:block absolute left-1/2 top-3.5 bottom-0 w-0.5 -translate-x-1/2 z-0 pointer-events-none">
+          <div className={`absolute inset-0 ${workSpineTrack}`} />
+          <div
+            ref={desktopProgressRef}
+            className={`absolute inset-0 origin-top ${workSpineFill}`}
+            data-testid="work-spine-progress"
+          />
+        </div>
+
+        <WorkTimelineTodayMarker />
+
+        <Accordion
+          multiple
+          value={openValues}
+          onValueChange={setOpenValues}
+          className="relative z-10 flex flex-col gap-10"
+        >
+          {items.map((item, i) => {
+            if (item.kind === "milestone") {
+              return (
+                <WorkMilestoneDivider
+                  key={`milestone-${item.milestone.year}-${i}`}
+                  text={item.milestone.text}
+                />
+              );
+            }
+
+            const { entry } = item;
+
+            if (
+              entry.stickyThrough &&
+              !renderedStickyCompanies.has(entry.company)
+            ) {
+              // Parallel roles: pin the sticky entry while counterparts scroll past.
+              const group = findStickyGroupForEntry(
+                entry,
+                RESUME.workExperience,
+              );
+              if (group) {
+                renderedStickyCompanies.add(entry.company);
+                for (const counterpart of group.counterpartEntries) {
+                  renderedStickyCompanies.add(counterpart.company);
+                }
+                return (
+                  <div
+                    key={`sticky-${entry.company}`}
+                    className="flex flex-col gap-10 w-full pointer-events-none"
+                    data-testid="work-sticky-cluster"
+                  >
+                    <div className="md:sticky md:top-24 w-full z-[5] pointer-events-none">
+                      <TimelineEntryRow
+                        entry={entry}
+                        dateOnCard
+                        stickyPointerPassThrough
+                        isOpen={openValues.includes(workEntryAnchorId(entry))}
+                      />
+                    </div>
+                    {group.counterpartEntries.map((counterpart) => (
+                      <div
+                        key={counterpart.company}
+                        className="relative z-20 pointer-events-none"
+                      >
+                        <TimelineEntryRow
+                          entry={counterpart}
+                          dateOnCard
+                          stickyPointerPassThrough
+                          isOpen={openValues.includes(
+                            workEntryAnchorId(counterpart),
+                          )}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                );
+              }
+            }
+
+            if (isStickyCounterpart(entry, RESUME.workExperience)) {
+              // Rendered inside the sticky cluster above — skip duplicate row.
+              return null;
+            }
+
+            return (
+              <TimelineEntryRow
+                key={`${entry.company}-${entry.startDate}`}
+                entry={entry}
+                isOpen={openValues.includes(workEntryAnchorId(entry))}
+              />
+            );
+          })}
+        </Accordion>
       </div>
     </section>
   );

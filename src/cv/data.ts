@@ -68,6 +68,7 @@ export const RESUME: Resume = {
         "Vercel",
         "AWS",
       ],
+      lane: "right",
     },
     {
       company: "Blue Yonder",
@@ -94,6 +95,7 @@ export const RESUME: Resume = {
         "Webdriver.io",
         "Figma",
       ],
+      lane: "left",
     },
     {
       company: "Hrizn",
@@ -124,6 +126,7 @@ export const RESUME: Resume = {
         "Figma",
         "Vercel",
       ],
+      lane: "right",
     },
     {
       company: "PairTree",
@@ -151,6 +154,7 @@ export const RESUME: Resume = {
         "Vercel",
         "Sanity.io",
       ],
+      lane: "right",
     },
     {
       company: "PureCars",
@@ -174,6 +178,7 @@ export const RESUME: Resume = {
         "Figma",
         "Docker",
       ],
+      lane: "right",
     },
     {
       company: "Radical Imaging",
@@ -197,6 +202,7 @@ export const RESUME: Resume = {
         "AWS",
         "open source software",
       ],
+      lane: "right",
     },
     {
       company: "Écolheita",
@@ -222,6 +228,8 @@ export const RESUME: Resume = {
         "AWS",
         "Google Cloud Platform",
       ],
+      lane: "left",
+      stickyThrough: "PairTree",
     },
     {
       company: "Quero Educação",
@@ -247,6 +255,7 @@ export const RESUME: Resume = {
         "Kubernetes",
         "AWS",
       ],
+      lane: "left",
     },
     {
       company: "Spark Networks",
@@ -276,6 +285,7 @@ export const RESUME: Resume = {
         "Docker",
         "Kubernetes",
       ],
+      lane: "right",
     },
     {
       company: "Daitan Group",
@@ -305,6 +315,7 @@ export const RESUME: Resume = {
         "Docker",
         "Codeship",
       ],
+      lane: "left",
     },
     {
       company: "Dextra",
@@ -320,6 +331,7 @@ export const RESUME: Resume = {
         "Ensured system reliability and continuity while mentoring staff on modern practices.",
       ],
       technologies: ["Java", "JavaScript", "Oracle Database", "Docker"],
+      lane: "right",
     },
     {
       company: "Coyô",
@@ -342,6 +354,7 @@ export const RESUME: Resume = {
         "Redis",
         "Angular.js",
       ],
+      lane: "left",
     },
     {
       company: "CI&T",
@@ -367,6 +380,7 @@ export const RESUME: Resume = {
         "Redis",
         "Git",
       ],
+      lane: "right",
     },
     {
       company: "ACTi",
@@ -391,6 +405,7 @@ export const RESUME: Resume = {
         "CSS3",
         "Git",
       ],
+      lane: "left",
     },
     {
       company: "VPSA",
@@ -414,6 +429,7 @@ export const RESUME: Resume = {
         "Git",
         "SVN",
       ],
+      lane: "right",
     },
     {
       company: "Dash",
@@ -435,6 +451,7 @@ export const RESUME: Resume = {
         "JavaScript",
         "SQL Server",
       ],
+      lane: "left",
     },
   ],
 

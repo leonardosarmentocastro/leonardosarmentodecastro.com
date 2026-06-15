@@ -94,6 +94,16 @@ describe("RESUME data shape", () => {
     }
   });
 
+  it("gives every work entry a valid lane and resolvable stickyThrough", () => {
+    const companies = new Set(RESUME.workExperience.map((w) => w.company));
+    for (const w of RESUME.workExperience) {
+      expect(["left", "right"]).toContain(w.lane);
+      if (w.stickyThrough) {
+        expect(companies.has(w.stickyThrough)).toBe(true);
+      }
+    }
+  });
+
   it("gives every skill at least one alias (its technology-string identities)", () => {
     for (const s of RESUME.skills) {
       expect(Array.isArray(s.aliases)).toBe(true);

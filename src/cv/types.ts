@@ -23,6 +23,8 @@ export type Skill = {
   aliases: string[];
 };
 
+export type WorkLane = "left" | "right";
+
 export type WorkExperience = {
   company: string;
   role: string;
@@ -34,6 +36,9 @@ export type WorkExperience = {
   description: string;
   bullets: string[];
   technologies: string[];
+  lane: WorkLane;
+  /** Desktop sticky pin: stay on lane until this company's scroll region ends */
+  stickyThrough?: string;
 };
 
 export type Education = {

@@ -12,10 +12,10 @@ Built with the Next.js App Router. Two routes today: the landing page (`/`) and 
 | ------------------- | --------------------------------------------------------------------------------------- |
 | Framework           | [Next.js 15](https://nextjs.org) (App Router, Turbopack)                                |
 | UI runtime          | React 19, TypeScript (strict)                                                           |
-| Component library   | [Mantine 8](https://mantine.dev) (`@mantine/core`, `hooks`, `modals`, `notifications`) |
-| Styling             | Tailwind CSS v4, PostCSS, Mantine theme                                                 |
+| Component library   | [Mantine 8](https://mantine.dev) (site-wide); [shadcn/ui](https://ui.shadcn.com) (CV Work timeline cards) |
+| Styling             | Tailwind CSS v4, PostCSS, Mantine theme, shadcn theme tokens (`src/vendor/shadcn/styles.css`) |
 | Animation           | [GSAP 3](https://gsap.com) via `@gsap/react`                                            |
-| Icons               | `@tabler/icons-react`                                                                   |
+| Icons               | `@tabler/icons-react` (Mantine surfaces), `lucide-react` (shadcn/ui)                    |
 | Analytics           | [PostHog](https://posthog.com) — see [`src/analytics/README.md`](./src/analytics/README.md) |
 | Testing             | [Vitest](https://vitest.dev) + Testing Library + jsdom                                  |
 | Lint / Format       | [Biome](https://biomejs.dev) (no ESLint, no Prettier)                                   |
@@ -86,11 +86,14 @@ src/
 │       ├── CVPage.tsx
 │       └── __tests__/
 ├── components/
+│   ├── ui/                       # shadcn/ui primitives (Accordion, Card, Badge, …)
 │   └── pages/
 │       └── LandingPage/          # Page-level UI lives with the page
 │           ├── LandingPage.tsx
 │           ├── CoverImagesLoop/
 │           └── __tests__/
+├── lib/utils.ts                  # `cn()` helper required by shadcn/ui
+├── vendor/shadcn/styles.css      # shadcn theme tokens and base layer (imported by globals.css)
 └── test/                         # Shared test utilities (render helpers, polyfills)
     ├── render.tsx
     └── jest-dom.d.ts
@@ -101,7 +104,7 @@ next.config.ts                    # PostHog reverse-proxy rewrites under /ingest
 
 Conventions enforced repo-wide (see `CLAUDE.md` for the full version):
 
-- No `src/services/`, `src/lib/`, `src/utils/`, `src/helpers/` — group by domain instead.
+- No `src/services/`, `src/utils/`, `src/helpers/` — group by domain instead. (`src/lib/utils.ts` is the shadcn `cn()` helper; vendor CSS lives under `src/vendor/shadcn/`.)
 - Generic primitives reused across features go under `src/components/`. Anything feature-specific lives in the feature folder.
 - Tests sit in a `__tests__/` subfolder next to the code they cover.
 - Path alias `@/*` → `src/*` (configured in `tsconfig.json`).
