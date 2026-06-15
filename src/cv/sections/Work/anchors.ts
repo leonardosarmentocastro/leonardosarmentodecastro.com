@@ -14,3 +14,27 @@ export const workEntryAnchorId = (entry: WorkExperience): string => {
     .replace(/^-+|-+$/g, "");
   return `work-${slug}`;
 };
+
+/**
+ * Scroll to a work entry and briefly flash it. Smooth-scroll and the flash
+ * are gated behind `prefers-reduced-motion: no-preference`; reduced-motion
+ * users get an instant jump with no flash. No-ops if the element is absent.
+ */
+export const scrollToWorkEntry = (entry: WorkExperience): void => {
+  const el = document.getElementById(workEntryAnchorId(entry));
+  if (!el) return;
+
+  const motionOk = window.matchMedia(
+    "(prefers-reduced-motion: no-preference)",
+  ).matches;
+
+  el.scrollIntoView({ behavior: motionOk ? "smooth" : "auto", block: "start" });
+  if (!motionOk) return;
+
+  el.classList.add("cv-flash");
+  el.addEventListener(
+    "animationend",
+    () => el.classList.remove("cv-flash"),
+    { once: true },
+  );
+};
