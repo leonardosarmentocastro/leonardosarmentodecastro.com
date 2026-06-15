@@ -1,7 +1,10 @@
+import { act } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import { RESUME } from "@/cv/data";
 import { renderWithProviders, screen, within } from "@/test/render";
+
 import { workEntryAnchorId } from "../anchors";
 import { Work } from "../Work";
 
@@ -20,26 +23,53 @@ describe("Work", () => {
     }
   });
 
-  it("renders the first work entry's role, date range, description, and at least one bullet/tech", () => {
+  it("renders collapsed header with company, period, role for first entry", () => {
     renderWithProviders(<Work />);
     const first = RESUME.workExperience[0];
     const card = screen.getByTestId(`work-entry-${first.company}`);
-    expect(within(card).getByText(first.role)).toBeInTheDocument();
-    expect(
-      within(card).getByText(
-        new RegExp(`${first.startDate}.*${first.endDate}`),
-      ),
-    ).toBeInTheDocument();
+    expect(within(card).getByText(first.company)).toBeInTheDocument();
+    expect(within(card).getByText(new RegExp(first.role))).toBeInTheDocument();
+  });
+
+  it("shows description and bullets after expanding accordion", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Work />);
+    const first = RESUME.workExperience[0];
+    const card = screen.getByTestId(`work-entry-${first.company}`);
+    await user.click(within(card).getByRole("button"));
     expect(within(card).getByText(first.description)).toBeInTheDocument();
     expect(within(card).getByText(first.bullets[0])).toBeInTheDocument();
     expect(within(card).getByText(first.technologies[0])).toBeInTheDocument();
   });
 
-  it("renders every milestone text somewhere in the section", () => {
+  it("renders milestones as dividers not work entries", () => {
     renderWithProviders(<Work />);
+    expect(screen.getAllByTestId("work-milestone").length).toBeGreaterThan(0);
     for (const m of RESUME.milestones) {
       expect(screen.getByText(m.text)).toBeInTheDocument();
     }
+  });
+
+  it("opens accordion on cv:open-work-entry event", async () => {
+    renderWithProviders(<Work />);
+    const first = RESUME.workExperience[0];
+    const anchorId = workEntryAnchorId(first);
+    act(() => {
+      document.dispatchEvent(
+        new CustomEvent("cv:open-work-entry", { detail: anchorId }),
+      );
+    });
+    expect(
+      within(screen.getByTestId(`work-entry-${first.company}`)).getByRole(
+        "button",
+      ),
+    ).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("assigns data-lane from entry data", () => {
+    renderWithProviders(<Work />);
+    const ecolheita = screen.getByTestId("work-entry-Écolheita");
+    expect(ecolheita).toHaveAttribute("data-lane", "left");
   });
 
   it("anchors each work entry with its workEntryAnchorId", () => {
@@ -50,19 +80,21 @@ describe("Work", () => {
     }
   });
 
-  it("renders a tech icon inside badges for technologies with mapped aliases", () => {
+  it("renders a tech icon inside badges for technologies with mapped aliases", async () => {
+    const user = userEvent.setup();
     renderWithProviders(<Work />);
-    // Pinterest entry has "React.js" which maps to the "react" icon
     const entry = screen.getByTestId("work-entry-Pinterest");
+    await user.click(within(entry).getByRole("button"));
     const icons = entry.querySelectorAll('span[aria-hidden="true"]');
     expect(icons.length).toBeGreaterThan(0);
     expect(icons[0]?.innerHTML).toContain("<svg");
   });
 
-  it("still renders badge text for technologies with no mapped icon", () => {
+  it("still renders badge text for technologies with no mapped icon", async () => {
+    const user = userEvent.setup();
     renderWithProviders(<Work />);
-    // "Pinterest Gestalt" is in UNMAPPED_ALIASES — badge renders text only
     const entry = screen.getByTestId("work-entry-Pinterest");
+    await user.click(within(entry).getByRole("button"));
     expect(within(entry).getByText("Pinterest Gestalt")).toBeInTheDocument();
   });
 });

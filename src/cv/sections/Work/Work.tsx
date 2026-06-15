@@ -1,121 +1,201 @@
 "use client";
 
-import { Badge } from "@mantine/core";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef, useState } from "react";
 
+import { Accordion } from "@/components/ui/accordion";
 import { RESUME } from "@/cv/data";
-import { TechIcon } from "@/cv/TechIcon";
-import type { Milestone, WorkExperience } from "@/cv/types";
+
 import { workEntryAnchorId } from "./anchors";
+import {
+  buildTimelineItems,
+  findStickyGroupForEntry,
+  isStickyCounterpart,
+} from "./timeline-layout";
+import { WorkMilestoneDivider } from "./WorkMilestoneDivider";
+import { WorkTimelineItem } from "./WorkTimelineItem";
+import { workSpineFill, workSpineTrack } from "./work-colors";
 
-const parseStartYear = (startDate: string): number => {
-  const match = startDate.match(/\d{4}/);
-  if (!match) throw new Error(`Cannot parse year from startDate: ${startDate}`);
-  return Number(match[0]);
-};
-
-/**
- * Walk most-recent-first work entries, interleaving milestones in
- * chronological order. A milestone slots BEFORE the first work entry
- * whose start year is <= the milestone's year.
- */
-const interleave = (
-  entries: ReadonlyArray<WorkExperience>,
-  milestones: ReadonlyArray<Milestone>,
-): Array<
-  | { kind: "work"; entry: WorkExperience }
-  | { kind: "milestone"; milestone: Milestone }
-> => {
-  const result: Array<
-    | { kind: "work"; entry: WorkExperience }
-    | { kind: "milestone"; milestone: Milestone }
-  > = [];
-  const remaining = [...milestones]; // already sorted most-recent-first
-
-  for (const entry of entries) {
-    const startYear = parseStartYear(entry.startDate);
-    while (remaining.length > 0 && remaining[0].year > startYear) {
-      const next = remaining.shift();
-      if (next) result.push({ kind: "milestone", milestone: next });
-    }
-    result.push({ kind: "work", entry });
-  }
-
-  for (const milestone of remaining) {
-    result.push({ kind: "milestone", milestone });
-  }
-
-  return result;
-};
-
-const WorkEntry = ({ entry }: { entry: WorkExperience }) => (
-  <article
-    id={workEntryAnchorId(entry)}
-    data-testid={`work-entry-${entry.company}`}
-    className="flex flex-col gap-2 scroll-mt-24"
-  >
-    <header className="flex flex-row justify-between items-baseline gap-4">
-      <h3 className="text-base font-semibold">{entry.company}</h3>
-      <span className="text-xs text-neutral-500 whitespace-nowrap">
-        {entry.startDate} — {entry.endDate}
-      </span>
-    </header>
-    <p className="text-sm text-neutral-700">
-      {entry.role}
-      {entry.via ? (
-        <span className="text-neutral-500"> · {entry.via}</span>
-      ) : null}
-      <span className="text-neutral-500"> · {entry.workMode}</span>
-      {entry.location ? (
-        <span className="text-neutral-500"> · {entry.location}</span>
-      ) : null}
-    </p>
-    <p className="text-sm text-neutral-600">{entry.description}</p>
-    <ul className="list-disc list-outside ml-5 text-sm text-neutral-700 space-y-1">
-      {entry.bullets.map((b) => (
-        <li key={b}>{b}</li>
-      ))}
-    </ul>
-    <div className="text-xs text-neutral-600 mt-1">
-      <span className="font-semibold">Technologies: </span>
-      <br className="mb-2" />
-      <span className="inline-flex flex-wrap gap-2 align-middle">
-        {entry.technologies.map((t) => (
-          <Badge key={t} size="md" color="gray" variant="light" className="!p-3">
-            <span className="inline-flex items-center gap-2">
-              <TechIcon alias={t} size={14} />
-              {t}
-            </span>
-          </Badge>
-        ))}
-      </span>
-    </div>
-  </article>
-);
-
-const MilestoneRow = ({ milestone }: { milestone: Milestone }) => (
-  <p className="text-xs italic text-neutral-500 my-2">{milestone.text}</p>
-);
+gsap.registerPlugin(ScrollTrigger);
 
 export const Work = () => {
-  const items = interleave(RESUME.workExperience, RESUME.milestones);
+  const [openValues, setOpenValues] = useState<string[]>([]);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
+  const items = buildTimelineItems(RESUME.workExperience, RESUME.milestones);
+  const renderedStickyCompanies = new Set<string>();
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const id = (e as CustomEvent<string>).detail;
+      setOpenValues((prev) => (prev.includes(id) ? prev : [...prev, id]));
+    };
+    document.addEventListener("cv:open-work-entry", handler);
+    return () => document.removeEventListener("cv:open-work-entry", handler);
+  }, []);
+
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      if (!timelineRef.current || !progressRef.current) return;
+
+      gsap.fromTo(
+        progressRef.current,
+        { scaleY: 0 },
+        {
+          scaleY: 1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: timelineRef.current,
+            start: "top center",
+            end: "bottom center",
+            scrub: true,
+          },
+        },
+      );
+
+      gsap.utils.toArray<HTMLElement>(".cv-work-item").forEach((el) => {
+        gsap.fromTo(
+          el,
+          { opacity: 0, y: 12 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: el,
+              start: "top 85%",
+              toggleActions: "play none none none",
+            },
+          },
+        );
+      });
+    });
+    return () => mm.revert();
+  }, []);
 
   return (
     <section id="work" className="flex flex-col gap-8">
       <h2 className="text-xl font-semibold tracking-tight">Work Experience</h2>
-      <div className="flex flex-col gap-8">
-        {items.map((item, i) =>
-          item.kind === "work" ? (
-            <WorkEntry
-              key={`${item.entry.company}-${item.entry.startDate}`}
-              entry={item.entry}
-            />
-          ) : (
-            <MilestoneRow
-              key={`${item.milestone.year}-${i}`}
-              milestone={item.milestone}
-            />
-          ),
-        )}
+
+      <div ref={timelineRef} className="relative">
+        {/* Center spine — desktop */}
+        <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2">
+          <div className={`absolute inset-0 ${workSpineTrack}`} />
+          <div
+            ref={progressRef}
+            className={`absolute inset-0 origin-top ${workSpineFill}`}
+            data-testid="work-spine-progress"
+          />
+        </div>
+
+        <Accordion
+          multiple
+          value={openValues}
+          onValueChange={setOpenValues}
+          className="flex flex-col gap-10"
+        >
+          {items.map((item, i) => {
+            if (item.kind === "milestone") {
+              return (
+                <WorkMilestoneDivider
+                  key={`milestone-${item.milestone.year}-${i}`}
+                  text={item.milestone.text}
+                />
+              );
+            }
+
+            const { entry } = item;
+
+            if (
+              entry.stickyThrough &&
+              !renderedStickyCompanies.has(entry.company)
+            ) {
+              const group = findStickyGroupForEntry(
+                entry,
+                RESUME.workExperience,
+              );
+              if (group) {
+                renderedStickyCompanies.add(entry.company);
+                for (const counterpart of group.counterpartEntries) {
+                  renderedStickyCompanies.add(counterpart.company);
+                }
+                return (
+                  <div
+                    key={`sticky-${entry.company}`}
+                    className="md:grid md:grid-cols-[1fr_auto_1fr] md:gap-4 md:items-start"
+                    data-testid="work-sticky-cluster"
+                  >
+                    <div className="md:sticky md:top-24 md:self-start">
+                      <WorkTimelineItem
+                        entry={entry}
+                        isOpen={openValues.includes(workEntryAnchorId(entry))}
+                      />
+                    </div>
+                    <div className="hidden md:block w-3" aria-hidden />
+                    <div className="flex flex-col gap-10">
+                      {group.counterpartEntries.map((counterpart) => (
+                        <WorkTimelineItem
+                          key={counterpart.company}
+                          entry={counterpart}
+                          isOpen={openValues.includes(
+                            workEntryAnchorId(counterpart),
+                          )}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+            }
+
+            if (isStickyCounterpart(entry, RESUME.workExperience)) {
+              return null;
+            }
+
+            return (
+              <div
+                key={`${entry.company}-${entry.startDate}`}
+                className="md:grid md:grid-cols-[1fr_auto_1fr] md:gap-4 md:items-start"
+              >
+                <div
+                  className={
+                    entry.lane === "left" ? "md:col-start-1" : "md:col-start-3"
+                  }
+                >
+                  {entry.lane === "left" ? (
+                    <WorkTimelineItem
+                      entry={entry}
+                      isOpen={openValues.includes(workEntryAnchorId(entry))}
+                    />
+                  ) : (
+                    <div className="hidden md:block" />
+                  )}
+                </div>
+                <div className="hidden md:flex md:col-start-2 w-3 justify-center">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#7B7B7B] mt-6" />
+                </div>
+                <div
+                  className={
+                    entry.lane === "right" ? "md:col-start-3" : "md:col-start-1"
+                  }
+                >
+                  {entry.lane === "right" ? (
+                    <WorkTimelineItem
+                      entry={entry}
+                      isOpen={openValues.includes(workEntryAnchorId(entry))}
+                    />
+                  ) : (
+                    <div className="hidden md:block" />
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </Accordion>
       </div>
     </section>
   );
