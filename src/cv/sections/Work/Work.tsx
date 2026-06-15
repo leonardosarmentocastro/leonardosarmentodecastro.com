@@ -3,6 +3,7 @@
 import { Badge } from "@mantine/core";
 
 import { RESUME } from "@/cv/data";
+import { TechIcon } from "@/cv/TechIcon";
 import type { Milestone, WorkExperience } from "@/cv/types";
 import { workEntryAnchorId } from "./anchors";
 
@@ -79,7 +80,10 @@ const WorkEntry = ({ entry }: { entry: WorkExperience }) => (
       <span className="inline-flex flex-wrap gap-1 align-middle">
         {entry.technologies.map((t) => (
           <Badge key={t} size="sm" color="gray" variant="light">
-            {t}
+            <span className="inline-flex items-center gap-1">
+              <TechIcon alias={t} size={12} />
+              {t}
+            </span>
           </Badge>
         ))}
       </span>

@@ -49,4 +49,20 @@ describe("Work", () => {
       expect(card).toHaveAttribute("id", workEntryAnchorId(w));
     }
   });
+
+  it("renders a tech icon inside badges for technologies with mapped aliases", () => {
+    renderWithProviders(<Work />);
+    // Pinterest entry has "React.js" which maps to the "react" icon
+    const entry = screen.getByTestId("work-entry-Pinterest");
+    const icons = entry.querySelectorAll('span[aria-hidden="true"]');
+    expect(icons.length).toBeGreaterThan(0);
+    expect(icons[0]?.innerHTML).toContain("<svg");
+  });
+
+  it("still renders badge text for technologies with no mapped icon", () => {
+    renderWithProviders(<Work />);
+    // "Pinterest Gestalt" is in UNMAPPED_ALIASES — badge renders text only
+    const entry = screen.getByTestId("work-entry-Pinterest");
+    expect(within(entry).getByText("Pinterest Gestalt")).toBeInTheDocument();
+  });
 });
