@@ -637,7 +637,14 @@ export const RESUME: Resume = {
       filledDots: 9,
       totalDots: 10,
       since: "2017 until now",
-      aliases: ["Git", "GitHub Actions", "Gitlab CI", "Buildkite", "Codeship", "SVN"],
+      aliases: [
+        "Git",
+        "GitHub Actions",
+        "Gitlab CI",
+        "Buildkite",
+        "Codeship",
+        "SVN",
+      ],
     },
   ],
 

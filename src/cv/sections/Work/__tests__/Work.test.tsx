@@ -2,9 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { RESUME } from "@/cv/data";
 import { renderWithProviders, screen, within } from "@/test/render";
-
-import { Work } from "../Work";
 import { workEntryAnchorId } from "../anchors";
+import { Work } from "../Work";
 
 describe("Work", () => {
   it("renders a Work Experience heading", () => {

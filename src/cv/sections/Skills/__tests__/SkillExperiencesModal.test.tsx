@@ -65,8 +65,6 @@ describe("SkillExperiencesModal", () => {
         onExperienceClick={vi.fn()}
       />,
     );
-    expect(
-      screen.getByText(/no linked experiences yet/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/no linked experiences yet/i)).toBeInTheDocument();
   });
 });

@@ -32,9 +32,7 @@ export const scrollToWorkEntry = (entry: WorkExperience): void => {
   if (!motionOk) return;
 
   el.classList.add("cv-flash");
-  el.addEventListener(
-    "animationend",
-    () => el.classList.remove("cv-flash"),
-    { once: true },
-  );
+  el.addEventListener("animationend", () => el.classList.remove("cv-flash"), {
+    once: true,
+  });
 };

@@ -37,9 +37,7 @@ export const trackContactClick = (params: {
   posthog.capture("contact_clicked", params);
 };
 
-export const trackSkillExperiencesOpen = (params: {
-  skill: string;
-}): void => {
+export const trackSkillExperiencesOpen = (params: { skill: string }): void => {
   posthog.capture("skill_experiences_opened", params);
 };
 

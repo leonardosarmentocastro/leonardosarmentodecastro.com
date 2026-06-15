@@ -98,7 +98,8 @@ describe("RESUME data shape", () => {
     for (const s of RESUME.skills) {
       expect(Array.isArray(s.aliases)).toBe(true);
       expect(s.aliases.length).toBeGreaterThanOrEqual(1);
-      for (const alias of s.aliases) expect(alias.trim().length).toBeGreaterThan(0);
+      for (const alias of s.aliases)
+        expect(alias.trim().length).toBeGreaterThan(0);
     }
   });
 });

@@ -66,8 +66,6 @@ describe("Skills", () => {
     await user.click(screen.getByTestId("skill-card-JavaScript"));
 
     expect(await screen.findByRole("dialog")).toBeInTheDocument();
-    expect(
-      screen.getByText(/where i used javascript/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/where i used javascript/i)).toBeInTheDocument();
   });
 });
