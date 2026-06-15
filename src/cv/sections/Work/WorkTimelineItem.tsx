@@ -4,9 +4,9 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
+} from "@/components/ui/Accordion";
+import { Badge } from "@/components/ui/Badge";
+import { Card } from "@/components/ui/Card";
 import { TechIcon } from "@/cv/TechIcon";
 import type { WorkExperience } from "@/cv/types";
 
