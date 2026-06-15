@@ -163,6 +163,22 @@ In PostHog: build a Trends insight on `$pageview` filtered by `$utm_source = "li
 
 ---
 
+## Events
+
+| Event                         | Props                     | Fired on `/cv` when...                                          |
+| ----------------------------- | ------------------------- | --------------------------------------------------------------- |
+| `resume_clicked`              | —                         | The resume button is clicked.                                  |
+| `contact_modal_opened`        | —                         | The contact modal opens.                                       |
+| `contact_modal_dismissed`     | —                         | The contact modal is dismissed.                                |
+| `resume_modal_dismissed`      | —                         | The resume modal is dismissed.                                 |
+| `resume_pdf_clicked`          | `destination`             | The "Open in Google Drive" link is clicked.                    |
+| `resume_web_clicked`          | `destination`             | The "View on CV page" link is clicked.                         |
+| `contact_clicked`             | `channel`, `location`     | A contact link (WhatsApp, email, LinkedIn) is clicked.         |
+| `skill_experiences_opened`    | `skill`                   | A skill card opens its "where I used this" dialog.             |
+| `skill_experience_clicked`    | `skill`, `company`        | A job is clicked inside the skill-experiences dialog.          |
+
+---
+
 ## Files
 
 | File                       | Purpose                                                              |
