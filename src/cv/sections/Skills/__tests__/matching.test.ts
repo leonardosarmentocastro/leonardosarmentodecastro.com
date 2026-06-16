@@ -82,9 +82,17 @@ describe("skillForTechnology", () => {
     expect(skill?.name).toBe("JavaScript");
   });
 
-  it("does NOT match on substrings (Sanity.io must not resolve to Sanity skill)", () => {
+  it("does NOT match on substrings when only Sanity is aliased", () => {
+    const skills = [withAliases("CMS (Sanity, Payload, etc)", ["Sanity"])];
+    expect(skillForTechnology("Sanity.io", skills)).toBeNull();
+    expect(skillForTechnology("Sanity", skills)?.name).toBe(
+      "CMS (Sanity, Payload, etc)",
+    );
+  });
+
+  it("resolves Sanity.io when that alias is declared on the skill", () => {
     const skill = skillForTechnology("Sanity.io", RESUME.skills);
-    expect(skill).toBeNull();
+    expect(skill?.name).toBe("CMS (Sanity, Payload, etc)");
   });
 
   it("returns the Sanity CMS skill for exact Sanity token", () => {
