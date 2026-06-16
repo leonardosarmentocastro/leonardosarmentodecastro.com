@@ -59,6 +59,7 @@ export type Milestone = {
 
 export type ResumeLinks = {
   linkedin: string;
+  github: string;
   email: string;
   whatsapp: string;
   whatsappDisplay: string;

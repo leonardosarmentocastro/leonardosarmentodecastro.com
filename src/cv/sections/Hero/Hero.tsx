@@ -1,12 +1,15 @@
 "use client";
 
 import {
+  IconBrandGithub,
   IconBrandLinkedin,
   IconBrandWhatsapp,
+  IconFileTypePdf,
   IconMail,
   IconWorld,
 } from "@tabler/icons-react";
 
+import { trackResumePdfClick } from "@/analytics/events";
 import { RESUME } from "@/cv/data";
 
 const BLURB_LEAD = "Senior Software Engineer with 10+ years of experience";
@@ -59,6 +62,15 @@ export const Hero = () => {
             <IconBrandLinkedin className="w-5 h-5" />
           </a>
           <a
+            href={links.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+            className={`${ICON_LINK} hover:border-[#24292f] hover:text-[#24292f]`}
+          >
+            <IconBrandGithub className="w-5 h-5" />
+          </a>
+          <a
             href={`mailto:${links.email}`}
             aria-label="Email"
             className={`${ICON_LINK} hover:border-[#bb001b] hover:text-[#bb001b]`}
@@ -73,6 +85,16 @@ export const Hero = () => {
             className={`${ICON_LINK} hover:border-[#128c7e] hover:text-[#128c7e]`}
           >
             <IconBrandWhatsapp className="w-5 h-5" />
+          </a>
+          <a
+            href={links.resumePdf}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open resume PDF"
+            className={`${ICON_LINK} hover:border-[#dc2626] hover:text-[#dc2626]`}
+            onClick={() => trackResumePdfClick()}
+          >
+            <IconFileTypePdf className="w-5 h-5" />
           </a>
           <a
             href={links.site}

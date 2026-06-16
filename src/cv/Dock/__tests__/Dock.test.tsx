@@ -16,7 +16,7 @@ beforeEach(() => vi.clearAllMocks());
 afterEach(() => vi.clearAllMocks());
 
 describe("Dock", () => {
-  it("renders Home, LinkedIn, Email, WhatsApp, and PDF items with the right hrefs", () => {
+  it("renders Home, LinkedIn, GitHub, Email, WhatsApp, and PDF items with the right hrefs", () => {
     renderWithProviders(<Dock />);
 
     expect(screen.getByRole("link", { name: /^home$/i })).toHaveAttribute(
@@ -26,6 +26,10 @@ describe("Dock", () => {
     expect(screen.getByRole("link", { name: /^linkedin$/i })).toHaveAttribute(
       "href",
       RESUME.hero.links.linkedin,
+    );
+    expect(screen.getByRole("link", { name: /^github$/i })).toHaveAttribute(
+      "href",
+      RESUME.hero.links.github,
     );
     expect(screen.getByRole("link", { name: /^whatsapp$/i })).toHaveAttribute(
       "href",
@@ -54,13 +58,19 @@ describe("Dock", () => {
     });
   });
 
-  it("fires trackContactClick with location=cv_dock when LinkedIn or WhatsApp items are clicked", async () => {
+  it("fires trackContactClick with location=cv_dock when LinkedIn, GitHub, or WhatsApp items are clicked", async () => {
     const user = userEvent.setup();
     renderWithProviders(<Dock />);
 
     await user.click(screen.getByRole("link", { name: /^linkedin$/i }));
     expect(trackContactClick).toHaveBeenCalledWith({
       channel: "linkedin",
+      location: "cv_dock",
+    });
+
+    await user.click(screen.getByRole("link", { name: /^github$/i }));
+    expect(trackContactClick).toHaveBeenCalledWith({
+      channel: "github",
       location: "cv_dock",
     });
 

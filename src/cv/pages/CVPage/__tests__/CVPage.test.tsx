@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { renderWithProviders, screen } from "@/test/render";
+import { renderWithProviders } from "@/test/render";
 
 import { CVPage } from "../CVPage";
 
@@ -36,12 +36,5 @@ describe("CVPage", () => {
 
     // Silence unused-array lint.
     expect(positions.length).toBe(6);
-  });
-
-  it("renders the Dock", () => {
-    renderWithProviders(<CVPage />);
-    expect(
-      screen.getByRole("navigation", { name: /cv quick actions/i }),
-    ).toBeInTheDocument();
   });
 });

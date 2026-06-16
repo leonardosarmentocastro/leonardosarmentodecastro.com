@@ -1,5 +1,11 @@
-import { describe, expect, it } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, it, vi } from "vitest";
 
+vi.mock("@/analytics/events", () => ({
+  trackResumePdfClick: vi.fn(),
+}));
+
+import { trackResumePdfClick } from "@/analytics/events";
 import { RESUME } from "@/cv/data";
 import { renderWithProviders, screen } from "@/test/render";
 
@@ -70,11 +76,15 @@ describe("Hero", () => {
     ).toHaveClass("justify-center", "md:justify-start");
   });
 
-  it("renders the four hero quick-links (LinkedIn, Email, WhatsApp, Site)", () => {
+  it("renders the six hero quick-links (LinkedIn, GitHub, Email, WhatsApp, Site, PDF)", () => {
     renderWithProviders(<Hero />);
     expect(screen.getByRole("link", { name: /linkedin/i })).toHaveAttribute(
       "href",
       RESUME.hero.links.linkedin,
+    );
+    expect(screen.getByRole("link", { name: /github/i })).toHaveAttribute(
+      "href",
+      RESUME.hero.links.github,
     );
     expect(screen.getByRole("link", { name: /email/i })).toHaveAttribute(
       "href",
@@ -87,6 +97,30 @@ describe("Hero", () => {
     expect(
       screen.getByRole("link", { name: /personal site/i }),
     ).toHaveAttribute("href", RESUME.hero.links.site);
+    expect(
+      screen.getByRole("link", { name: /open resume pdf/i }),
+    ).toHaveAttribute("href", RESUME.hero.links.resumePdf);
+  });
+
+  it("fires trackResumePdfClick when the resume PDF link is clicked", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Hero />);
+
+    await user.click(screen.getByRole("link", { name: /open resume pdf/i }));
+
+    expect(trackResumePdfClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("lists the personal site link last in the hero icon row", () => {
+    renderWithProviders(<Hero />);
+    const iconRow = screen.getByRole("link", {
+      name: /linkedin/i,
+    }).parentElement;
+    const links = iconRow?.querySelectorAll("a") ?? [];
+    expect(links[links.length - 1]).toHaveAttribute(
+      "href",
+      RESUME.hero.links.site,
+    );
   });
 
   it("renders kicker, role, then name in PDF order", () => {
@@ -144,6 +178,9 @@ describe("Hero", () => {
     expect(screen.getByRole("link", { name: /linkedin/i })).toHaveClass(
       "hover:border-[#0072b1]",
     );
+    expect(screen.getByRole("link", { name: /github/i })).toHaveClass(
+      "hover:border-[#24292f]",
+    );
     expect(screen.getByRole("link", { name: /email/i })).toHaveClass(
       "hover:border-[#bb001b]",
     );
@@ -152,6 +189,9 @@ describe("Hero", () => {
     );
     expect(screen.getByRole("link", { name: /personal site/i })).toHaveClass(
       "hover:border-black",
+    );
+    expect(screen.getByRole("link", { name: /open resume pdf/i })).toHaveClass(
+      "hover:border-[#dc2626]",
     );
   });
 });

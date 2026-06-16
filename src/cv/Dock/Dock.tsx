@@ -3,6 +3,7 @@
 import { Tooltip } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import {
+  IconBrandGithub,
   IconBrandLinkedin,
   IconBrandWhatsapp,
   IconFileTypePdf,
@@ -35,7 +36,7 @@ const Separator = () => (
 );
 
 export const Dock = () => {
-  const { linkedin, whatsapp, email, resumePdf } = RESUME.hero.links;
+  const { linkedin, github, whatsapp, email, resumePdf } = RESUME.hero.links;
 
   const handleEmail = () => {
     trackContactClick({ channel: "email", location: "cv_dock" });
@@ -49,6 +50,10 @@ export const Dock = () => {
 
   const handleLinkedin = () => {
     trackContactClick({ channel: "linkedin", location: "cv_dock" });
+  };
+
+  const handleGithub = () => {
+    trackContactClick({ channel: "github", location: "cv_dock" });
   };
 
   const handleWhatsapp = () => {
@@ -78,6 +83,19 @@ export const Dock = () => {
           onClick={handleLinkedin}
         >
           <IconBrandLinkedin className="w-5 h-5" />
+        </a>
+      </DockTooltip>
+
+      <DockTooltip label="GitHub">
+        <a
+          href={github}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="GitHub"
+          className={ITEM_CLASS}
+          onClick={handleGithub}
+        >
+          <IconBrandGithub className="w-5 h-5" />
         </a>
       </DockTooltip>
 

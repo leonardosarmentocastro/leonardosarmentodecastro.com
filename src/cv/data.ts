@@ -13,6 +13,7 @@ export const RESUME: Resume = {
     links: {
       linkedin:
         "https://www.linkedin.com/in/leonardo-sarmento-de-castro-a249b945/",
+      github: "https://github.com/leonardosarmentocastro",
       email: "negocios.leonardosarmentocastro@gmail.com",
       whatsapp: "https://wa.me/5512981276618",
       whatsappDisplay: "+55 (12) 98127-6618",
