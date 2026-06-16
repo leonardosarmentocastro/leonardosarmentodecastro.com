@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { RESUME } from "@/cv/data";
 import type { Skill } from "@/cv/types";
 
-import { experiencesForSkill } from "../matching";
+import { experiencesForSkill, skillForTechnology } from "../matching";
 
 const skillNamed = (name: string): Skill => {
   const skill = RESUME.skills.find((s) => s.name === name);
@@ -72,6 +72,42 @@ describe("experiencesForSkill", () => {
       expect(
         experiencesForSkill(skill, RESUME.workExperience).length,
       ).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe("skillForTechnology", () => {
+  it("returns the skill whose alias matches exactly, case-insensitively", () => {
+    const skill = skillForTechnology("javascript", RESUME.skills);
+    expect(skill?.name).toBe("JavaScript");
+  });
+
+  it("does NOT match on substrings (Sanity.io must not resolve to Sanity skill)", () => {
+    const skill = skillForTechnology("Sanity.io", RESUME.skills);
+    expect(skill).toBeNull();
+  });
+
+  it("returns the Sanity CMS skill for exact Sanity token", () => {
+    const skill = skillForTechnology("Sanity", RESUME.skills);
+    expect(skill?.name).toBe("CMS (Sanity, Payload, etc)");
+  });
+
+  it("returns null for unknown technology strings", () => {
+    expect(skillForTechnology("Java", RESUME.skills)).toBeNull();
+    expect(skillForTechnology("NonexistentTech", RESUME.skills)).toBeNull();
+  });
+
+  it("round-trips with experiencesForSkill for every skill alias in work data", () => {
+    const aliasSet = new Set(
+      RESUME.workExperience.flatMap((e) => e.technologies),
+    );
+    for (const skill of RESUME.skills) {
+      for (const alias of skill.aliases) {
+        if (!aliasSet.has(alias)) continue;
+        const resolved = skillForTechnology(alias, RESUME.skills);
+        expect(resolved?.name).toBe(skill.name);
+        expect(experiencesForSkill(skill, RESUME.workExperience).length).toBeGreaterThan(0);
+      }
     }
   });
 });
