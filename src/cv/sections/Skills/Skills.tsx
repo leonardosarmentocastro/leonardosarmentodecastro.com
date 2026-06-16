@@ -1,6 +1,5 @@
 "use client";
 
-import { IconStar, IconStarFilled } from "@tabler/icons-react";
 import { useState } from "react";
 
 import {
@@ -13,8 +12,10 @@ import { scrollToWorkEntry } from "@/cv/sections/Work/anchors";
 import { TechIcon } from "@/cv/TechIcon";
 import type { Skill, SkillCategory, WorkExperience } from "@/cv/types";
 
+import { skillAnchorId } from "./anchors";
 import { experiencesForSkill } from "./matching";
 import { SkillExperiencesModal } from "./SkillExperiencesModal";
+import { SkillStars } from "./SkillStars";
 
 const CATEGORY_ORDER: ReadonlyArray<SkillCategory> = [
   "Language",
@@ -41,24 +42,6 @@ const groupByCategory = (
     items: buckets.get(category) ?? [],
   }));
 };
-
-const STAR_POSITIONS = [1, 2, 3, 4, 5] as const;
-
-const Stars = ({ count }: { count: number }) => (
-  <span
-    role="img"
-    aria-label={`${count} of 5 stars`}
-    className="inline-flex items-center"
-  >
-    {STAR_POSITIONS.map((pos) =>
-      pos <= count ? (
-        <IconStarFilled key={pos} className="w-3 h-3 text-amber-500" />
-      ) : (
-        <IconStar key={pos} className="w-3 h-3 text-neutral-300" />
-      ),
-    )}
-  </span>
-);
 
 const Dots = ({ filled, total }: { filled: number; total: number }) => {
   const text = "●".repeat(filled) + "○".repeat(total - filled);
@@ -90,7 +73,7 @@ const SkillCardInner = ({ skill }: { skill: Skill }) => {
         </span>
         <span className="flex flex-row items-center gap-1">
           <span className="text-xs text-neutral-500">{skill.level}</span>
-          <Stars count={skill.stars} />
+          <SkillStars count={skill.stars} />
         </span>
       </span>
       <span className="block text-xs text-neutral-500">{skill.area}</span>
@@ -103,7 +86,7 @@ const SkillCardInner = ({ skill }: { skill: Skill }) => {
 };
 
 const CARD_CLASS =
-  "font-quicksand border border-neutral-200 rounded-lg p-4 flex flex-col gap-1";
+  "font-quicksand border border-neutral-200 rounded-lg p-4 flex flex-col gap-1 scroll-mt-24";
 
 const SkillCard = ({
   skill,
@@ -117,7 +100,11 @@ const SkillCard = ({
 
   if (!interactive) {
     return (
-      <div data-testid={`skill-card-${skill.name}`} className={CARD_CLASS}>
+      <div
+        id={skillAnchorId(skill)}
+        data-testid={`skill-card-${skill.name}`}
+        className={CARD_CLASS}
+      >
         <SkillCardInner skill={skill} />
       </div>
     );
@@ -126,6 +113,7 @@ const SkillCard = ({
   return (
     <button
       type="button"
+      id={skillAnchorId(skill)}
       data-testid={`skill-card-${skill.name}`}
       aria-haspopup="dialog"
       onClick={() => onOpen(skill)}
