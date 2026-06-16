@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/Accordion";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
-import { TextAnimate } from "@/components/ui/text-animate";
+import { TextAnimate } from "@/components/ui/TextAnimate";
 import {
   workBadge,
   workBody,

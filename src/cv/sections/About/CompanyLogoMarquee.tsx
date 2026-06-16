@@ -2,7 +2,7 @@
 
 import { useMediaQuery } from "@mantine/hooks";
 
-import { Marquee } from "@/components/ui/marquee";
+import { Marquee } from "@/components/ui/Marquee";
 import { RESUME } from "@/cv/data";
 import { scrollToWorkEntry } from "@/cv/sections/Work/anchors";
 import { CompanyLogo } from "@/cv/sections/Work/CompanyLogo";
@@ -45,7 +45,12 @@ export const CompanyLogoMarquee = () => {
       className="relative mt-6 overflow-hidden"
       data-testid="company-logo-marquee"
     >
-      <Marquee pauseOnHover repeat={MARQUEE_REPEAT} className="[--gap:1.5rem]" reverse>
+      <Marquee
+        pauseOnHover
+        repeat={MARQUEE_REPEAT}
+        className="[--gap:1.5rem]"
+        reverse
+      >
         {buttons}
       </Marquee>
       <div className="pointer-events-none absolute inset-y-0 left-0 w-1/6 bg-gradient-to-r from-white to-transparent" />
