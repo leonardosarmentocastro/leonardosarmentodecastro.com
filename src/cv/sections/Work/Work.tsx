@@ -210,89 +210,98 @@ export const Work = () => {
   }, []);
 
   // Spine fill + card fade-in; reduced-motion users get all checkpoints active.
-  useGSAP(() => {
-    const mm = gsap.matchMedia();
-    mm.add("(prefers-reduced-motion: no-preference)", () => {
-      if (!timelineRef.current) return;
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const timeline = timelineRef.current;
+        if (!timeline) return;
 
-      const timeline = timelineRef.current;
-      const progressEls = [
-        desktopProgressRef.current,
-        mobileProgressRef.current,
-      ].filter((el): el is HTMLDivElement => el !== null);
+        const progressEls = [
+          desktopProgressRef.current,
+          mobileProgressRef.current,
+        ].filter((el): el is HTMLDivElement => el !== null);
 
-      if (progressEls.length > 0) {
-        gsap.fromTo(
-          progressEls,
-          { scaleY: 0 },
-          {
-            scaleY: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: timeline,
-              start: "top center",
-              end: "bottom center",
-              scrub: true,
-              onUpdate: (self) => {
-                syncCheckpointStates(timeline, self.progress, (id) => {
-                  handleCheckpointReached(id);
-                  if (firedPulseRef.current.has(id)) return;
-                  firedPulseRef.current.add(id);
-                  const row = timeline.querySelector<HTMLElement>(
-                    `[data-checkpoint-id="${id}"]`,
-                  );
-                  const card =
-                    row?.querySelector<HTMLElement>("[data-slot=card]");
-                  if (card) {
-                    gsap.fromTo(
-                      card,
-                      { scale: 1 },
-                      {
-                        scale: 1.03,
-                        duration: 0.35,
-                        yoyo: true,
-                        repeat: 1,
-                        ease: "power2.out",
-                      },
-                    );
-                  }
-                });
+        const onCheckpointNewlyReached = (id: string) => {
+          queueMicrotask(() => {
+            handleCheckpointReached(id);
+            if (firedPulseRef.current.has(id)) return;
+            firedPulseRef.current.add(id);
+            const row = timeline.querySelector<HTMLElement>(
+              `[data-checkpoint-id="${id}"]`,
+            );
+            const card = row?.querySelector<HTMLElement>("[data-slot=card]");
+            if (card) {
+              gsap.fromTo(
+                card,
+                { scale: 1 },
+                {
+                  scale: 1.03,
+                  duration: 0.35,
+                  yoyo: true,
+                  repeat: 1,
+                  ease: "power2.out",
+                },
+              );
+            }
+          });
+        };
+
+        if (progressEls.length > 0) {
+          gsap.set(progressEls, { scaleY: 0 });
+          // Avoid gsap.fromTo(array, …, scrollTrigger) — it races on refresh
+          // and throws "curTrigger is undefined" during ScrollTrigger setup.
+          ScrollTrigger.create({
+            trigger: timeline,
+            start: "top center",
+            end: "bottom center",
+            scrub: true,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              gsap.set(progressEls, { scaleY: self.progress });
+              syncCheckpointStates(
+                timeline,
+                self.progress,
+                onCheckpointNewlyReached,
+              );
+            },
+          });
+        }
+
+        timeline
+          .querySelectorAll<HTMLElement>(".cv-work-item")
+          .forEach((el) => {
+            gsap.fromTo(
+              el,
+              { opacity: 0, y: 12 },
+              {
+                opacity: 1,
+                y: 0,
+                duration: 0.6,
+                ease: "power2.out",
+                scrollTrigger: {
+                  trigger: el,
+                  start: "top 85%",
+                  toggleActions: "play none none none",
+                },
               },
-            },
-          },
-        );
-      }
-
-      gsap.utils.toArray<HTMLElement>(".cv-work-item").forEach((el) => {
-        gsap.fromTo(
-          el,
-          { opacity: 0, y: 12 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: el,
-              start: "top 85%",
-              toggleActions: "play none none none",
-            },
-          },
-        );
+            );
+          });
       });
-    });
 
-    mm.add("(prefers-reduced-motion: reduce)", () => {
-      if (!timelineRef.current) return;
-      for (const row of timelineRef.current.querySelectorAll(
-        ".cv-work-checkpoint",
-      )) {
-        row.classList.add("cv-checkpoint-reached");
-      }
-    });
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        if (!timelineRef.current) return;
+        for (const row of timelineRef.current.querySelectorAll(
+          ".cv-work-checkpoint",
+        )) {
+          row.classList.add("cv-checkpoint-reached");
+        }
+      });
 
-    return () => mm.revert();
-  }, []);
+      return () => mm.revert();
+    },
+    { scope: timelineRef, dependencies: [handleCheckpointReached] },
+  );
 
   return (
     <section id="work" className="flex flex-col gap-8">

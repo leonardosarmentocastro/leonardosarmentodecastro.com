@@ -17,47 +17,51 @@ export const WorkMilestoneDivider = ({ text }: Props) => {
   const bodyRef = useRef<HTMLSpanElement>(null);
   const { emoji, body } = splitMilestoneText(text);
 
-  useGSAP(() => {
-    const mm = gsap.matchMedia();
-    mm.add("(prefers-reduced-motion: no-preference)", () => {
-      if (!rootRef.current || !bodyRef.current) return;
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        if (!rootRef.current || !bodyRef.current) return;
 
-      gsap.set(bodyRef.current, { opacity: 0, y: 8 });
-      if (emoji && emojiRef.current) {
-        gsap.set(emojiRef.current, { scale: 0, rotation: -20, opacity: 0 });
-      }
+        gsap.set(bodyRef.current, { opacity: 0, y: 8 });
+        if (emoji && emojiRef.current) {
+          gsap.set(emojiRef.current, { scale: 0, rotation: -20, opacity: 0 });
+        }
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: rootRef.current,
-          start: "top 70%",
-          once: true,
-        },
-      });
-
-      if (emoji && emojiRef.current) {
-        tl.to(emojiRef.current, {
-          scale: 1,
-          rotation: 0,
-          opacity: 1,
-          duration: 0.7,
-          ease: "back.out(1.7)",
-        }).to(
-          bodyRef.current,
-          { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
-          "-=0.35",
-        );
-      } else {
-        tl.to(bodyRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          ease: "power2.out",
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: rootRef.current,
+            start: "top 70%",
+            once: true,
+            invalidateOnRefresh: true,
+          },
         });
-      }
-    });
-    return () => mm.revert();
-  }, [emoji, body]);
+
+        if (emoji && emojiRef.current) {
+          tl.to(emojiRef.current, {
+            scale: 1,
+            rotation: 0,
+            opacity: 1,
+            duration: 0.7,
+            ease: "back.out(1.7)",
+          }).to(
+            bodyRef.current,
+            { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+            "-=0.35",
+          );
+        } else {
+          tl.to(bodyRef.current, {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: "power2.out",
+          });
+        }
+      });
+      return () => mm.revert();
+    },
+    { scope: rootRef, dependencies: [emoji, body] },
+  );
 
   return (
     <div
