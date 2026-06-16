@@ -114,7 +114,9 @@ describe("skillForTechnology", () => {
         if (!aliasSet.has(alias)) continue;
         const resolved = skillForTechnology(alias, RESUME.skills);
         expect(resolved?.name).toBe(skill.name);
-        expect(experiencesForSkill(skill, RESUME.workExperience).length).toBeGreaterThan(0);
+        expect(
+          experiencesForSkill(skill, RESUME.workExperience).length,
+        ).toBeGreaterThan(0);
       }
     }
   });
