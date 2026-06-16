@@ -24,4 +24,12 @@ describe("WorkMilestoneDivider", () => {
     );
     expect(screen.getByTestId("work-milestone")).toHaveClass("bg-white");
   });
+
+  it("renders emoji and body in separate spans for animation targets", () => {
+    renderWithProviders(
+      <WorkMilestoneDivider text="⭐ 2017 — Career achievement" />,
+    );
+    expect(screen.getByTestId("milestone-emoji")).toHaveTextContent("⭐");
+    expect(screen.getByTestId("milestone-body")).toHaveTextContent(/2017/);
+  });
 });

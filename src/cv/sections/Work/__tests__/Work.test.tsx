@@ -66,7 +66,9 @@ describe("Work", () => {
     renderWithProviders(<Work />);
     expect(screen.getAllByTestId("work-milestone").length).toBeGreaterThan(0);
     for (const m of RESUME.milestones) {
-      expect(screen.getByText(m.text)).toBeInTheDocument();
+      expect(
+        screen.getByRole("note", { name: m.text }),
+      ).toBeInTheDocument();
     }
   });
 
