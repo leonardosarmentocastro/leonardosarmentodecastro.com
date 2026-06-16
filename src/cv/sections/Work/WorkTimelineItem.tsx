@@ -8,11 +8,6 @@ import {
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { TextAnimate } from "@/components/ui/text-animate";
-import { TechIcon } from "@/cv/TechIcon";
-import type { WorkExperience } from "@/cv/types";
-
-import { workEntryAnchorId } from "./anchors";
-import { CompanyLogo } from "./CompanyLogo";
 import {
   workBadge,
   workBody,
@@ -22,7 +17,11 @@ import {
   workDatePillDefault,
   workSubtitle,
   workTitle,
-} from "./work-colors";
+} from "@/cv/cv-colors";
+import { TechIcon } from "@/cv/TechIcon";
+import type { WorkExperience } from "@/cv/types";
+import { workEntryAnchorId } from "./anchors";
+import { CompanyLogo } from "./CompanyLogo";
 import { workEntryMetadata, workEntryTitle } from "./work-copy";
 
 const AnimatedLine = ({

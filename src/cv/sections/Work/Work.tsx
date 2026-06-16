@@ -6,9 +6,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Accordion } from "@/components/ui/Accordion";
+import { workSpineFill, workSpineTrack } from "@/cv/cv-colors";
 import { RESUME } from "@/cv/data";
 import type { WorkExperience } from "@/cv/types";
-
 import { workEntryAnchorId } from "./anchors";
 import {
   buildTimelineItems,
@@ -19,7 +19,6 @@ import { WorkMilestoneDivider } from "./WorkMilestoneDivider";
 import { WorkTimelineDatePill, WorkTimelineItem } from "./WorkTimelineItem";
 import { WorkTimelineNode } from "./WorkTimelineNode";
 import { WorkTimelineTodayMarker } from "./WorkTimelineTodayMarker";
-import { workSpineFill, workSpineTrack } from "./work-colors";
 
 gsap.registerPlugin(ScrollTrigger);
 

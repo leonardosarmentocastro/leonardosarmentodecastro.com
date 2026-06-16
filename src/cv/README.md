@@ -44,7 +44,7 @@ Brand palette lives in `src/cv/cv-colors.ts`:
 | `mutedAlt` | `#6d6964` | Hero blurb |
 | `spineTrack` | `#c5d9f5` | Timeline spine track |
 
-Import Tailwind helpers (e.g. `cvTextAccent`, `workTitle`) from `@/cv/cv-colors`. Work section re-exports remain in `sections/Work/work-colors.ts` for backward compatibility.
+Import Tailwind helpers (e.g. `cvTextAccent`, `workTitle`) from `@/cv/cv-colors`.
 
 Font utilities (`font-spectral`, `font-domine`, `font-quicksand`) are defined in `src/app/globals.css` and loaded in `src/app/layout.tsx`:
 

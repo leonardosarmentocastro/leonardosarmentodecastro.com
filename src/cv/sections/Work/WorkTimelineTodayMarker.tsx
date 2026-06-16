@@ -1,8 +1,8 @@
 "use client";
 
+import { workDatePillDefault } from "@/cv/cv-colors";
 import { formatTodayTimelineDate } from "./timeline-layout";
 import { WorkTimelineNode } from "./WorkTimelineNode";
-import { workDatePillDefault } from "./work-colors";
 
 /** Timeline origin — today's date on the spine, always active. */
 export const WorkTimelineTodayMarker = () => {

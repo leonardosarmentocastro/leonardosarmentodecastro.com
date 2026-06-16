@@ -29,9 +29,6 @@ export const workCardTriggerHover =
 export const workCardExpanded =
   "bg-white border border-[#3c78d8] ring-1 ring-[#3c78d8] shadow-md";
 
-export const workMeta = cvTextMuted;
-export const workMetaOnDark = cvTextMuted;
-
 export const workTitle = `${cvTextAccent} font-bold uppercase`;
 export const workSubtitle = `${cvTextMuted} font-bold`;
 
@@ -39,8 +36,6 @@ export const workBody = `${cvTextMuted} font-normal`;
 
 export const workBadge =
   "font-quicksand bg-neutral-200 text-neutral-900 border-transparent hover:bg-neutral-200";
-/** @deprecated Same as workBadge — expanded cards no longer use a dark theme. */
-export const workBadgeOnDark = workBadge;
 
 export const workDatePillDefault =
   "cv-date-pill font-quicksand bg-neutral-200 text-neutral-700 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap transition-colors duration-300";
