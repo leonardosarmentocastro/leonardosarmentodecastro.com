@@ -65,7 +65,7 @@ const Dots = ({ filled, total }: { filled: number; total: number }) => {
   return (
     <span
       data-testid="skill-dots"
-      className="font-mono text-neutral-400 text-xs"
+      className="font-quicksand text-neutral-400 text-xs"
     >
       {text}
     </span>
@@ -103,7 +103,7 @@ const SkillCardInner = ({ skill }: { skill: Skill }) => {
 };
 
 const CARD_CLASS =
-  "border border-neutral-200 rounded-lg p-4 flex flex-col gap-1";
+  "font-quicksand border border-neutral-200 rounded-lg p-4 flex flex-col gap-1";
 
 const SkillCard = ({
   skill,
@@ -157,13 +157,13 @@ export const Skills = () => {
   };
 
   return (
-    <section id="skills" className="flex flex-col gap-6">
+    <section id="skills" className="flex flex-col gap-6 font-quicksand">
       <h2 className="text-xl font-domine text-[#2d2a24] tracking-tight">
         Skills
       </h2>
       {groups.map((group) => (
         <div key={group.category} className="flex flex-col gap-3">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+          <h3 className="text-xs font-quicksand font-bold uppercase tracking-wider text-neutral-500">
             {group.category}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
