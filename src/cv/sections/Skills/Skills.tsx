@@ -18,13 +18,14 @@ import { SkillExperiencesModal } from "./SkillExperiencesModal";
 import { SkillStars } from "./SkillStars";
 
 const CATEGORY_ORDER: ReadonlyArray<SkillCategory> = [
-  "Language",
-  "Framework",
-  "Runtime",
-  "Database",
+  "Communication",
+  "AI",
+  "Runtimes",
+  "Languages",
+  "Frameworks",
+  "Databases",
   "Infrastructure",
   "CMS",
-  "AI",
   "Design",
 ];
 
@@ -60,8 +61,13 @@ const SkillCardInner = ({ skill }: { skill: Skill }) => {
   const iconAliases = getUniqueIconAliases(skill.aliases);
   return (
     <>
-      {iconAliases.length > 0 && (
+      {(skill.emoji ?? iconAliases.length > 0) && (
         <span className="flex flex-row items-center gap-1.5">
+          {skill.emoji && (
+            <span aria-hidden="true" className="text-lg leading-none">
+              {skill.emoji}
+            </span>
+          )}
           {iconAliases.map((alias) => (
             <TechIcon key={alias} alias={alias} size={18} />
           ))}
@@ -77,10 +83,16 @@ const SkillCardInner = ({ skill }: { skill: Skill }) => {
         </span>
       </span>
       <span className="block text-xs text-neutral-500">{skill.area}</span>
-      <span className="block text-xs text-neutral-500">
-        {skill.years} years · {skill.since}
-      </span>
-      <Dots filled={skill.filledDots} total={skill.totalDots} />
+      {skill.omitExperienceBar ? (
+        <span className="block text-xs text-neutral-500">{skill.since}</span>
+      ) : (
+        <>
+          <span className="block text-xs text-neutral-500">
+            {skill.years} years · {skill.since}
+          </span>
+          <Dots filled={skill.filledDots} total={skill.totalDots} />
+        </>
+      )}
     </>
   );
 };

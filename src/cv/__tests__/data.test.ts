@@ -10,14 +10,15 @@ const VALID_LEVELS: ReadonlyArray<SkillLevel> = [
 ];
 
 const VALID_CATEGORIES: ReadonlyArray<SkillCategory> = [
-  "Language",
-  "Framework",
-  "Runtime",
-  "Database",
+  "Languages",
+  "Frameworks",
+  "Runtimes",
+  "Databases",
   "Infrastructure",
   "AI",
   "Design",
   "CMS",
+  "Communication",
 ];
 
 describe("RESUME data shape", () => {

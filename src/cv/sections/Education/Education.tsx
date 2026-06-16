@@ -14,7 +14,7 @@ export const Education = () => (
             <h3 className="text-base font-quicksand font-bold text-[#2d2a24]">
               {e.school}
             </h3>
-            <span className="text-xs text-[#6c6965] whitespace-nowrap">
+            <span className="text-xs font-quicksand text-[#6c6965] whitespace-nowrap">
               {e.period}
             </span>
           </header>
