@@ -98,4 +98,18 @@ describe("event trackers", () => {
       company: "Pinterest",
     });
   });
+
+  it("trackWorkTechnologySkillClick captures work_technology_skill_clicked with technology, skill, and company", async () => {
+    const { trackWorkTechnologySkillClick } = await loadAnalytics();
+    trackWorkTechnologySkillClick({
+      technology: "TypeScript",
+      skill: "TypeScript",
+      company: "Pinterest",
+    });
+    expect(mockCapture).toHaveBeenCalledWith("work_technology_skill_clicked", {
+      technology: "TypeScript",
+      skill: "TypeScript",
+      company: "Pinterest",
+    });
+  });
 });
