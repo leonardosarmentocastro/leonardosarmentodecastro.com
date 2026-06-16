@@ -99,7 +99,7 @@ Conventions:
 - Event name: `<subject>_<action>` in `snake_case` (PostHog's idiom).
 - Properties: lowercase `snake_case` keys; keep them small and stable.
 - Return type: explicit `void`.
-- When the same channel is reachable from multiple surfaces, add a `location` property rather than creating per-surface wrappers. See `trackContactClick` for the canonical example: one event (`contact_clicked`), one wrapper, with `channel` ("whatsapp" | "email" | "linkedin") and `location` ("landing_modal" | "cv_contact_section" | "cv_dock") as typed properties.
+- When the same channel is reachable from multiple surfaces, add a `location` property rather than creating per-surface wrappers. See `trackContactClick` for the canonical example: one event (`contact_clicked`), one wrapper, with `channel` ("whatsapp" | "email" | "linkedin" | "github" | "site") and `location` ("landing_modal" | "cv_contact_section" | "cv_hero") as typed properties.
 
 ### 2. Add the test in `__tests__/events.test.ts`
 
@@ -173,7 +173,7 @@ In PostHog: build a Trends insight on `$pageview` filtered by `$utm_source = "li
 | `resume_modal_dismissed`      | —                         | The resume modal is dismissed.                                 |
 | `resume_pdf_clicked`          | `destination`             | The "Open in Google Drive" link is clicked.                    |
 | `resume_web_clicked`          | `destination`             | The "View on CV page" link is clicked.                         |
-| `contact_clicked`             | `channel`, `location`     | A contact link (WhatsApp, email, LinkedIn) is clicked.         |
+| `contact_clicked`             | `channel`, `location`     | A contact link (WhatsApp, email, LinkedIn, GitHub, site) is clicked. |
 | `skill_experiences_opened`    | `skill`                   | A skill card opens its "where I used this" dialog.             |
 | `skill_experience_clicked`    | `skill`, `company`        | A job is clicked inside the skill-experiences dialog.          |
 

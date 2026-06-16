@@ -9,7 +9,6 @@ The CV domain. Owns the data, types, and UI building blocks for the `/cv` route 
 | `types.ts` | `Resume`, `WorkExperience`, `Skill`, `Education`, `Milestone`, `ResumeLinks`. |
 | `data.ts` | The single `RESUME` object — source of truth for every CV field on the site. |
 | `ResumeOptionsModal.tsx` | The "PDF vs WEB" chooser shown from the landing page's RESUME button. |
-| `Dock/Dock.tsx` | Floating bottom dock on `/cv` (Home / LinkedIn / Email / WhatsApp / PDF). |
 | `sections/<Section>/<Section>.tsx` | Hero, About, Work, Education, Skills, Contact — each independently testable. |
 | `sections/About/CompanyLogoMarquee.tsx` | About-section company logo marquee (Magic UI `Marquee`). |
 | `cv-colors.ts` | PDF brand hex tokens and Tailwind class helpers shared across CV sections. |
@@ -182,17 +181,13 @@ import { ResumeOptionsModal } from "@/cv/ResumeOptionsModal";
 
 Pass `onChoiceClick` if the consuming page wants to suppress its own dismiss-tracking when a CTA was clicked (see how `LandingPage` uses a `ctaClickedRef` for the canonical pattern).
 
-## The Dock
-
-`Dock/Dock.tsx` is fixed to the bottom of the viewport on `/cv`. Items use `aria-label`s for both accessibility and the Mantine `Tooltip` content. Adding a new item: pick a Tabler icon, decide whether it's a `<Link>` (Next-router-aware), `<a>` (external), or `<button>` (in-page action), and reuse the `ITEM_CLASS` for consistent sizing/hover.
-
 ## Avatar
 
 `public/leonardo-05.jpg` is rendered by the Hero section (portrait beside text on desktop, centered above on mobile). Update `RESUME.hero.avatar` in `data.ts` to change the image.
 
 ## Replacing the contact channel set
 
-The CV exposes WhatsApp, Email, and LinkedIn from three surfaces: the landing page's contact modal, the CV Contact section, and the CV Dock. All of them fire `trackContactClick({ channel, location })` from `@/analytics/events`. Adding a fourth channel:
+The CV exposes WhatsApp, Email, LinkedIn, and GitHub from the landing contact modal, the CV Contact section, and the Hero icon row. Hero also links to the resume PDF (`trackResumePdfClick`) and personal site (`contact_clicked` with `channel: "site"`). All contact CTAs fire `trackContactClick({ channel, location })` from `@/analytics/events`. Adding a new channel:
 
 1. Extend the `ContactChannel` union in `src/analytics/events.ts`.
 2. Add a CTA in each surface that needs the new channel.

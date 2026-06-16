@@ -1,12 +1,13 @@
 export type SkillCategory =
-  | "Language"
-  | "Framework"
-  | "Runtime"
-  | "Database"
+  | "Languages"
+  | "Frameworks"
+  | "Runtimes"
+  | "Databases"
   | "Infrastructure"
   | "AI"
   | "Design"
-  | "CMS";
+  | "CMS"
+  | "Communication";
 
 export type SkillLevel = "Expert" | "Advanced" | "Experienced";
 
@@ -21,6 +22,10 @@ export type Skill = {
   totalDots: 10;
   since: string;
   aliases: string[];
+  /** Flag or other emoji shown in place of a tech icon (e.g. 🇺🇸). */
+  emoji?: string;
+  /** When true, shows only `since` — no "N years" line or dot bar. */
+  omitExperienceBar?: boolean;
 };
 
 export type WorkLane = "left" | "right";
@@ -54,6 +59,7 @@ export type Milestone = {
 
 export type ResumeLinks = {
   linkedin: string;
+  github: string;
   email: string;
   whatsapp: string;
   whatsappDisplay: string;

@@ -70,7 +70,9 @@ describe("event trackers", () => {
   it("trackContactClick forwards every channel/location combination unchanged", async () => {
     const { trackContactClick } = await loadAnalytics();
     trackContactClick({ channel: "email", location: "cv_contact_section" });
-    trackContactClick({ channel: "linkedin", location: "cv_dock" });
+    trackContactClick({ channel: "linkedin", location: "cv_hero" });
+    trackContactClick({ channel: "github", location: "cv_hero" });
+    trackContactClick({ channel: "site", location: "cv_hero" });
 
     expect(mockCapture).toHaveBeenNthCalledWith(1, "contact_clicked", {
       channel: "email",
@@ -78,7 +80,15 @@ describe("event trackers", () => {
     });
     expect(mockCapture).toHaveBeenNthCalledWith(2, "contact_clicked", {
       channel: "linkedin",
-      location: "cv_dock",
+      location: "cv_hero",
+    });
+    expect(mockCapture).toHaveBeenNthCalledWith(3, "contact_clicked", {
+      channel: "github",
+      location: "cv_hero",
+    });
+    expect(mockCapture).toHaveBeenNthCalledWith(4, "contact_clicked", {
+      channel: "site",
+      location: "cv_hero",
     });
   });
 

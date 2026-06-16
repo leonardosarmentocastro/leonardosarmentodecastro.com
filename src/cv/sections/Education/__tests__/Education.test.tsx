@@ -21,4 +21,11 @@ describe("Education", () => {
       expect(screen.getByText(e.period)).toBeInTheDocument();
     }
   });
+
+  it("uses Quicksand for the education period", () => {
+    renderWithProviders(<Education />);
+    for (const e of RESUME.education) {
+      expect(screen.getByText(e.period)).toHaveClass("font-quicksand");
+    }
+  });
 });

@@ -72,9 +72,11 @@ export const ALIAS_TO_ICON: Partial<Record<string, string>> = {
 export const UNMAPPED_ALIASES = new Set([
   "Buildkite",
   "Codeship",
+  "English",
   "GeneXus",
   "open source software",
   "Pinterest Gestalt",
+  "Portuguese",
   "SQL Server",
   "TanStack",
   "Vercel",

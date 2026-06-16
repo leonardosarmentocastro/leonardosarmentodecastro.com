@@ -21,8 +21,16 @@ describe("Skills", () => {
       "font-quicksand",
     );
     expect(
-      screen.getByRole("heading", { level: 3, name: /^language$/i }),
+      screen.getByRole("heading", { level: 3, name: /^languages$/i }),
     ).toHaveClass("font-quicksand");
+  });
+
+  it("lists Communication skills first among category groups", () => {
+    renderWithProviders(<Skills />);
+    const categoryHeadings = screen
+      .getAllByRole("heading", { level: 3 })
+      .map((h) => h.textContent);
+    expect(categoryHeadings[0]).toBe("Communication");
   });
 
   it("groups skills under each category that appears in the data", () => {
@@ -47,6 +55,10 @@ describe("Skills", () => {
       expect(within(card).getByText(skill.name)).toBeInTheDocument();
       expect(within(card).getByText(skill.level)).toBeInTheDocument();
       expect(within(card).getByText(skill.area)).toBeInTheDocument();
+      if (skill.omitExperienceBar) {
+        expect(within(card).getByText(skill.since)).toBeInTheDocument();
+        continue;
+      }
       expect(
         within(card).getByText(new RegExp(`${skill.years}\\s*year`)),
       ).toBeInTheDocument();
@@ -56,6 +68,7 @@ describe("Skills", () => {
   it("renders the dot-fill bar with the right filled/empty counts", () => {
     renderWithProviders(<Skills />);
     for (const skill of RESUME.skills) {
+      if (skill.omitExperienceBar) continue;
       const card = screen.getByTestId(`skill-card-${skill.name}`);
       const dots = within(card).getByTestId("skill-dots").textContent ?? "";
       const filled = (dots.match(/●/g) ?? []).length;
@@ -63,6 +76,14 @@ describe("Skills", () => {
       expect(filled).toBe(skill.filledDots);
       expect(empty).toBe(skill.totalDots - skill.filledDots);
     }
+  });
+
+  it("renders flag emojis for communication skills", () => {
+    renderWithProviders(<Skills />);
+    const english = screen.getByTestId("skill-card-English");
+    const portuguese = screen.getByTestId("skill-card-Portuguese");
+    expect(english.textContent).toContain("🇺🇸");
+    expect(portuguese.textContent).toContain("🇧🇷");
   });
 
   it("renders a skill that has matches as a button", () => {

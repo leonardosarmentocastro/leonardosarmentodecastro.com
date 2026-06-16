@@ -80,7 +80,6 @@ src/
 │   ├── data.ts                   # Source of truth for CV content (RESUME)
 │   ├── types.ts
 │   ├── ResumeOptionsModal.tsx    # Shared "PDF vs WEB" chooser (mounted on /)
-│   ├── Dock/
 │   ├── sections/{Hero,About,Work,Education,Skills,Contact}/
 │   └── pages/CVPage/             # Page-level composition for the /cv route
 │       ├── CVPage.tsx

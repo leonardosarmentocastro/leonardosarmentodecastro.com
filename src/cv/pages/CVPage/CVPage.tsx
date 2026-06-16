@@ -6,7 +6,6 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import { Dock } from "@/cv/Dock/Dock";
 import { About } from "@/cv/sections/About/About";
 import { Contact } from "@/cv/sections/Contact/Contact";
 import { Education } from "@/cv/sections/Education/Education";
@@ -40,12 +39,6 @@ export const CVPage = () => {
           },
         });
       }
-
-      gsap.fromTo(
-        "#cv-dock",
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", delay: 0.3 },
-      );
     });
 
     return () => {
@@ -55,7 +48,7 @@ export const CVPage = () => {
 
   return (
     <main className="bg-white text-neutral-900 min-h-screen">
-      <div className="max-w-5xl mx-auto px-6 py-12 pb-32">
+      <div className="max-w-5xl mx-auto px-6 py-12">
         <Hero />
         <hr className="my-12 border-neutral-200" />
         <About />
@@ -67,9 +60,6 @@ export const CVPage = () => {
         <Skills />
         <hr className="my-12 border-neutral-200" />
         <Contact />
-      </div>
-      <div id="cv-dock">
-        <Dock />
       </div>
     </main>
   );

@@ -13,6 +13,7 @@ export const RESUME: Resume = {
     links: {
       linkedin:
         "https://www.linkedin.com/in/leonardo-sarmento-de-castro-a249b945/",
+      github: "https://github.com/leonardosarmentocastro",
       email: "negocios.leonardosarmentocastro@gmail.com",
       whatsapp: "https://wa.me/5512981276618",
       whatsappDisplay: "+55 (12) 98127-6618",
@@ -478,7 +479,7 @@ export const RESUME: Resume = {
     },
     {
       name: "JavaScript",
-      category: "Language",
+      category: "Languages",
       area: "Back-end · Front-end",
       level: "Expert",
       stars: 5,
@@ -490,7 +491,7 @@ export const RESUME: Resume = {
     },
     {
       name: "TypeScript",
-      category: "Language",
+      category: "Languages",
       area: "Back-end · Front-end",
       level: "Advanced",
       stars: 4,
@@ -502,7 +503,7 @@ export const RESUME: Resume = {
     },
     {
       name: "Python",
-      category: "Language",
+      category: "Languages",
       area: "Back-end · Infrastructure",
       level: "Experienced",
       stars: 3,
@@ -514,7 +515,7 @@ export const RESUME: Resume = {
     },
     {
       name: "Ruby (on Rails)",
-      category: "Language",
+      category: "Languages",
       area: "Back-end · Front-end",
       level: "Experienced",
       stars: 3,
@@ -526,7 +527,7 @@ export const RESUME: Resume = {
     },
     {
       name: "React.js",
-      category: "Framework",
+      category: "Frameworks",
       area: "Front-end",
       level: "Expert",
       stars: 5,
@@ -538,7 +539,7 @@ export const RESUME: Resume = {
     },
     {
       name: "React Native",
-      category: "Framework",
+      category: "Frameworks",
       area: "Front-end · Mobile",
       level: "Experienced",
       stars: 3,
@@ -550,7 +551,7 @@ export const RESUME: Resume = {
     },
     {
       name: "Next.js, Vite, TanStack",
-      category: "Framework",
+      category: "Frameworks",
       area: "Front-end",
       level: "Experienced",
       stars: 3,
@@ -574,7 +575,7 @@ export const RESUME: Resume = {
     },
     {
       name: "Node.js",
-      category: "Runtime",
+      category: "Runtimes",
       area: "Back-end",
       level: "Expert",
       stars: 5,
@@ -586,7 +587,7 @@ export const RESUME: Resume = {
     },
     {
       name: "MongoDB / Redis (NoSQL)",
-      category: "Database",
+      category: "Databases",
       area: "Back-end · Data",
       level: "Advanced",
       stars: 4,
@@ -598,7 +599,7 @@ export const RESUME: Resume = {
     },
     {
       name: "PostgreSQL / MySQL (SQL)",
-      category: "Database",
+      category: "Databases",
       area: "Back-end · Data",
       level: "Advanced",
       stars: 4,
@@ -614,10 +615,10 @@ export const RESUME: Resume = {
       area: "Back-end · Front-end · Data",
       level: "Experienced",
       stars: 3,
-      years: 1,
-      filledDots: 1,
+      years: 2,
+      filledDots: 2,
       totalDots: 10,
-      since: "2024 — 2025",
+      since: "2024 — 2026",
       aliases: ["Sanity", "Sanity.io", "Payload"],
     },
     {
@@ -662,6 +663,33 @@ export const RESUME: Resume = {
         "Codeship",
         "SVN",
       ],
+    },
+    {
+      name: "English",
+      category: "Communication",
+      area: "Spoken · Written",
+      level: "Advanced",
+      stars: 4,
+      years: 9,
+      filledDots: 9,
+      totalDots: 10,
+      since: "2017 until now",
+      aliases: ["English"],
+      emoji: "🇺🇸",
+    },
+    {
+      name: "Portuguese",
+      category: "Communication",
+      area: "Native · Spoken · Written",
+      level: "Expert",
+      stars: 5,
+      years: 0,
+      filledDots: 0,
+      totalDots: 10,
+      since: "Native speaker",
+      aliases: ["Portuguese"],
+      emoji: "🇧🇷",
+      omitExperienceBar: true,
     },
   ],
 
