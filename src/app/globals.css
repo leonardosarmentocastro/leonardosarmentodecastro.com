@@ -10,6 +10,9 @@
   --font-domine: var(--font-domine);
   --font-quicksand: var(--font-quicksand);
   --font-jakarta-sans: var(--font-plus-jakarta-sans);
+  --font-family-spectral: var(--font-spectral), Georgia, serif;
+  --font-family-domine: var(--font-domine), Georgia, serif;
+  --font-family-quicksand: var(--font-quicksand), sans-serif;
 }
 
 /* @media (prefers-color-scheme: dark) {
