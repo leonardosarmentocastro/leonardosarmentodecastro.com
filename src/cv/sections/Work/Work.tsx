@@ -3,7 +3,7 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 import { Accordion } from "@/components/ui/Accordion";
 import { RESUME } from "@/cv/data";
@@ -27,6 +27,7 @@ gsap.registerPlugin(ScrollTrigger);
 const syncCheckpointStates = (
   timeline: HTMLElement,
   progress: number,
+  onNewlyReached?: (checkpointId: string) => void,
 ): void => {
   const fillEdge = progress * timeline.offsetHeight;
 
@@ -42,7 +43,13 @@ const syncCheckpointStates = (
       node.getBoundingClientRect().height / 2 -
       timelineTop;
 
-    row.classList.toggle("cv-checkpoint-reached", fillEdge >= nodeCenterY);
+    const wasReached = row.classList.contains("cv-checkpoint-reached");
+    const reached = fillEdge >= nodeCenterY;
+    row.classList.toggle("cv-checkpoint-reached", reached);
+    if (!wasReached && reached) {
+      const id = row.getAttribute("data-checkpoint-id");
+      if (id) onNewlyReached?.(id);
+    }
   }
 };
 
@@ -54,6 +61,8 @@ const syncCheckpointStates = (
 const TimelineEntryRow = ({
   entry,
   isOpen,
+  showHeaderAnimation = false,
+  showBodyAnimation = false,
   /** Overlap cluster: pill above card (same column) to avoid z-fighting */
   dateOnCard = false,
   /** Overlap cluster: limit hit target to the card column only */
@@ -61,6 +70,8 @@ const TimelineEntryRow = ({
 }: {
   entry: WorkExperience;
   isOpen: boolean;
+  showHeaderAnimation?: boolean;
+  showBodyAnimation?: boolean;
   dateOnCard?: boolean;
   stickyPointerPassThrough?: boolean;
 }) => {
@@ -102,6 +113,8 @@ const TimelineEntryRow = ({
       <WorkTimelineItem
         entry={entry}
         isOpen={isOpen}
+        showHeaderAnimation={showHeaderAnimation}
+        showBodyAnimation={showBodyAnimation}
         suppressMobilePeriod
         className={stickyPointerPassThrough ? undefined : cardColClass}
       />
@@ -169,11 +182,22 @@ const TimelineEntryRow = ({
 
 export const Work = () => {
   const [openValues, setOpenValues] = useState<string[]>([]);
+  const [activatedAnchorIds, setActivatedAnchorIds] = useState<
+    ReadonlySet<string>
+  >(() => new Set());
+  const firedPulseRef = useRef<Set<string>>(new Set());
   const timelineRef = useRef<HTMLDivElement>(null);
   const desktopProgressRef = useRef<HTMLDivElement>(null);
   const mobileProgressRef = useRef<HTMLDivElement>(null);
   const items = buildTimelineItems(RESUME.workExperience, RESUME.milestones);
   const renderedStickyCompanies = new Set<string>();
+
+  const handleCheckpointReached = useCallback((checkpointId: string) => {
+    setActivatedAnchorIds((prev) => {
+      if (prev.has(checkpointId)) return prev;
+      return new Set(prev).add(checkpointId);
+    });
+  }, []);
 
   // Skills modal → scrollToWorkEntry dispatches cv:open-work-entry; expand here.
   useEffect(() => {
@@ -209,7 +233,32 @@ export const Work = () => {
               start: "top center",
               end: "bottom center",
               scrub: true,
-              onUpdate: (self) => syncCheckpointStates(timeline, self.progress),
+              onUpdate: (self) => {
+                syncCheckpointStates(timeline, self.progress, (id) => {
+                  handleCheckpointReached(id);
+                  if (firedPulseRef.current.has(id)) return;
+                  firedPulseRef.current.add(id);
+                  const row = timeline.querySelector<HTMLElement>(
+                    `[data-checkpoint-id="${id}"]`,
+                  );
+                  const card = row?.querySelector<HTMLElement>(
+                    "[data-slot=card]",
+                  );
+                  if (card) {
+                    gsap.fromTo(
+                      card,
+                      { scale: 1 },
+                      {
+                        scale: 1.03,
+                        duration: 0.35,
+                        yoyo: true,
+                        repeat: 1,
+                        ease: "power2.out",
+                      },
+                    );
+                  }
+                });
+              },
             },
           },
         );
@@ -292,6 +341,9 @@ export const Work = () => {
             }
 
             const { entry } = item;
+            const entryAnchorId = workEntryAnchorId(entry);
+            const entryActivated = activatedAnchorIds.has(entryAnchorId);
+            const entryOpen = openValues.includes(entryAnchorId);
 
             if (
               entry.stickyThrough &&
@@ -318,10 +370,20 @@ export const Work = () => {
                         entry={entry}
                         dateOnCard
                         stickyPointerPassThrough
-                        isOpen={openValues.includes(workEntryAnchorId(entry))}
+                        isOpen={entryOpen}
+                        showHeaderAnimation={entryActivated}
+                        showBodyAnimation={entryActivated && entryOpen}
                       />
                     </div>
-                    {group.counterpartEntries.map((counterpart) => (
+                    {group.counterpartEntries.map((counterpart) => {
+                      const counterpartAnchorId =
+                        workEntryAnchorId(counterpart);
+                      const counterpartActivated =
+                        activatedAnchorIds.has(counterpartAnchorId);
+                      const counterpartOpen = openValues.includes(
+                        counterpartAnchorId,
+                      );
+                      return (
                       <div
                         key={counterpart.company}
                         className="relative z-20 pointer-events-none"
@@ -330,12 +392,15 @@ export const Work = () => {
                           entry={counterpart}
                           dateOnCard
                           stickyPointerPassThrough
-                          isOpen={openValues.includes(
-                            workEntryAnchorId(counterpart),
-                          )}
+                          isOpen={counterpartOpen}
+                          showHeaderAnimation={counterpartActivated}
+                          showBodyAnimation={
+                            counterpartActivated && counterpartOpen
+                          }
                         />
                       </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 );
               }
@@ -350,7 +415,9 @@ export const Work = () => {
               <TimelineEntryRow
                 key={`${entry.company}-${entry.startDate}`}
                 entry={entry}
-                isOpen={openValues.includes(workEntryAnchorId(entry))}
+                isOpen={entryOpen}
+                showHeaderAnimation={entryActivated}
+                showBodyAnimation={entryActivated && entryOpen}
               />
             );
           })}

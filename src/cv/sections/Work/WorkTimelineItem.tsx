@@ -1,5 +1,6 @@
 "use client";
 
+import { TextAnimate } from "@/components/ui/text-animate";
 import {
   AccordionContent,
   AccordionItem,
@@ -23,6 +24,33 @@ import {
   workTitle,
 } from "./work-colors";
 import { workEntryMetadata, workEntryTitle } from "./work-copy";
+
+const AnimatedLine = ({
+  animate,
+  animation,
+  by,
+  className,
+  children,
+}: {
+  animate: boolean;
+  animation: "blurInUp" | "fadeIn";
+  by: "word" | "line";
+  className?: string;
+  children: string;
+}) =>
+  animate ? (
+    <TextAnimate
+      animation={animation}
+      by={by}
+      once
+      startOnView={false}
+      className={className}
+    >
+      {children}
+    </TextAnimate>
+  ) : (
+    <span className={className}>{children}</span>
+  );
 
 type DatePillProps = {
   entry: WorkExperience;
@@ -63,6 +91,8 @@ export const WorkTimelineDatePill = ({
 type Props = {
   entry: WorkExperience;
   isOpen: boolean;
+  showHeaderAnimation?: boolean;
+  showBodyAnimation?: boolean;
   /** When true, pill renders above the card (sticky cluster fallback). */
   showInlineDate?: boolean;
   /** Hide inline period in header when a pill is shown above the card on mobile. */
@@ -73,6 +103,8 @@ type Props = {
 export const WorkTimelineItem = ({
   entry,
   isOpen,
+  showHeaderAnimation = false,
+  showBodyAnimation = false,
   showInlineDate = false,
   suppressMobilePeriod = false,
   className = "",
@@ -82,12 +114,17 @@ export const WorkTimelineItem = ({
   const badgeClass = isOpen ? workBadgeOnDark : workBadge;
   const triggerLabel = `Toggle ${entry.company} work experience details`;
   const metadata = workEntryMetadata(entry);
+  const title = workEntryTitle(entry);
+  const titleClass = `text-sm font-quicksand ${workTitle}`;
+  const subtitleClass = `text-xs font-quicksand ${workSubtitle}`;
+  const bodyClass = `font-quicksand ${workBody}`;
 
   return (
     <div
       id={anchorId}
       data-testid={`work-entry-${entry.company}`}
       data-lane={entry.lane}
+      data-header-animated={showHeaderAnimation ? "true" : undefined}
       className={`scroll-mt-24 cv-work-item ${className}`}
     >
       {showInlineDate && (
@@ -111,31 +148,58 @@ export const WorkTimelineItem = ({
             <div className="flex items-start gap-3 text-left w-full pr-2">
               <CompanyLogo company={entry.company} />
               <div className="flex flex-col gap-1 min-w-0 flex-1">
-                <span className={`text-sm font-quicksand ${workTitle}`}>
-                  {workEntryTitle(entry)}
-                </span>
-                <span className={`text-xs font-quicksand ${workSubtitle}`}>
+                <AnimatedLine
+                  animate={showHeaderAnimation}
+                  animation="blurInUp"
+                  by="word"
+                  className={titleClass}
+                >
+                  {title}
+                </AnimatedLine>
+                <AnimatedLine
+                  animate={showHeaderAnimation}
+                  animation="blurInUp"
+                  by="word"
+                  className={subtitleClass}
+                >
                   {metadata}
-                </span>
+                </AnimatedLine>
                 {!suppressMobilePeriod && (
-                  <span
-                    className={`text-xs font-quicksand ${workSubtitle} md:hidden`}
+                  <AnimatedLine
+                    animate={showHeaderAnimation}
+                    animation="blurInUp"
+                    by="word"
+                    className={`${subtitleClass} md:hidden`}
                   >
                     {metadata}
-                  </span>
+                  </AnimatedLine>
                 )}
               </div>
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-4 pb-4">
-            <p className={`text-sm mb-3 font-quicksand ${workBody}`}>
+            <AnimatedLine
+              animate={showBodyAnimation}
+              animation="fadeIn"
+              by="line"
+              className={`text-sm mb-3 ${bodyClass}`}
+            >
               {entry.description}
-            </p>
+            </AnimatedLine>
             <ul
-              className={`list-disc list-outside ml-5 text-sm space-y-1 mb-4 font-quicksand ${workBody}`}
+              className={`list-disc list-outside ml-5 text-sm space-y-1 mb-4 ${bodyClass}`}
             >
               {entry.bullets.map((b) => (
-                <li key={b}>{b}</li>
+                <li key={b}>
+                  <AnimatedLine
+                    animate={showBodyAnimation}
+                    animation="fadeIn"
+                    by="line"
+                    className={bodyClass}
+                  >
+                    {b}
+                  </AnimatedLine>
+                </li>
               ))}
             </ul>
             <div className="flex flex-wrap gap-2">
