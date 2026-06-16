@@ -11,6 +11,7 @@ The CV domain. Owns the data, types, and UI building blocks for the `/cv` route 
 | `ResumeOptionsModal.tsx` | The "PDF vs WEB" chooser shown from the landing page's RESUME button. |
 | `Dock/Dock.tsx` | Floating bottom dock on `/cv` (Home / LinkedIn / Email / WhatsApp / PDF). |
 | `sections/<Section>/<Section>.tsx` | Hero, About, Work, Education, Skills, Contact — each independently testable. |
+| `sections/About/CompanyLogoMarquee.tsx` | About-section company logo marquee (Magic UI `Marquee`). |
 | `cv-colors.ts` | PDF brand hex tokens and Tailwind class helpers shared across CV sections. |
 | `company-logos.ts` | Maps `WorkExperience.company` strings to `/cv/companies/*` assets. |
 | `cv.css` | Checkpoint/spine styles, flash animation, blue-derived timeline palette. |
@@ -68,6 +69,15 @@ Logos live in `public/cv/companies/` (kebab-case filenames). `company-logos.ts` 
 
 `CompanyLogo.tsx` renders a square `<img>` (48 px mobile, 60 px desktop) with no background wrapper.
 
+## About company logo marquee
+
+`sections/About/CompanyLogoMarquee.tsx` renders all `RESUME.workExperience` company logos in a [Magic UI `Marquee`](https://magicui.design/docs/components/marquee) (`src/components/ui/Marquee.tsx`) directly below the About paragraphs.
+
+- **Assets:** `companyLogoSrc()` → `public/cv/companies/*` (same mapping as Work cards).
+- **Click:** each logo is a button calling `scrollToWorkEntry(entry)` — smooth scroll, accordion expand (`cv:open-work-entry`), and `.cv-flash` highlight (gated by `prefers-reduced-motion`).
+- **Reduced motion:** static `flex-wrap` row (`data-testid="company-logo-static"`) instead of animated marquee.
+- **Animation:** horizontal scroll with edge fade (`pauseOnHover`, 40s duration); no Mantine upgrade required.
+
 ## Scroll animations
 
 ### Checkpoint activation (Work timeline)
@@ -78,7 +88,7 @@ When scroll progress first reaches a timeline node, `Work.tsx`:
 2. Fires a GSAP scale pulse on the accordion card (once per entry, tracked in a ref).
 3. Passes `showHeaderAnimation` / `showBodyAnimation` to `WorkTimelineItem`.
 
-**TextAnimate** (`@/components/ui/text-animate`, Magic UI / `motion/react`):
+**TextAnimate** (`@/components/ui/TextAnimate`, Magic UI / `motion/react`):
 
 | Target | Preset | When |
 | --- | --- | --- |

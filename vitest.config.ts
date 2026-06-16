@@ -9,5 +9,6 @@ export default defineConfig({
     setupFiles: ["./vitest.setup.ts"],
     globals: true,
     css: false,
+    exclude: ["**/node_modules/**", "**/.claude/**"],
   },
 });

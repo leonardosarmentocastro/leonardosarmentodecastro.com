@@ -19,6 +19,7 @@
 - Linter/formatter: **Biome** (`pnpm lint`, `pnpm format`). Do not introduce ESLint or Prettier.
 - Path alias: `@/*` → `src/*` (configured in `tsconfig.json`).
 - When adding a technology to `data.ts`, follow the icon workflow in `src/cv/README.md` — the guard test in `src/cv/__tests__/icons.test.ts` will fail if the alias is not mapped or explicitly opted out.
+- **shadcn/Magic UI components:** the CLI emits kebab-case filenames; rename to PascalCase (`Marquee.tsx`, not `marquee.tsx`) and fix imports before committing. See [`src/components/ui/README.md`](src/components/ui/README.md).
 
 ## Code organization
 

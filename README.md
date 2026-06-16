@@ -86,7 +86,7 @@ src/
 │       ├── CVPage.tsx
 │       └── __tests__/
 ├── components/
-│   ├── ui/                       # shadcn/ui primitives (Accordion, Card, Badge, …)
+│   ├── ui/                       # shadcn/ui + Magic UI primitives (PascalCase filenames — see README)
 │   └── pages/
 │       └── LandingPage/          # Page-level UI lives with the page
 │           ├── LandingPage.tsx
