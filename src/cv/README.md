@@ -11,6 +11,7 @@ The CV domain. Owns the data, types, and UI building blocks for the `/cv` route 
 | `ResumeOptionsModal.tsx` | The "PDF vs WEB" chooser shown from the landing page's RESUME button. |
 | `Dock/Dock.tsx` | Floating bottom dock on `/cv` (Home / LinkedIn / Email / WhatsApp / PDF). |
 | `sections/<Section>/<Section>.tsx` | Hero, About, Work, Education, Skills, Contact — each independently testable. |
+| `sections/About/CompanyLogoMarquee.tsx` | About-section company logo marquee (Mantine `Marquee`). |
 | `cv-colors.ts` | PDF brand hex tokens and Tailwind class helpers shared across CV sections. |
 | `company-logos.ts` | Maps `WorkExperience.company` strings to `/cv/companies/*` assets. |
 | `cv.css` | Checkpoint/spine styles, flash animation, blue-derived timeline palette. |
@@ -67,6 +68,15 @@ Logos live in `public/cv/companies/` (kebab-case filenames). `company-logos.ts` 
 3. Run `pnpm test:run src/cv/sections/Work/__tests__/CompanyLogo.test.tsx` — it asserts every company resolves to an existing file.
 
 `CompanyLogo.tsx` renders a square `<img>` (48 px mobile, 60 px desktop) with no background wrapper.
+
+## About company logo marquee
+
+`sections/About/CompanyLogoMarquee.tsx` renders all `RESUME.workExperience` company logos in a Mantine `Marquee` directly below the About paragraphs.
+
+- **Assets:** `companyLogoSrc()` → `public/cv/companies/*` (same mapping as Work cards).
+- **Click:** each logo is a button calling `scrollToWorkEntry(entry)` — smooth scroll, accordion expand (`cv:open-work-entry`), and `.cv-flash` highlight (gated by `prefers-reduced-motion`).
+- **Reduced motion:** static `flex-wrap` row (`data-testid="company-logo-static"`) instead of animated marquee.
+- **Dependency:** requires Mantine v9+ (`Marquee` is not in Mantine 8).
 
 ## Scroll animations
 
