@@ -15,13 +15,19 @@ export const Hero = () => {
   return (
     <section id="hero" className="flex flex-row gap-6 items-start">
       <div className="flex-1 flex flex-col gap-2">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+        <h1 className="text-3xl md:text-4xl font-domine text-[#2d2a24] tracking-tight">
           {name}
         </h1>
-        <p className="text-base text-neutral-700">{role}</p>
-        <p className="text-sm text-neutral-500">{kicker}</p>
-        <p className="text-sm text-neutral-500">{location}</p>
-        <p className="text-sm text-neutral-700 mt-2">{blurb}</p>
+        <p className="text-base font-spectral font-bold uppercase text-[#3c78d8]">
+          {role}
+        </p>
+        <p className="text-sm font-spectral uppercase text-[#3c78d8]">
+          {kicker}
+        </p>
+        <p className="text-sm text-[#6c6965]">{location}</p>
+        <p className="text-sm font-quicksand font-bold text-[#6d6964] mt-2">
+          {blurb}
+        </p>
 
         <div className="flex flex-row gap-3 mt-3 text-neutral-500">
           <a

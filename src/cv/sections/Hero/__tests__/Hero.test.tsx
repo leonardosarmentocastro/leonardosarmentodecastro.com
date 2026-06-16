@@ -47,4 +47,31 @@ describe("Hero", () => {
       screen.getByRole("link", { name: /personal site/i }),
     ).toHaveAttribute("href", RESUME.hero.links.site);
   });
+
+  it("styles kicker and role in uppercase Spectral blue", () => {
+    renderWithProviders(<Hero />);
+    const kicker = screen.getByText(RESUME.hero.kicker);
+    const role = screen.getByText(RESUME.hero.role);
+    for (const el of [kicker, role]) {
+      expect(el).toHaveClass("font-spectral");
+      expect(el).toHaveClass("text-[#3c78d8]");
+      expect(el).toHaveClass("uppercase");
+    }
+    expect(role).toHaveClass("font-bold");
+  });
+
+  it("styles name in Domine foreground", () => {
+    renderWithProviders(<Hero />);
+    const name = screen.getByRole("heading", { level: 1 });
+    expect(name).toHaveClass("font-domine");
+    expect(name).toHaveClass("text-[#2d2a24]");
+  });
+
+  it("styles blurb in bold Quicksand mutedAlt", () => {
+    renderWithProviders(<Hero />);
+    const blurb = screen.getByText(RESUME.hero.blurb);
+    expect(blurb).toHaveClass("font-quicksand");
+    expect(blurb).toHaveClass("font-bold");
+    expect(blurb).toHaveClass("text-[#6d6964]");
+  });
 });
