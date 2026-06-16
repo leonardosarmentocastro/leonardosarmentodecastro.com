@@ -26,4 +26,14 @@ describe("About", () => {
       screen.getByRole("heading", { level: 2, name: /about/i }),
     ).toHaveClass("font-domine", "text-[#2d2a24]");
   });
+
+  it("renders company logo marquee below about paragraphs", () => {
+    renderWithProviders(<About />);
+    expect(
+      screen.getByTestId("company-logo-marquee"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByRole("button", { name: /view .+ experience/i }),
+    ).toHaveLength(RESUME.workExperience.length);
+  });
 });
