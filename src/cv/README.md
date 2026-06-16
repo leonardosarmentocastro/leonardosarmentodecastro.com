@@ -168,7 +168,7 @@ Pass `onChoiceClick` if the consuming page wants to suppress its own dismiss-tra
 
 ## Avatar
 
-`public/cv/avatar.jpg` is rendered by the Hero section. The repo currently ships a placeholder — replace it with a real headshot at the same path. No code change required.
+`public/leonardo-05.jpg` is rendered by the Hero section (portrait beside text on desktop, centered above on mobile). Update `RESUME.hero.avatar` in `data.ts` to change the image.
 
 ## Replacing the contact channel set
 

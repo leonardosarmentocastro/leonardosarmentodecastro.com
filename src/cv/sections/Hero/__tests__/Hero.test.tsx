@@ -36,6 +36,40 @@ describe("Hero", () => {
     expect(avatar).toHaveAttribute("src", RESUME.hero.avatar);
   });
 
+  it("uses a 230px portrait on mobile", () => {
+    renderWithProviders(<Hero />);
+    const avatar = screen.getByTestId("hero-avatar");
+    const kicker = screen.getByText(RESUME.hero.kicker);
+    expect(
+      avatar.compareDocumentPosition(kicker) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(avatar).toHaveClass("h-[230px]", "w-[184px]");
+    expect(avatar).toHaveClass("md:h-full", "md:w-44");
+    expect(avatar).toHaveClass("object-cover");
+  });
+
+  it("uses 12px kicker and 20px name on mobile", () => {
+    renderWithProviders(<Hero />);
+    expect(screen.getByText(RESUME.hero.kicker)).toHaveClass(
+      "text-xs",
+      "md:text-sm",
+    );
+    expect(screen.getByRole("heading", { level: 1 })).toHaveClass(
+      "text-[20px]",
+      "md:text-4xl",
+    );
+  });
+
+  it("centers hero copy and icon row on mobile", () => {
+    renderWithProviders(<Hero />);
+    const copy = screen.getByText(RESUME.hero.kicker).parentElement;
+    expect(copy).toHaveClass("items-center", "text-center");
+    expect(copy).toHaveClass("md:items-start", "md:text-left");
+    expect(
+      screen.getByRole("link", { name: /linkedin/i }).parentElement,
+    ).toHaveClass("justify-center", "md:justify-start");
+  });
+
   it("renders the four hero quick-links (LinkedIn, Email, WhatsApp, Site)", () => {
     renderWithProviders(<Hero />);
     expect(screen.getByRole("link", { name: /linkedin/i })).toHaveAttribute(

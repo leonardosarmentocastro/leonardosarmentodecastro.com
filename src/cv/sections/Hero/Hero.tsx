@@ -21,15 +21,26 @@ export const Hero = () => {
     : blurb;
 
   return (
-    <section id="hero" className="flex flex-row gap-6 items-start">
-      <div className="flex-1 flex flex-col gap-2">
-        <p className="text-sm font-spectral font-bold uppercase text-[#3c78d8]">
+    <section
+      id="hero"
+      className="flex flex-col items-center gap-4 md:flex-row md:items-stretch md:gap-8"
+    >
+      {/* biome-ignore lint/performance/noImgElement: static public portrait; next/image overhead unjustified */}
+      <img
+        src={avatar}
+        alt={`${name} avatar`}
+        data-testid="hero-avatar"
+        className="h-[230px] w-[184px] shrink-0 self-center object-cover object-top md:aspect-auto md:h-full md:w-44 md:max-w-none md:self-stretch lg:w-52"
+      />
+
+      <div className="flex w-full flex-1 flex-col items-center gap-2 text-center md:items-start md:text-left">
+        <p className="text-xs md:text-sm font-spectral font-bold uppercase text-[#3c78d8]">
           {kicker}
         </p>
         <p className="text-base font-spectral font-bold uppercase text-[#3c78d8]">
           {role}
         </p>
-        <h1 className="text-3xl md:text-4xl font-domine text-[#2d2a24] tracking-tight">
+        <h1 className="text-[20px] md:text-4xl font-domine text-[#2d2a24] tracking-tight">
           {name}
         </h1>
         <p className="text-sm font-quicksand text-[#6c6965]">{location}</p>
@@ -37,7 +48,7 @@ export const Hero = () => {
           <span className="font-bold">{BLURB_LEAD}</span> {blurbBody}
         </p>
 
-        <div className="flex flex-row gap-3 mt-3">
+        <div className="mt-3 flex flex-row justify-center gap-3 md:justify-start">
           <a
             href={links.linkedin}
             target="_blank"
@@ -74,13 +85,6 @@ export const Hero = () => {
           </a>
         </div>
       </div>
-
-      {/* biome-ignore lint/performance/noImgElement: avatar is a small static asset; next/image overhead unjustified */}
-      <img
-        src={avatar}
-        alt={`${name} avatar`}
-        className="w-24 h-24 rounded-full object-cover flex-shrink-0"
-      />
     </section>
   );
 };
