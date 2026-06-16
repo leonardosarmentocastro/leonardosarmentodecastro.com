@@ -11,20 +11,18 @@ import { TechIcon } from "@/cv/TechIcon";
 import type { WorkExperience } from "@/cv/types";
 
 import { workEntryAnchorId } from "./anchors";
+import { CompanyLogo } from "./CompanyLogo";
 import {
   workBadge,
   workBadgeOnDark,
+  workBody,
   workCardCollapsed,
   workCardExpanded,
   workDatePillDefault,
-  workMeta,
-  workMetaOnDark,
+  workSubtitle,
+  workTitle,
 } from "./work-colors";
-
-const metadataLine = (entry: WorkExperience): string =>
-  [entry.role, entry.via, entry.workMode, entry.location]
-    .filter(Boolean)
-    .join(" · ");
+import { workEntryMetadata, workEntryTitle } from "./work-copy";
 
 type DatePillProps = {
   entry: WorkExperience;
@@ -80,11 +78,10 @@ export const WorkTimelineItem = ({
   className = "",
 }: Props) => {
   const anchorId = workEntryAnchorId(entry);
-  const period = `${entry.startDate} — ${entry.endDate}`;
   const cardClass = isOpen ? workCardExpanded : workCardCollapsed;
-  const metaClass = isOpen ? workMetaOnDark : workMeta;
   const badgeClass = isOpen ? workBadgeOnDark : workBadge;
   const triggerLabel = `Toggle ${entry.company} work experience details`;
+  const metadata = workEntryMetadata(entry);
 
   return (
     <div
@@ -107,33 +104,36 @@ export const WorkTimelineItem = ({
             aria-label={triggerLabel}
             className={`cursor-pointer px-4 py-3 hover:no-underline focus-visible:ring-2 focus-visible:ring-offset-2 rounded-xl [&[data-state=open]>svg]:rotate-180 ${
               isOpen
-                ? "hover:bg-neutral-800/80 focus-visible:ring-white text-white [&_svg]:text-neutral-400"
-                : "hover:bg-neutral-50/80 focus-visible:ring-neutral-900 text-neutral-900"
+                ? "hover:bg-[#2d2a24]/90 focus-visible:ring-[#3c78d8] text-[#2d2a24] [&_svg]:text-[#6c6965]"
+                : "hover:bg-neutral-50/80 focus-visible:ring-[#3c78d8] text-neutral-900 [&_svg]:text-[#6c6965]"
             }`}
           >
-            <div className="flex flex-col items-start gap-1 text-left w-full pr-2">
-              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 w-full">
-                <span
-                  className={`text-base font-semibold ${isOpen ? "text-white" : "text-neutral-900"}`}
-                >
-                  {entry.company}
+            <div className="flex items-start gap-3 text-left w-full pr-2">
+              <CompanyLogo company={entry.company} />
+              <div className="flex flex-col gap-1 min-w-0 flex-1">
+                <span className={`text-sm font-quicksand ${workTitle}`}>
+                  {workEntryTitle(entry)}
+                </span>
+                <span className={`text-xs font-quicksand ${workSubtitle}`}>
+                  {metadata}
                 </span>
                 {!suppressMobilePeriod && (
-                  <span className={`text-xs ${metaClass} md:hidden`}>
-                    {period}
+                  <span
+                    className={`text-xs font-quicksand ${workSubtitle} md:hidden`}
+                  >
+                    {metadata}
                   </span>
                 )}
               </div>
-              <span className={`text-sm ${metaClass}`}>
-                {metadataLine(entry)}
-              </span>
             </div>
           </AccordionTrigger>
-          <AccordionContent
-            className={`px-4 pb-4 ${isOpen ? "text-neutral-300" : "text-neutral-600"}`}
-          >
-            <p className="text-sm mb-3">{entry.description}</p>
-            <ul className="list-disc list-outside ml-5 text-sm space-y-1 mb-4">
+          <AccordionContent className="px-4 pb-4">
+            <p className={`text-sm mb-3 font-quicksand ${workBody}`}>
+              {entry.description}
+            </p>
+            <ul
+              className={`list-disc list-outside ml-5 text-sm space-y-1 mb-4 font-quicksand ${workBody}`}
+            >
               {entry.bullets.map((b) => (
                 <li key={b}>{b}</li>
               ))}

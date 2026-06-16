@@ -16,19 +16,39 @@ describe("Work", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders every company name", () => {
+  it("renders every company name in accordion titles", () => {
     renderWithProviders(<Work />);
     for (const w of RESUME.workExperience) {
-      expect(screen.getByText(w.company)).toBeInTheDocument();
+      expect(screen.getByText(new RegExp(`"${w.company}"`))).toBeInTheDocument();
     }
   });
 
-  it("renders collapsed header with company, period, role for first entry", () => {
+  it("renders PDF-style title and metadata in accordion header", () => {
     renderWithProviders(<Work />);
     const first = RESUME.workExperience[0];
     const card = screen.getByTestId(`work-entry-${first.company}`);
-    expect(within(card).getByText(first.company)).toBeInTheDocument();
-    expect(within(card).getByText(new RegExp(first.role))).toBeInTheDocument();
+    expect(
+      within(card).getByText(
+        'Senior Software Engineer at "Pinterest" (via nearshore agency)',
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(card).getByText(`(remote) ${first.startDate} – ${first.endDate}`),
+    ).toBeInTheDocument();
+  });
+
+  it("renders company logo in accordion trigger", () => {
+    renderWithProviders(<Work />);
+    const card = screen.getByTestId("work-entry-Pinterest");
+    const img = within(card).getByRole("presentation");
+    expect(img).toHaveAttribute("src", "/cv/companies/pinterest.jpg");
+  });
+
+  it("applies Quicksand blue title and gray bold metadata classes", () => {
+    renderWithProviders(<Work />);
+    const card = screen.getByTestId("work-entry-Pinterest");
+    const title = within(card).getByText(/Senior Software Engineer at "Pinterest"/);
+    expect(title).toHaveClass("font-quicksand", "text-[#3c78d8]", "font-bold", "uppercase");
   });
 
   it("shows description and bullets after expanding accordion", async () => {
@@ -72,9 +92,7 @@ describe("Work", () => {
     const first = RESUME.workExperience[0];
     const card = screen.getByTestId(`work-entry-${first.company}`);
     await user.click(within(card).getByRole("button"));
-    expect(card.querySelector("[data-slot=card]")).toHaveClass(
-      "bg-neutral-900",
-    );
+    expect(card.querySelector("[data-slot=card]")).toHaveClass("bg-[#2d2a24]");
   });
 
   it("exposes an accessible, pointer-styled accordion trigger per entry", () => {
