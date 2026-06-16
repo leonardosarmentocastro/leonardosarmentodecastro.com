@@ -248,7 +248,7 @@ export const Work = () => {
 
   return (
     <section id="work" className="flex flex-col gap-8">
-      <h2 className="text-xl font-semibold tracking-tight text-neutral-900">
+      <h2 className="text-xl font-domine text-[#2d2a24] tracking-tight">
         Work Experience
       </h2>
 

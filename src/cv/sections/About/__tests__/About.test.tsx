@@ -19,4 +19,12 @@ describe("About", () => {
       expect(screen.getByText(paragraph)).toBeInTheDocument();
     }
   });
+
+  it("uses Domine foreground for section heading", () => {
+    renderWithProviders(<About />);
+    expect(screen.getByRole("heading", { level: 2, name: /about/i })).toHaveClass(
+      "font-domine",
+      "text-[#2d2a24]",
+    );
+  });
 });

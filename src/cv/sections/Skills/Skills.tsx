@@ -85,7 +85,7 @@ const SkillCardInner = ({ skill }: { skill: Skill }) => {
         </span>
       )}
       <span className="flex flex-row justify-between items-baseline gap-2">
-        <span className="text-sm font-semibold">{skill.name}</span>
+        <span className="text-sm font-semibold text-[#2d2a24]">{skill.name}</span>
         <span className="flex flex-row items-center gap-1">
           <span className="text-xs text-neutral-500">{skill.level}</span>
           <Stars count={skill.stars} />
@@ -156,7 +156,9 @@ export const Skills = () => {
 
   return (
     <section id="skills" className="flex flex-col gap-6">
-      <h2 className="text-xl font-semibold tracking-tight">Skills</h2>
+      <h2 className="text-xl font-domine text-[#2d2a24] tracking-tight">
+        Skills
+      </h2>
       {groups.map((group) => (
         <div key={group.category} className="flex flex-col gap-3">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
