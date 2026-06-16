@@ -8,6 +8,11 @@ import { renderWithProviders, screen, within } from "@/test/render";
 import { workEntryAnchorId } from "../anchors";
 import { Work } from "../Work";
 
+const accordionTrigger = (card: HTMLElement, company: string) =>
+  within(card).getByRole("button", {
+    name: new RegExp(`toggle ${company}`, "i"),
+  });
+
 describe("Work", () => {
   it("renders a Work Experience heading", () => {
     renderWithProviders(<Work />);
@@ -65,7 +70,7 @@ describe("Work", () => {
     renderWithProviders(<Work />);
     const first = RESUME.workExperience[0];
     const card = screen.getByTestId(`work-entry-${first.company}`);
-    await user.click(within(card).getByRole("button"));
+    await user.click(accordionTrigger(card, first.company));
     expect(within(card).getByText(first.description)).toBeInTheDocument();
     expect(within(card).getByText(first.bullets[0])).toBeInTheDocument();
     expect(within(card).getByText(first.technologies[0])).toBeInTheDocument();
@@ -89,8 +94,9 @@ describe("Work", () => {
       );
     });
     expect(
-      within(screen.getByTestId(`work-entry-${first.company}`)).getByRole(
-        "button",
+      accordionTrigger(
+        screen.getByTestId(`work-entry-${first.company}`),
+        first.company,
       ),
     ).toHaveAttribute("aria-expanded", "true");
   });
@@ -100,7 +106,7 @@ describe("Work", () => {
     renderWithProviders(<Work />);
     const first = RESUME.workExperience[0];
     const card = screen.getByTestId(`work-entry-${first.company}`);
-    await user.click(within(card).getByRole("button"));
+    await user.click(accordionTrigger(card, first.company));
     const cardEl = card.querySelector("[data-slot=card]");
     expect(cardEl).toHaveClass("bg-white");
     expect(cardEl).toHaveClass("border-[#3c78d8]");
@@ -143,13 +149,28 @@ describe("Work", () => {
     const user = userEvent.setup();
     renderWithProviders(<Work />);
     const entry = screen.getByTestId("work-entry-Pinterest");
-    await user.click(within(entry).getByRole("button"));
+    await user.click(
+      within(entry).getByRole("button", { name: /Toggle Pinterest/i }),
+    );
     const badge = within(entry)
       .getByText("React.js")
       .closest("[data-slot='badge']");
     expect(badge).toHaveClass("font-quicksand");
     expect(badge).toHaveClass("bg-neutral-200");
     expect(badge).toHaveClass("text-neutral-900");
+  });
+
+  it("renders mapped technology badges as navigation buttons inside expanded accordion", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Work />);
+    const card = screen.getByTestId("work-entry-Pinterest");
+    await user.click(
+      within(card).getByRole("button", { name: /Toggle Pinterest/i }),
+    );
+
+    expect(
+      within(card).getByRole("button", { name: /View TypeScript skill/i }),
+    ).toBeInTheDocument();
   });
 
   it("renders a today marker at the top of the timeline", () => {
@@ -248,14 +269,12 @@ describe("Work", () => {
       within(pairTree).getByRole("button", { name: /toggle pairtree/i }),
     );
 
-    expect(within(ecolheita).getByRole("button")).toHaveAttribute(
-      "aria-expanded",
-      "true",
-    );
-    expect(within(pairTree).getByRole("button")).toHaveAttribute(
-      "aria-expanded",
-      "true",
-    );
+    expect(
+      within(ecolheita).getByRole("button", { name: /toggle écolheita/i }),
+    ).toHaveAttribute("aria-expanded", "true");
+    expect(
+      within(pairTree).getByRole("button", { name: /toggle pairtree/i }),
+    ).toHaveAttribute("aria-expanded", "true");
   });
 
   it("assigns data-lane from entry data", () => {
@@ -276,7 +295,9 @@ describe("Work", () => {
     const user = userEvent.setup();
     renderWithProviders(<Work />);
     const entry = screen.getByTestId("work-entry-Pinterest");
-    await user.click(within(entry).getByRole("button"));
+    await user.click(
+      within(entry).getByRole("button", { name: /Toggle Pinterest/i }),
+    );
     const icons = entry.querySelectorAll('span[aria-hidden="true"]');
     expect(icons.length).toBeGreaterThan(0);
     expect(icons[0]?.innerHTML).toContain("<svg");
@@ -286,7 +307,9 @@ describe("Work", () => {
     const user = userEvent.setup();
     renderWithProviders(<Work />);
     const entry = screen.getByTestId("work-entry-Pinterest");
-    await user.click(within(entry).getByRole("button"));
+    await user.click(
+      within(entry).getByRole("button", { name: /Toggle Pinterest/i }),
+    );
     expect(within(entry).getByText("Pinterest Gestalt")).toBeInTheDocument();
   });
 });

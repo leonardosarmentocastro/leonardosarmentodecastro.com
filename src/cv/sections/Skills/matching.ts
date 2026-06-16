@@ -14,3 +14,20 @@ export const experiencesForSkill = (
     entry.technologies.some((tech) => aliases.has(tech.toLowerCase())),
   );
 };
+
+/**
+ * The skill whose aliases include an exact case-insensitive match for `tech`.
+ * Returns null when no skill claims that technology string.
+ */
+export const skillForTechnology = (
+  tech: string,
+  skills: ReadonlyArray<Skill>,
+): Skill | null => {
+  const needle = tech.toLowerCase();
+  for (const skill of skills) {
+    if (skill.aliases.some((alias) => alias.toLowerCase() === needle)) {
+      return skill;
+    }
+  }
+  return null;
+};

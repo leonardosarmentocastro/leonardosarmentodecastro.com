@@ -5,11 +5,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/Accordion";
-import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { TextAnimate } from "@/components/ui/TextAnimate";
 import {
-  workBadge,
   workBody,
   workCardCollapsed,
   workCardExpanded,
@@ -18,10 +16,10 @@ import {
   workSubtitle,
   workTitle,
 } from "@/cv/cv-colors";
-import { TechIcon } from "@/cv/TechIcon";
 import type { WorkExperience } from "@/cv/types";
 import { workEntryAnchorId } from "./anchors";
 import { CompanyLogo } from "./CompanyLogo";
+import { WorkTechnologyBadge } from "./WorkTechnologyBadge";
 import { workEntryMetadata, workEntryTitle } from "./work-copy";
 
 const AnimatedLine = ({
@@ -200,14 +198,11 @@ export const WorkTimelineItem = ({
             </ul>
             <div className="flex flex-wrap gap-2">
               {entry.technologies.map((t) => (
-                <Badge
+                <WorkTechnologyBadge
                   key={t}
-                  variant="secondary"
-                  className={`gap-2 ${workBadge}`}
-                >
-                  <TechIcon alias={t} size={14} />
-                  {t}
-                </Badge>
+                  technology={t}
+                  company={entry.company}
+                />
               ))}
             </div>
           </AccordionContent>
