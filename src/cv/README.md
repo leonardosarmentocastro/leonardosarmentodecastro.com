@@ -115,6 +115,16 @@ Each skill declares `aliases` (the exact `technologies[]` strings that represent
 
 To add a skill, include its `aliases` so it links to the right jobs. Analytics: `skill_experiences_opened` and `skill_experience_clicked`.
 
+### Work → skill navigation
+
+Work accordion technology badges use `WorkTechnologyBadge` (`sections/Work/WorkTechnologyBadge.tsx`). `skillForTechnology` (`sections/Skills/matching.ts`) resolves a technology string to a skill via exact case-insensitive alias match (same rules as `experiencesForSkill`, inverted).
+
+- **Mapped badges** render as buttons. Desktop hover shows a Mantine tooltip with `{level} · stars`. Click scrolls to the skill card via `scrollToSkill` (`sections/Skills/anchors.ts`) and flashes it (`.cv-flash`, gated by `prefers-reduced-motion`).
+- **Touch devices** use a two-tap flow: first tap opens the tooltip (level + stars + *"Tap again to see skill"* hint); second tap navigates.
+- **Unmapped badges** (technology strings with no skill alias) stay static — no tooltip, no click.
+
+Skill cards expose `id={skillAnchorId(skill)}` for scroll targets. Analytics: `work_technology_skill_clicked`.
+
 ### shadcn/ui in Work
 
 Work timeline cards use shadcn/ui primitives under `src/components/ui/` (`Accordion`, `Card`, `Badge`). Add new components with `pnpm dlx shadcn@latest add <component>` — theme/CSS changes land in `src/vendor/shadcn/styles.css` (see `components.json`). The `cn()` helper is in `src/lib/utils.ts`.
