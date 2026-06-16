@@ -24,11 +24,16 @@ export const trackResumeWebClick = (): void => {
   posthog.capture("resume_web_clicked", { destination: "cv_page" });
 };
 
-export type ContactChannel = "whatsapp" | "email" | "linkedin" | "github";
+export type ContactChannel =
+  | "whatsapp"
+  | "email"
+  | "linkedin"
+  | "github"
+  | "site";
 export type ContactLocation =
   | "landing_modal"
   | "cv_contact_section"
-  | "cv_dock";
+  | "cv_hero";
 
 export const trackContactClick = (params: {
   channel: ContactChannel;

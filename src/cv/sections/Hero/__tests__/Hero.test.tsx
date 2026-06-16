@@ -1,15 +1,19 @@
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/analytics/events", () => ({
+  trackContactClick: vi.fn(),
   trackResumePdfClick: vi.fn(),
 }));
 
-import { trackResumePdfClick } from "@/analytics/events";
+import { trackContactClick, trackResumePdfClick } from "@/analytics/events";
 import { RESUME } from "@/cv/data";
 import { renderWithProviders, screen } from "@/test/render";
 
 import { Hero } from "../Hero";
+
+beforeEach(() => vi.clearAllMocks());
+afterEach(() => vi.clearAllMocks());
 
 describe("Hero", () => {
   it("renders the name as the section heading", () => {
@@ -108,6 +112,62 @@ describe("Hero", () => {
 
     await user.click(screen.getByRole("link", { name: /open resume pdf/i }));
 
+    expect(trackResumePdfClick).toHaveBeenCalledTimes(1);
+    expect(trackContactClick).not.toHaveBeenCalled();
+  });
+
+  it("fires trackContactClick with location=cv_hero for each contact link", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Hero />);
+
+    await user.click(screen.getByRole("link", { name: /linkedin/i }));
+    expect(trackContactClick).toHaveBeenCalledWith({
+      channel: "linkedin",
+      location: "cv_hero",
+    });
+
+    await user.click(screen.getByRole("link", { name: /github/i }));
+    expect(trackContactClick).toHaveBeenCalledWith({
+      channel: "github",
+      location: "cv_hero",
+    });
+
+    await user.click(screen.getByRole("link", { name: /email/i }));
+    expect(trackContactClick).toHaveBeenCalledWith({
+      channel: "email",
+      location: "cv_hero",
+    });
+
+    await user.click(screen.getByRole("link", { name: /whatsapp/i }));
+    expect(trackContactClick).toHaveBeenCalledWith({
+      channel: "whatsapp",
+      location: "cv_hero",
+    });
+
+    await user.click(screen.getByRole("link", { name: /personal site/i }));
+    expect(trackContactClick).toHaveBeenCalledWith({
+      channel: "site",
+      location: "cv_hero",
+    });
+
+    expect(trackContactClick).toHaveBeenCalledTimes(5);
+    expect(trackResumePdfClick).not.toHaveBeenCalled();
+  });
+
+  it("tracks analytics for every hero icon link", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Hero />);
+
+    const links = screen
+      .getByRole("link", { name: /linkedin/i })
+      .parentElement?.querySelectorAll("a");
+    expect(links).toHaveLength(6);
+
+    for (const link of links ?? []) {
+      await user.click(link);
+    }
+
+    expect(trackContactClick).toHaveBeenCalledTimes(5);
     expect(trackResumePdfClick).toHaveBeenCalledTimes(1);
   });
 

@@ -9,13 +9,15 @@ import {
   IconWorld,
 } from "@tabler/icons-react";
 
-import { trackResumePdfClick } from "@/analytics/events";
+import { trackContactClick, trackResumePdfClick } from "@/analytics/events";
 import { RESUME } from "@/cv/data";
 
 const BLURB_LEAD = "Senior Software Engineer with 10+ years of experience";
 
 const ICON_LINK =
   "inline-flex items-center justify-center rounded-md border border-neutral-300 p-1.5 text-neutral-500 transition-colors";
+
+const HERO_LOCATION = "cv_hero" as const;
 
 export const Hero = () => {
   const { name, role, kicker, location, blurb, avatar, links } = RESUME.hero;
@@ -58,6 +60,12 @@ export const Hero = () => {
             rel="noopener noreferrer"
             aria-label="LinkedIn"
             className={`${ICON_LINK} hover:border-[#0072b1] hover:text-[#0072b1]`}
+            onClick={() =>
+              trackContactClick({
+                channel: "linkedin",
+                location: HERO_LOCATION,
+              })
+            }
           >
             <IconBrandLinkedin className="w-5 h-5" />
           </a>
@@ -67,6 +75,9 @@ export const Hero = () => {
             rel="noopener noreferrer"
             aria-label="GitHub"
             className={`${ICON_LINK} hover:border-[#24292f] hover:text-[#24292f]`}
+            onClick={() =>
+              trackContactClick({ channel: "github", location: HERO_LOCATION })
+            }
           >
             <IconBrandGithub className="w-5 h-5" />
           </a>
@@ -74,6 +85,9 @@ export const Hero = () => {
             href={`mailto:${links.email}`}
             aria-label="Email"
             className={`${ICON_LINK} hover:border-[#bb001b] hover:text-[#bb001b]`}
+            onClick={() =>
+              trackContactClick({ channel: "email", location: HERO_LOCATION })
+            }
           >
             <IconMail className="w-5 h-5" />
           </a>
@@ -83,6 +97,12 @@ export const Hero = () => {
             rel="noopener noreferrer"
             aria-label="WhatsApp"
             className={`${ICON_LINK} hover:border-[#128c7e] hover:text-[#128c7e]`}
+            onClick={() =>
+              trackContactClick({
+                channel: "whatsapp",
+                location: HERO_LOCATION,
+              })
+            }
           >
             <IconBrandWhatsapp className="w-5 h-5" />
           </a>
@@ -102,6 +122,9 @@ export const Hero = () => {
             rel="noopener noreferrer"
             aria-label="Personal site"
             className={`${ICON_LINK} hover:border-black hover:text-black`}
+            onClick={() =>
+              trackContactClick({ channel: "site", location: HERO_LOCATION })
+            }
           >
             <IconWorld className="w-5 h-5" />
           </a>

@@ -9,7 +9,6 @@ The CV domain. Owns the data, types, and UI building blocks for the `/cv` route 
 | `types.ts` | `Resume`, `WorkExperience`, `Skill`, `Education`, `Milestone`, `ResumeLinks`. |
 | `data.ts` | The single `RESUME` object — source of truth for every CV field on the site. |
 | `ResumeOptionsModal.tsx` | The "PDF vs WEB" chooser shown from the landing page's RESUME button. |
-| `Dock/Dock.tsx` | Legacy floating dock (not mounted on `/cv`; Hero icon row covers the same links). |
 | `sections/<Section>/<Section>.tsx` | Hero, About, Work, Education, Skills, Contact — each independently testable. |
 | `sections/About/CompanyLogoMarquee.tsx` | About-section company logo marquee (Magic UI `Marquee`). |
 | `cv-colors.ts` | PDF brand hex tokens and Tailwind class helpers shared across CV sections. |
@@ -182,17 +181,13 @@ import { ResumeOptionsModal } from "@/cv/ResumeOptionsModal";
 
 Pass `onChoiceClick` if the consuming page wants to suppress its own dismiss-tracking when a CTA was clicked (see how `LandingPage` uses a `ctaClickedRef` for the canonical pattern).
 
-## The Dock
-
-`Dock/Dock.tsx` is kept in the repo but **not mounted** on `/cv` — the Hero icon row (LinkedIn, GitHub, Email, WhatsApp, PDF, personal site last) covers the same quick actions without a fixed overlay.
-
 ## Avatar
 
 `public/leonardo-05.jpg` is rendered by the Hero section (portrait beside text on desktop, centered above on mobile). Update `RESUME.hero.avatar` in `data.ts` to change the image.
 
 ## Replacing the contact channel set
 
-The CV exposes WhatsApp, Email, LinkedIn, and GitHub from two surfaces: the landing page's contact modal and the CV Contact section. Hero also links to the resume PDF and personal site. All contact CTAs fire `trackContactClick({ channel, location })` from `@/analytics/events`. Adding a new channel:
+The CV exposes WhatsApp, Email, LinkedIn, and GitHub from the landing contact modal, the CV Contact section, and the Hero icon row. Hero also links to the resume PDF (`trackResumePdfClick`) and personal site (`contact_clicked` with `channel: "site"`). All contact CTAs fire `trackContactClick({ channel, location })` from `@/analytics/events`. Adding a new channel:
 
 1. Extend the `ContactChannel` union in `src/analytics/events.ts`.
 2. Add a CTA in each surface that needs the new channel.
