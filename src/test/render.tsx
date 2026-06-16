@@ -4,7 +4,17 @@ import { type RenderOptions, render } from "@testing-library/react";
 import type { ReactElement, ReactNode } from "react";
 
 const Providers = ({ children }: { children: ReactNode }) => (
-  <MantineProvider>
+  <MantineProvider
+    theme={{
+      components: {
+        Modal: {
+          defaultProps: {
+            transitionProps: { duration: 0 },
+          },
+        },
+      },
+    }}
+  >
     <ModalsProvider>{children}</ModalsProvider>
   </MantineProvider>
 );
