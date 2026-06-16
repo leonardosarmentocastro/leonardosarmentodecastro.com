@@ -21,6 +21,10 @@ export const cvBorderAccent = "border-[#3c78d8]";
 /** Work timeline — collapsed card */
 export const workCardCollapsed = "bg-white border border-neutral-200 shadow-sm";
 
+/** Hover fill when the accordion trigger is hovered (whole card, not trigger only) */
+export const workCardTriggerHover =
+  "has-[[data-slot=accordion-trigger]:hover]:bg-neutral-100";
+
 /** Work timeline — expanded card (white surface, accent border) */
 export const workCardExpanded =
   "bg-white border border-[#3c78d8] ring-1 ring-[#3c78d8] shadow-md";

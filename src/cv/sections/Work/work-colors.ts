@@ -13,6 +13,7 @@ export {
   workBody,
   workCardCollapsed,
   workCardExpanded,
+  workCardTriggerHover,
   workDatePillDefault,
   workMeta,
   workMetaOnDark,
