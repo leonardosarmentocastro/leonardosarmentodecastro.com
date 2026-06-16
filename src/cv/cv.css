@@ -54,3 +54,26 @@
 .cv-work-checkpoint.cv-checkpoint-reached .cv-timeline-node-ping {
   background-color: #3c78d8;
 }
+
+/* Mapped work tech badges are buttons; Mantine reset overrides Tailwind utilities */
+button[data-testid^="work-tech-badge-"] {
+  font-family: var(--font-quicksand), sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1rem;
+  color: #171717;
+  background-color: #e5e5e5;
+  border-color: transparent;
+}
+
+button[data-testid^="work-tech-badge-"]:hover,
+button[data-testid^="work-tech-badge-"]:focus-visible {
+  color: #171717;
+  background-color: #e5e5e5;
+  border-color: transparent;
+}
+
+/* Portaled tooltip for skill level + stars */
+.cv-work-tech-tooltip {
+  font-family: var(--font-quicksand), sans-serif;
+}

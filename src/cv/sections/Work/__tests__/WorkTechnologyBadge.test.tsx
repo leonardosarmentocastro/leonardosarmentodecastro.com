@@ -36,14 +36,23 @@ describe("WorkTechnologyBadge", () => {
     expect(screen.getByText("Java")).toBeInTheDocument();
   });
 
-  it("renders a mapped technology as a button with an accessible label", () => {
+  it("renders a mapped technology as a button with the same badge styling as unmapped", () => {
     renderWithProviders(
-      <WorkTechnologyBadge technology="TypeScript" company="Pinterest" />,
+      <>
+        <WorkTechnologyBadge technology="Java" company="Daitan Group" />
+        <WorkTechnologyBadge technology="TypeScript" company="Pinterest" />
+      </>,
     );
-    const btn = screen.getByRole("button", {
+    const unmapped = screen.getByTestId("work-tech-badge-java");
+    const mapped = screen.getByRole("button", {
       name: /View TypeScript skill — Advanced, 4 of 5 stars/i,
     });
-    expect(btn).toHaveAttribute("data-testid", "work-tech-badge-typescript");
+
+    for (const badge of [unmapped, mapped]) {
+      expect(badge).toHaveClass("font-quicksand");
+      expect(badge).toHaveClass("bg-neutral-200");
+      expect(badge).toHaveClass("text-neutral-900");
+    }
   });
 
   it("navigates immediately on desktop click", async () => {

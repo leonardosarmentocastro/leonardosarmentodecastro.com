@@ -31,6 +31,9 @@ const BadgeContent = ({ technology }: { technology: string }) => (
   </>
 );
 
+/** Shared visual classes for mapped and unmapped work technology badges */
+const badgeClassName = `gap-2 ${workBadge}`;
+
 export const WorkTechnologyBadge = ({ technology, company }: Props) => {
   const skill = skillForTechnology(technology, RESUME.skills);
   const isFinePointer = useMediaQuery(
@@ -54,7 +57,7 @@ export const WorkTechnologyBadge = ({ technology, company }: Props) => {
     return (
       <Badge
         variant="secondary"
-        className={`gap-2 ${workBadge}`}
+        className={badgeClassName}
         data-testid={technologyTestId(technology)}
       >
         <BadgeContent technology={technology} />
@@ -63,7 +66,7 @@ export const WorkTechnologyBadge = ({ technology, company }: Props) => {
   }
 
   const tooltipLabel = (
-    <span className="flex flex-col gap-1">
+    <span className="flex flex-col gap-1 font-quicksand">
       <span className="inline-flex items-center gap-1">
         {skill.level} · <SkillStars count={skill.stars} />
       </span>
@@ -91,6 +94,7 @@ export const WorkTechnologyBadge = ({ technology, company }: Props) => {
       position="top"
       withArrow
       multiline
+      classNames={{ tooltip: "font-quicksand cv-work-tech-tooltip" }}
       opened={isFinePointer ? undefined : hintOpen}
       events={{ hover: isFinePointer, focus: true, touch: false }}
     >
@@ -107,7 +111,7 @@ export const WorkTechnologyBadge = ({ technology, company }: Props) => {
         }
         variant="secondary"
         data-testid={technologyTestId(technology)}
-        className={`gap-2 cursor-pointer hover:border-neutral-400 transition-colors ${workBadge}`}
+        className={`${badgeClassName} cursor-pointer`}
       >
         <BadgeContent technology={technology} />
       </Badge>
