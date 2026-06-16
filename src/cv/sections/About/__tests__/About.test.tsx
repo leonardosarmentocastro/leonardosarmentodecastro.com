@@ -29,11 +29,12 @@ describe("About", () => {
 
   it("renders company logo marquee below about paragraphs", () => {
     renderWithProviders(<About />);
-    expect(
-      screen.getByTestId("company-logo-marquee"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getAllByRole("button", { name: /view .+ experience/i }),
-    ).toHaveLength(RESUME.workExperience.length);
+    expect(screen.getByTestId("company-logo-marquee")).toBeInTheDocument();
+    const labels = new Set(
+      screen
+        .getAllByRole("button", { name: /view .+ experience/i })
+        .map((button) => button.getAttribute("aria-label")),
+    );
+    expect(labels.size).toBe(RESUME.workExperience.length);
   });
 });

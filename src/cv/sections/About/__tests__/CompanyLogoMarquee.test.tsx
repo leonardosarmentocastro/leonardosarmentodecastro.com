@@ -36,14 +36,17 @@ describe("CompanyLogoMarquee", () => {
     const buttons = screen.getAllByRole("button", {
       name: /view .+ experience/i,
     });
-    expect(buttons).toHaveLength(RESUME.workExperience.length);
+    const labels = new Set(
+      buttons.map((button) => button.getAttribute("aria-label")),
+    );
+    expect(labels.size).toBe(RESUME.workExperience.length);
 
     for (const entry of RESUME.workExperience) {
       expect(
-        screen.getByRole("button", {
+        screen.getAllByRole("button", {
           name: `View ${entry.company} experience`,
-        }),
-      ).toBeInTheDocument();
+        }).length,
+      ).toBeGreaterThanOrEqual(1);
     }
   });
 
@@ -57,7 +60,9 @@ describe("CompanyLogoMarquee", () => {
     mockUseMediaQuery.mockReturnValue(true);
     renderWithProviders(<CompanyLogoMarquee />);
     expect(screen.getByTestId("company-logo-static")).toBeInTheDocument();
-    expect(screen.queryByTestId("company-logo-marquee")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("company-logo-marquee"),
+    ).not.toBeInTheDocument();
   });
 
   it("calls scrollToWorkEntry with the matching entry on logo click", async () => {
@@ -66,9 +71,9 @@ describe("CompanyLogoMarquee", () => {
 
     const target = RESUME.workExperience[0];
     await user.click(
-      screen.getByRole("button", {
+      screen.getAllByRole("button", {
         name: `View ${target.company} experience`,
-      }),
+      })[0],
     );
 
     expect(scrollToWorkEntry).toHaveBeenCalledTimes(1);
