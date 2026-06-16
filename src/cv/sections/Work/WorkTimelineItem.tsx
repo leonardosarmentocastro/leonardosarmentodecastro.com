@@ -15,7 +15,6 @@ import { workEntryAnchorId } from "./anchors";
 import { CompanyLogo } from "./CompanyLogo";
 import {
   workBadge,
-  workBadgeOnDark,
   workBody,
   workCardCollapsed,
   workCardExpanded,
@@ -111,7 +110,6 @@ export const WorkTimelineItem = ({
 }: Props) => {
   const anchorId = workEntryAnchorId(entry);
   const cardClass = isOpen ? workCardExpanded : workCardCollapsed;
-  const badgeClass = isOpen ? workBadgeOnDark : workBadge;
   const triggerLabel = `Toggle ${entry.company} work experience details`;
   const metadata = workEntryMetadata(entry);
   const title = workEntryTitle(entry);
@@ -139,11 +137,7 @@ export const WorkTimelineItem = ({
         <AccordionItem value={anchorId} className="border-none">
           <AccordionTrigger
             aria-label={triggerLabel}
-            className={`cursor-pointer px-4 py-3 hover:no-underline focus-visible:ring-2 focus-visible:ring-offset-2 rounded-xl [&[data-state=open]>svg]:rotate-180 ${
-              isOpen
-                ? "hover:bg-[#2d2a24]/90 focus-visible:ring-[#3c78d8] text-[#2d2a24] [&_svg]:text-[#6c6965]"
-                : "hover:bg-neutral-50/80 focus-visible:ring-[#3c78d8] text-neutral-900 [&_svg]:text-[#6c6965]"
-            }`}
+            className="cursor-pointer px-4 py-3 hover:no-underline focus-visible:ring-2 focus-visible:ring-offset-2 rounded-xl [&[data-state=open]>svg]:rotate-180 hover:bg-neutral-50/80 focus-visible:ring-[#3c78d8] text-neutral-900 [&_svg]:text-[#6c6965]"
           >
             <div className="flex items-start gap-3 text-left w-full pr-2">
               <CompanyLogo company={entry.company} />
@@ -207,7 +201,7 @@ export const WorkTimelineItem = ({
                 <Badge
                   key={t}
                   variant="secondary"
-                  className={`gap-2 ${badgeClass}`}
+                  className={`gap-2 ${workBadge}`}
                 >
                   <TechIcon alias={t} size={14} />
                   {t}

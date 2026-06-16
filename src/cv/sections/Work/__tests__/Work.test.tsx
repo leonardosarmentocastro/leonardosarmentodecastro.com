@@ -95,13 +95,15 @@ describe("Work", () => {
     ).toHaveAttribute("aria-expanded", "true");
   });
 
-  it("applies full dark theme when accordion is expanded", async () => {
+  it("applies blue accent border when accordion is expanded", async () => {
     const user = userEvent.setup();
     renderWithProviders(<Work />);
     const first = RESUME.workExperience[0];
     const card = screen.getByTestId(`work-entry-${first.company}`);
     await user.click(within(card).getByRole("button"));
-    expect(card.querySelector("[data-slot=card]")).toHaveClass("bg-[#2d2a24]");
+    const cardEl = card.querySelector("[data-slot=card]");
+    expect(cardEl).toHaveClass("bg-white");
+    expect(cardEl).toHaveClass("border-[#3c78d8]");
   });
 
   it("exposes an accessible, pointer-styled accordion trigger per entry", () => {
@@ -137,7 +139,7 @@ describe("Work", () => {
     expect(node.querySelector(".cv-timeline-node-inner")).toBeInTheDocument();
   });
 
-  it("uses light tech badges on expanded dark cards", async () => {
+  it("uses gray Quicksand tech badges on expanded cards", async () => {
     const user = userEvent.setup();
     renderWithProviders(<Work />);
     const entry = screen.getByTestId("work-entry-Pinterest");
@@ -145,7 +147,8 @@ describe("Work", () => {
     const badge = within(entry)
       .getByText("React.js")
       .closest("[data-slot='badge']");
-    expect(badge).toHaveClass("bg-neutral-100");
+    expect(badge).toHaveClass("font-quicksand");
+    expect(badge).toHaveClass("bg-neutral-200");
     expect(badge).toHaveClass("text-neutral-900");
   });
 

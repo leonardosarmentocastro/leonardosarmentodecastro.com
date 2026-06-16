@@ -21,8 +21,9 @@ export const cvBorderAccent = "border-[#3c78d8]";
 /** Work timeline — collapsed card */
 export const workCardCollapsed = "bg-white border border-neutral-200 shadow-sm";
 
-/** Work timeline — expanded card */
-export const workCardExpanded = `${cvBgForeground} border-[#2d2a24] shadow-md`;
+/** Work timeline — expanded card (white surface, accent border) */
+export const workCardExpanded =
+  "bg-white border border-[#3c78d8] ring-1 ring-[#3c78d8] shadow-md";
 
 export const workMeta = cvTextMuted;
 export const workMetaOnDark = cvTextMuted;
@@ -33,12 +34,12 @@ export const workSubtitle = `${cvTextMuted} font-bold`;
 export const workBody = `${cvTextMuted} font-normal`;
 
 export const workBadge =
-  "bg-neutral-100 text-neutral-800 border-transparent hover:bg-neutral-100";
-export const workBadgeOnDark =
-  "bg-neutral-100 text-neutral-900 border-transparent hover:bg-neutral-100";
+  "font-quicksand bg-neutral-200 text-neutral-900 border-transparent hover:bg-neutral-200";
+/** @deprecated Same as workBadge — expanded cards no longer use a dark theme. */
+export const workBadgeOnDark = workBadge;
 
 export const workDatePillDefault =
-  "cv-date-pill bg-neutral-200 text-neutral-700 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap transition-colors duration-300";
+  "cv-date-pill font-quicksand bg-neutral-200 text-neutral-700 text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap transition-colors duration-300";
 
 export const workSpineTrack = "bg-[#c5d9f5]";
 export const workSpineFill = "bg-[#3c78d8]";

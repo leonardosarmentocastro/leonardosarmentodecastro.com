@@ -39,7 +39,7 @@ Brand palette lives in `src/cv/cv-colors.ts`:
 | Token | Hex | Typical use |
 | --- | --- | --- |
 | `accent` | `#3c78d8` | Hero kicker/role, work titles, links, spine fill, reached nodes |
-| `foreground` | `#2d2a24` | Name, section h2s, expanded work card background |
+| `foreground` | `#2d2a24` | Name, section h2s |
 | `muted` | `#6c6965` | Work metadata, body copy, milestones |
 | `mutedAlt` | `#6d6964` | Hero blurb |
 | `spineTrack` | `#c5d9f5` | Timeline spine track |
