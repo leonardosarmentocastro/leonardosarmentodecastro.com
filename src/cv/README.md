@@ -71,7 +71,7 @@ Logos live in `public/cv/companies/` (kebab-case filenames). `company-logos.ts` 
 
 ## About company logo marquee
 
-`sections/About/CompanyLogoMarquee.tsx` renders all `RESUME.workExperience` company logos in a [Magic UI `Marquee`](https://magicui.design/docs/components/marquee) (`src/components/ui/marquee.tsx`) directly below the About paragraphs.
+`sections/About/CompanyLogoMarquee.tsx` renders all `RESUME.workExperience` company logos in a [Magic UI `Marquee`](https://magicui.design/docs/components/marquee) (`src/components/ui/Marquee.tsx`) directly below the About paragraphs.
 
 - **Assets:** `companyLogoSrc()` → `public/cv/companies/*` (same mapping as Work cards).
 - **Click:** each logo is a button calling `scrollToWorkEntry(entry)` — smooth scroll, accordion expand (`cv:open-work-entry`), and `.cv-flash` highlight (gated by `prefers-reduced-motion`).
@@ -88,7 +88,7 @@ When scroll progress first reaches a timeline node, `Work.tsx`:
 2. Fires a GSAP scale pulse on the accordion card (once per entry, tracked in a ref).
 3. Passes `showHeaderAnimation` / `showBodyAnimation` to `WorkTimelineItem`.
 
-**TextAnimate** (`@/components/ui/text-animate`, Magic UI / `motion/react`):
+**TextAnimate** (`@/components/ui/TextAnimate`, Magic UI / `motion/react`):
 
 | Target | Preset | When |
 | --- | --- | --- |
