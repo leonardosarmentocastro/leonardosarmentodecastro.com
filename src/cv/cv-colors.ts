@@ -19,8 +19,7 @@ export const cvBgAccent = "bg-[#3c78d8]";
 export const cvBorderAccent = "border-[#3c78d8]";
 
 /** Work timeline — collapsed card */
-export const workCardCollapsed =
-  "bg-white border border-neutral-200 shadow-sm";
+export const workCardCollapsed = "bg-white border border-neutral-200 shadow-sm";
 
 /** Work timeline — expanded card */
 export const workCardExpanded = `${cvBgForeground} border-[#2d2a24] shadow-md`;

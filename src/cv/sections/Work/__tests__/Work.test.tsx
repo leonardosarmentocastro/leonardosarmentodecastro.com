@@ -19,7 +19,9 @@ describe("Work", () => {
   it("renders every company name in accordion titles", () => {
     renderWithProviders(<Work />);
     for (const w of RESUME.workExperience) {
-      expect(screen.getByText(new RegExp(`"${w.company}"`))).toBeInTheDocument();
+      expect(
+        screen.getByText(new RegExp(`"${w.company}"`)),
+      ).toBeInTheDocument();
     }
   });
 
@@ -40,15 +42,22 @@ describe("Work", () => {
   it("renders company logo in accordion trigger", () => {
     renderWithProviders(<Work />);
     const card = screen.getByTestId("work-entry-Pinterest");
-    const img = within(card).getByRole("presentation");
+    const img = within(card).getByTestId("company-logo");
     expect(img).toHaveAttribute("src", "/cv/companies/pinterest.jpg");
   });
 
   it("applies Quicksand blue title and gray bold metadata classes", () => {
     renderWithProviders(<Work />);
     const card = screen.getByTestId("work-entry-Pinterest");
-    const title = within(card).getByText(/Senior Software Engineer at "Pinterest"/);
-    expect(title).toHaveClass("font-quicksand", "text-[#3c78d8]", "font-bold", "uppercase");
+    const title = within(card).getByText(
+      /Senior Software Engineer at "Pinterest"/,
+    );
+    expect(title).toHaveClass(
+      "font-quicksand",
+      "text-[#3c78d8]",
+      "font-bold",
+      "uppercase",
+    );
   });
 
   it("shows description and bullets after expanding accordion", async () => {
@@ -66,9 +75,7 @@ describe("Work", () => {
     renderWithProviders(<Work />);
     expect(screen.getAllByTestId("work-milestone").length).toBeGreaterThan(0);
     for (const m of RESUME.milestones) {
-      expect(
-        screen.getByRole("note", { name: m.text }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole("note", { name: m.text })).toBeInTheDocument();
     }
   });
 

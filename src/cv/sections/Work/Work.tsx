@@ -3,7 +3,7 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Accordion } from "@/components/ui/Accordion";
 import { RESUME } from "@/cv/data";
@@ -241,9 +241,8 @@ export const Work = () => {
                   const row = timeline.querySelector<HTMLElement>(
                     `[data-checkpoint-id="${id}"]`,
                   );
-                  const card = row?.querySelector<HTMLElement>(
-                    "[data-slot=card]",
-                  );
+                  const card =
+                    row?.querySelector<HTMLElement>("[data-slot=card]");
                   if (card) {
                     gsap.fromTo(
                       card,
@@ -380,25 +379,24 @@ export const Work = () => {
                         workEntryAnchorId(counterpart);
                       const counterpartActivated =
                         activatedAnchorIds.has(counterpartAnchorId);
-                      const counterpartOpen = openValues.includes(
-                        counterpartAnchorId,
-                      );
+                      const counterpartOpen =
+                        openValues.includes(counterpartAnchorId);
                       return (
-                      <div
-                        key={counterpart.company}
-                        className="relative z-20 pointer-events-none"
-                      >
-                        <TimelineEntryRow
-                          entry={counterpart}
-                          dateOnCard
-                          stickyPointerPassThrough
-                          isOpen={counterpartOpen}
-                          showHeaderAnimation={counterpartActivated}
-                          showBodyAnimation={
-                            counterpartActivated && counterpartOpen
-                          }
-                        />
-                      </div>
+                        <div
+                          key={counterpart.company}
+                          className="relative z-20 pointer-events-none"
+                        >
+                          <TimelineEntryRow
+                            entry={counterpart}
+                            dateOnCard
+                            stickyPointerPassThrough
+                            isOpen={counterpartOpen}
+                            showHeaderAnimation={counterpartActivated}
+                            showBodyAnimation={
+                              counterpartActivated && counterpartOpen
+                            }
+                          />
+                        </div>
                       );
                     })}
                   </div>

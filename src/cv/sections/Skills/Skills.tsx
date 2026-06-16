@@ -85,7 +85,9 @@ const SkillCardInner = ({ skill }: { skill: Skill }) => {
         </span>
       )}
       <span className="flex flex-row justify-between items-baseline gap-2">
-        <span className="text-sm font-semibold text-[#2d2a24]">{skill.name}</span>
+        <span className="text-sm font-semibold text-[#2d2a24]">
+          {skill.name}
+        </span>
         <span className="flex flex-row items-center gap-1">
           <span className="text-xs text-neutral-500">{skill.level}</span>
           <Stars count={skill.stars} />

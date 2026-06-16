@@ -11,7 +11,7 @@ export const CompanyLogo = ({ company, className = "" }: Props) => {
     <img
       src={src}
       alt=""
-      role="presentation"
+      data-testid="company-logo"
       className={`w-12 h-12 md:w-[60px] md:h-[60px] object-contain shrink-0 ${className}`}
     />
   );

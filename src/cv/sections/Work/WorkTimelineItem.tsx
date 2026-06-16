@@ -1,6 +1,5 @@
 "use client";
 
-import { TextAnimate } from "@/components/ui/text-animate";
 import {
   AccordionContent,
   AccordionItem,
@@ -8,6 +7,7 @@ import {
 } from "@/components/ui/Accordion";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
+import { TextAnimate } from "@/components/ui/text-animate";
 import { TechIcon } from "@/cv/TechIcon";
 import type { WorkExperience } from "@/cv/types";
 

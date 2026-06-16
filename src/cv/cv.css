@@ -51,6 +51,6 @@
   color: #ffffff;
 }
 
-.cv-work-checkpoint .cv-timeline-node-ping {
+.cv-work-checkpoint.cv-checkpoint-reached .cv-timeline-node-ping {
   background-color: #3c78d8;
 }
