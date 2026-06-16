@@ -14,6 +14,17 @@ describe("Skills", () => {
     ).toBeInTheDocument();
   });
 
+  it("uses Quicksand for skill cards and category labels", () => {
+    renderWithProviders(<Skills />);
+    expect(document.getElementById("skills")).toHaveClass("font-quicksand");
+    expect(screen.getByTestId("skill-card-JavaScript")).toHaveClass(
+      "font-quicksand",
+    );
+    expect(
+      screen.getByRole("heading", { level: 3, name: /^language$/i }),
+    ).toHaveClass("font-quicksand");
+  });
+
   it("groups skills under each category that appears in the data", () => {
     renderWithProviders(<Skills />);
     const presentCategories = Array.from(

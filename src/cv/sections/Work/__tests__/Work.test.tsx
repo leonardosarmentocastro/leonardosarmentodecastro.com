@@ -16,19 +16,48 @@ describe("Work", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders every company name", () => {
+  it("renders every company name in accordion titles", () => {
     renderWithProviders(<Work />);
     for (const w of RESUME.workExperience) {
-      expect(screen.getByText(w.company)).toBeInTheDocument();
+      expect(
+        screen.getByText(new RegExp(`"${w.company}"`)),
+      ).toBeInTheDocument();
     }
   });
 
-  it("renders collapsed header with company, period, role for first entry", () => {
+  it("renders PDF-style title and metadata in accordion header", () => {
     renderWithProviders(<Work />);
     const first = RESUME.workExperience[0];
     const card = screen.getByTestId(`work-entry-${first.company}`);
-    expect(within(card).getByText(first.company)).toBeInTheDocument();
-    expect(within(card).getByText(new RegExp(first.role))).toBeInTheDocument();
+    expect(
+      within(card).getByText(
+        'Senior Software Engineer at "Pinterest" (via nearshore agency)',
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(card).getByText(`(remote) ${first.startDate} – ${first.endDate}`),
+    ).toBeInTheDocument();
+  });
+
+  it("renders company logo in accordion trigger", () => {
+    renderWithProviders(<Work />);
+    const card = screen.getByTestId("work-entry-Pinterest");
+    const img = within(card).getByTestId("company-logo");
+    expect(img).toHaveAttribute("src", "/cv/companies/pinterest.jpg");
+  });
+
+  it("applies Quicksand blue title and gray bold metadata classes", () => {
+    renderWithProviders(<Work />);
+    const card = screen.getByTestId("work-entry-Pinterest");
+    const title = within(card).getByText(
+      /Senior Software Engineer at "Pinterest"/,
+    );
+    expect(title).toHaveClass(
+      "font-quicksand",
+      "text-[#3c78d8]",
+      "font-bold",
+      "uppercase",
+    );
   });
 
   it("shows description and bullets after expanding accordion", async () => {
@@ -46,7 +75,7 @@ describe("Work", () => {
     renderWithProviders(<Work />);
     expect(screen.getAllByTestId("work-milestone").length).toBeGreaterThan(0);
     for (const m of RESUME.milestones) {
-      expect(screen.getByText(m.text)).toBeInTheDocument();
+      expect(screen.getByRole("note", { name: m.text })).toBeInTheDocument();
     }
   });
 
@@ -66,15 +95,15 @@ describe("Work", () => {
     ).toHaveAttribute("aria-expanded", "true");
   });
 
-  it("applies full dark theme when accordion is expanded", async () => {
+  it("applies blue accent border when accordion is expanded", async () => {
     const user = userEvent.setup();
     renderWithProviders(<Work />);
     const first = RESUME.workExperience[0];
     const card = screen.getByTestId(`work-entry-${first.company}`);
     await user.click(within(card).getByRole("button"));
-    expect(card.querySelector("[data-slot=card]")).toHaveClass(
-      "bg-neutral-900",
-    );
+    const cardEl = card.querySelector("[data-slot=card]");
+    expect(cardEl).toHaveClass("bg-white");
+    expect(cardEl).toHaveClass("border-[#3c78d8]");
   });
 
   it("exposes an accessible, pointer-styled accordion trigger per entry", () => {
@@ -110,7 +139,7 @@ describe("Work", () => {
     expect(node.querySelector(".cv-timeline-node-inner")).toBeInTheDocument();
   });
 
-  it("uses light tech badges on expanded dark cards", async () => {
+  it("uses gray Quicksand tech badges on expanded cards", async () => {
     const user = userEvent.setup();
     renderWithProviders(<Work />);
     const entry = screen.getByTestId("work-entry-Pinterest");
@@ -118,7 +147,8 @@ describe("Work", () => {
     const badge = within(entry)
       .getByText("React.js")
       .closest("[data-slot='badge']");
-    expect(badge).toHaveClass("bg-neutral-100");
+    expect(badge).toHaveClass("font-quicksand");
+    expect(badge).toHaveClass("bg-neutral-200");
     expect(badge).toHaveClass("text-neutral-900");
   });
 

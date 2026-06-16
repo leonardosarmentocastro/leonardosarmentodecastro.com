@@ -1,0 +1,21 @@
+const COMPANY_LOGO: Record<string, string> = {
+  Pinterest: "/cv/companies/pinterest.jpg",
+  "Blue Yonder": "/cv/companies/blue-yonder.png",
+  Hrizn: "/cv/companies/hrizn.png",
+  PairTree: "/cv/companies/pairtree.png",
+  PureCars: "/cv/companies/purecars.png",
+  "Radical Imaging": "/cv/companies/radical-imaging.png",
+  Écolheita: "/cv/companies/ecolheita.png",
+  "Quero Educação": "/cv/companies/quero-educacao.png",
+  "Spark Networks": "/cv/companies/spark-networks.png",
+  "Daitan Group": "/cv/companies/daitan-group.png",
+  Dextra: "/cv/companies/dextra.png",
+  Coyô: "/cv/companies/coyo.png",
+  "CI&T": "/cv/companies/ciandt.png",
+  ACTi: "/cv/companies/acti.png",
+  VPSA: "/cv/companies/vpsa.png",
+  Dash: "/cv/companies/dash.png",
+};
+
+export const companyLogoSrc = (company: string): string | undefined =>
+  COMPANY_LOGO[company];

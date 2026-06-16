@@ -5,11 +5,11 @@ export const RESUME: Resume = {
     name: "Leonardo Sarmento de Castro",
     role: "Senior Software Engineer",
     kicker: "AI-assisted · TypeScript · Node.js · React · AWS",
-    location: "São José dos Campos, São Paulo — Brazil",
+    location: "São José dos Campos, São Paulo — Brazil 🇧🇷",
     blurb:
       "Senior Software Engineer with 10+ years of experience building scalable, high-performance web applications and distributed systems using JavaScript, TypeScript, React, and Node.js. Experienced working closely with US product teams to deliver measurable improvements in performance, conversions, developer experience and product adoption.",
-    // TODO: replace public/cv/avatar.jpg with a real headshot.
-    avatar: "/cv/avatar.jpg",
+    // Hero portrait — full-height beside text on md+; centered above on mobile.
+    avatar: "/leonardo-05.jpg",
     links: {
       linkedin:
         "https://www.linkedin.com/in/leonardo-sarmento-de-castro-a249b945/",

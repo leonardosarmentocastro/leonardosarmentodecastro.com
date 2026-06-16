@@ -60,7 +60,9 @@ export const Contact = () => {
 
   return (
     <section id="contact" className="flex flex-col gap-5 items-center">
-      <h2 className="text-xl font-semibold tracking-tight">Get in Touch</h2>
+      <h2 className="text-xl font-domine text-[#2d2a24] tracking-tight">
+        Get in Touch
+      </h2>
 
       <div className="flex flex-col gap-3 items-stretch w-full max-w-md">
         <a
@@ -107,8 +109,9 @@ export const Contact = () => {
         </a>
       </div>
 
-      <p className="text-center text-[14px] font-spectral font-normal italic text-neutral-700">
-        Current time for me is <strong>{currentTime}</strong> (GMT-3)
+      <p className="text-center text-[14px] font-quicksand text-[#6d6964]">
+        Current time for me is{" "}
+        <strong className="text-[#3c78d8]">{currentTime}</strong> (GMT-3)
       </p>
     </section>
   );

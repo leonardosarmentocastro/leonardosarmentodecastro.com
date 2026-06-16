@@ -11,6 +11,9 @@ The CV domain. Owns the data, types, and UI building blocks for the `/cv` route 
 | `ResumeOptionsModal.tsx` | The "PDF vs WEB" chooser shown from the landing page's RESUME button. |
 | `Dock/Dock.tsx` | Floating bottom dock on `/cv` (Home / LinkedIn / Email / WhatsApp / PDF). |
 | `sections/<Section>/<Section>.tsx` | Hero, About, Work, Education, Skills, Contact — each independently testable. |
+| `cv-colors.ts` | PDF brand hex tokens and Tailwind class helpers shared across CV sections. |
+| `company-logos.ts` | Maps `WorkExperience.company` strings to `/cv/companies/*` assets. |
+| `cv.css` | Checkpoint/spine styles, flash animation, blue-derived timeline palette. |
 | `__tests__/data.test.ts` | Guard rails on the shape of `RESUME`. |
 
 ## Editing the CV
@@ -28,6 +31,70 @@ Optional `stickyThrough: "<Company>"` pins a parallel role on its lane while scr
 Milestones render as horizontal dividers, not timeline cards. A **today** origin marker sits at the top of the spine (always active, no ping animation).
 
 Scroll-driven spine fill and card fade-ins use GSAP `ScrollTrigger` (`prefers-reduced-motion: reduce` marks all checkpoints reached immediately). Domain styles for checkpoints and flash animation live in `src/cv/cv.css`.
+
+## Colors and typography
+
+Brand palette lives in `src/cv/cv-colors.ts`:
+
+| Token | Hex | Typical use |
+| --- | --- | --- |
+| `accent` | `#3c78d8` | Hero kicker/role, work titles, links, spine fill, reached nodes |
+| `foreground` | `#2d2a24` | Name, section h2s |
+| `muted` | `#6c6965` | Work metadata, body copy, milestones |
+| `mutedAlt` | `#6d6964` | Hero blurb |
+| `spineTrack` | `#c5d9f5` | Timeline spine track |
+
+Import Tailwind helpers (e.g. `cvTextAccent`, `workTitle`) from `@/cv/cv-colors`.
+
+Font utilities (`font-spectral`, `font-domine`, `font-quicksand`) are defined in `src/app/globals.css` and loaded in `src/app/layout.tsx`:
+
+| Element | Font |
+| --- | --- |
+| Hero kicker / role | Spectral, uppercase, accent blue |
+| Hero name, section h2s | Domine, foreground |
+| Hero blurb, section body | Quicksand |
+| Work card copy | Quicksand |
+| Milestones | Spectral, italic |
+
+## Company logos
+
+Logos live in `public/cv/companies/` (kebab-case filenames). `company-logos.ts` maps each `RESUME.workExperience[*].company` to its path via `companyLogoSrc(company)`.
+
+**Adding a logo:**
+
+1. Add the image to `public/cv/companies/<kebab-name>.png` (or `.jpg`).
+2. Add an entry to `COMPANY_LOGO` in `src/cv/company-logos.ts`.
+3. Run `pnpm test:run src/cv/sections/Work/__tests__/CompanyLogo.test.tsx` — it asserts every company resolves to an existing file.
+
+`CompanyLogo.tsx` renders a square `<img>` (48 px mobile, 60 px desktop) with no background wrapper.
+
+## Scroll animations
+
+### Checkpoint activation (Work timeline)
+
+When scroll progress first reaches a timeline node, `Work.tsx`:
+
+1. Adds the entry anchor id to `activatedAnchorIds` React state (once per entry).
+2. Fires a GSAP scale pulse on the accordion card (once per entry, tracked in a ref).
+3. Passes `showHeaderAnimation` / `showBodyAnimation` to `WorkTimelineItem`.
+
+**TextAnimate** (`@/components/ui/text-animate`, Magic UI / `motion/react`):
+
+| Target | Preset | When |
+| --- | --- | --- |
+| Header title + metadata | `blurInUp` by word | First checkpoint activation |
+| Description + bullets | `fadeIn` by line | Checkpoint reached **and** accordion open |
+
+Body text does **not** auto-expand the accordion. Under `prefers-reduced-motion: reduce`, GSAP pulse and TextAnimate are skipped; checkpoints still mark reached via CSS.
+
+### Milestone celebration
+
+`WorkMilestoneDivider` splits leading emoji from body text (`milestone-text.ts`). On first scroll into view (~70% viewport):
+
+1. Emoji springs in (`scale` + `rotation`, `back.out` ease).
+2. Body fades up shortly after.
+
+Skipped entirely under `prefers-reduced-motion: reduce` — text renders statically.
 
 ### Skill → work navigation
 
@@ -101,7 +168,7 @@ Pass `onChoiceClick` if the consuming page wants to suppress its own dismiss-tra
 
 ## Avatar
 
-`public/cv/avatar.jpg` is rendered by the Hero section. The repo currently ships a placeholder — replace it with a real headshot at the same path. No code change required.
+`public/leonardo-05.jpg` is rendered by the Hero section (portrait beside text on desktop, centered above on mobile). Update `RESUME.hero.avatar` in `data.ts` to change the image.
 
 ## Replacing the contact channel set
 

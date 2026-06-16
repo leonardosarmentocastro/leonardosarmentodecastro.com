@@ -3,12 +3,12 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Accordion } from "@/components/ui/Accordion";
+import { workSpineFill, workSpineTrack } from "@/cv/cv-colors";
 import { RESUME } from "@/cv/data";
 import type { WorkExperience } from "@/cv/types";
-
 import { workEntryAnchorId } from "./anchors";
 import {
   buildTimelineItems,
@@ -19,7 +19,6 @@ import { WorkMilestoneDivider } from "./WorkMilestoneDivider";
 import { WorkTimelineDatePill, WorkTimelineItem } from "./WorkTimelineItem";
 import { WorkTimelineNode } from "./WorkTimelineNode";
 import { WorkTimelineTodayMarker } from "./WorkTimelineTodayMarker";
-import { workSpineFill, workSpineTrack } from "./work-colors";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,6 +26,7 @@ gsap.registerPlugin(ScrollTrigger);
 const syncCheckpointStates = (
   timeline: HTMLElement,
   progress: number,
+  onNewlyReached?: (checkpointId: string) => void,
 ): void => {
   const fillEdge = progress * timeline.offsetHeight;
 
@@ -42,7 +42,13 @@ const syncCheckpointStates = (
       node.getBoundingClientRect().height / 2 -
       timelineTop;
 
-    row.classList.toggle("cv-checkpoint-reached", fillEdge >= nodeCenterY);
+    const wasReached = row.classList.contains("cv-checkpoint-reached");
+    const reached = fillEdge >= nodeCenterY;
+    row.classList.toggle("cv-checkpoint-reached", reached);
+    if (!wasReached && reached) {
+      const id = row.getAttribute("data-checkpoint-id");
+      if (id) onNewlyReached?.(id);
+    }
   }
 };
 
@@ -54,6 +60,8 @@ const syncCheckpointStates = (
 const TimelineEntryRow = ({
   entry,
   isOpen,
+  showHeaderAnimation = false,
+  showBodyAnimation = false,
   /** Overlap cluster: pill above card (same column) to avoid z-fighting */
   dateOnCard = false,
   /** Overlap cluster: limit hit target to the card column only */
@@ -61,6 +69,8 @@ const TimelineEntryRow = ({
 }: {
   entry: WorkExperience;
   isOpen: boolean;
+  showHeaderAnimation?: boolean;
+  showBodyAnimation?: boolean;
   dateOnCard?: boolean;
   stickyPointerPassThrough?: boolean;
 }) => {
@@ -102,6 +112,8 @@ const TimelineEntryRow = ({
       <WorkTimelineItem
         entry={entry}
         isOpen={isOpen}
+        showHeaderAnimation={showHeaderAnimation}
+        showBodyAnimation={showBodyAnimation}
         suppressMobilePeriod
         className={stickyPointerPassThrough ? undefined : cardColClass}
       />
@@ -169,11 +181,22 @@ const TimelineEntryRow = ({
 
 export const Work = () => {
   const [openValues, setOpenValues] = useState<string[]>([]);
+  const [activatedAnchorIds, setActivatedAnchorIds] = useState<
+    ReadonlySet<string>
+  >(() => new Set());
+  const firedPulseRef = useRef<Set<string>>(new Set());
   const timelineRef = useRef<HTMLDivElement>(null);
   const desktopProgressRef = useRef<HTMLDivElement>(null);
   const mobileProgressRef = useRef<HTMLDivElement>(null);
   const items = buildTimelineItems(RESUME.workExperience, RESUME.milestones);
   const renderedStickyCompanies = new Set<string>();
+
+  const handleCheckpointReached = useCallback((checkpointId: string) => {
+    setActivatedAnchorIds((prev) => {
+      if (prev.has(checkpointId)) return prev;
+      return new Set(prev).add(checkpointId);
+    });
+  }, []);
 
   // Skills modal → scrollToWorkEntry dispatches cv:open-work-entry; expand here.
   useEffect(() => {
@@ -186,69 +209,102 @@ export const Work = () => {
   }, []);
 
   // Spine fill + card fade-in; reduced-motion users get all checkpoints active.
-  useGSAP(() => {
-    const mm = gsap.matchMedia();
-    mm.add("(prefers-reduced-motion: no-preference)", () => {
-      if (!timelineRef.current) return;
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const timeline = timelineRef.current;
+        if (!timeline) return;
 
-      const timeline = timelineRef.current;
-      const progressEls = [
-        desktopProgressRef.current,
-        mobileProgressRef.current,
-      ].filter((el): el is HTMLDivElement => el !== null);
+        const progressEls = [
+          desktopProgressRef.current,
+          mobileProgressRef.current,
+        ].filter((el): el is HTMLDivElement => el !== null);
 
-      if (progressEls.length > 0) {
-        gsap.fromTo(
-          progressEls,
-          { scaleY: 0 },
-          {
-            scaleY: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: timeline,
-              start: "top center",
-              end: "bottom center",
-              scrub: true,
-              onUpdate: (self) => syncCheckpointStates(timeline, self.progress),
+        const onCheckpointNewlyReached = (id: string) => {
+          queueMicrotask(() => {
+            handleCheckpointReached(id);
+            if (firedPulseRef.current.has(id)) return;
+            firedPulseRef.current.add(id);
+            const row = timeline.querySelector<HTMLElement>(
+              `[data-checkpoint-id="${id}"]`,
+            );
+            const card = row?.querySelector<HTMLElement>("[data-slot=card]");
+            if (card) {
+              gsap.fromTo(
+                card,
+                { scale: 1 },
+                {
+                  scale: 1.03,
+                  duration: 0.35,
+                  yoyo: true,
+                  repeat: 1,
+                  ease: "power2.out",
+                },
+              );
+            }
+          });
+        };
+
+        if (progressEls.length > 0) {
+          gsap.set(progressEls, { scaleY: 0 });
+          // Avoid gsap.fromTo(array, …, scrollTrigger) — it races on refresh
+          // and throws "curTrigger is undefined" during ScrollTrigger setup.
+          ScrollTrigger.create({
+            trigger: timeline,
+            start: "top center",
+            end: "bottom center",
+            scrub: true,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              gsap.set(progressEls, { scaleY: self.progress });
+              syncCheckpointStates(
+                timeline,
+                self.progress,
+                onCheckpointNewlyReached,
+              );
             },
-          },
-        );
-      }
+          });
+        }
 
-      gsap.utils.toArray<HTMLElement>(".cv-work-item").forEach((el) => {
-        gsap.fromTo(
-          el,
-          { opacity: 0, y: 12 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: el,
-              start: "top 85%",
-              toggleActions: "play none none none",
-            },
-          },
-        );
+        timeline
+          .querySelectorAll<HTMLElement>(".cv-work-item")
+          .forEach((el) => {
+            gsap.fromTo(
+              el,
+              { opacity: 0, y: 12 },
+              {
+                opacity: 1,
+                y: 0,
+                duration: 0.6,
+                ease: "power2.out",
+                scrollTrigger: {
+                  trigger: el,
+                  start: "top 85%",
+                  toggleActions: "play none none none",
+                },
+              },
+            );
+          });
       });
-    });
 
-    mm.add("(prefers-reduced-motion: reduce)", () => {
-      if (!timelineRef.current) return;
-      for (const row of timelineRef.current.querySelectorAll(
-        ".cv-work-checkpoint",
-      )) {
-        row.classList.add("cv-checkpoint-reached");
-      }
-    });
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        if (!timelineRef.current) return;
+        for (const row of timelineRef.current.querySelectorAll(
+          ".cv-work-checkpoint",
+        )) {
+          row.classList.add("cv-checkpoint-reached");
+        }
+      });
 
-    return () => mm.revert();
-  }, []);
+      return () => mm.revert();
+    },
+    { scope: timelineRef, dependencies: [handleCheckpointReached] },
+  );
 
   return (
     <section id="work" className="flex flex-col gap-8">
-      <h2 className="text-xl font-semibold tracking-tight text-neutral-900">
+      <h2 className="text-xl font-domine text-[#2d2a24] tracking-tight">
         Work Experience
       </h2>
 
@@ -292,6 +348,9 @@ export const Work = () => {
             }
 
             const { entry } = item;
+            const entryAnchorId = workEntryAnchorId(entry);
+            const entryActivated = activatedAnchorIds.has(entryAnchorId);
+            const entryOpen = openValues.includes(entryAnchorId);
 
             if (
               entry.stickyThrough &&
@@ -318,24 +377,36 @@ export const Work = () => {
                         entry={entry}
                         dateOnCard
                         stickyPointerPassThrough
-                        isOpen={openValues.includes(workEntryAnchorId(entry))}
+                        isOpen={entryOpen}
+                        showHeaderAnimation={entryActivated}
+                        showBodyAnimation={entryActivated && entryOpen}
                       />
                     </div>
-                    {group.counterpartEntries.map((counterpart) => (
-                      <div
-                        key={counterpart.company}
-                        className="relative z-20 pointer-events-none"
-                      >
-                        <TimelineEntryRow
-                          entry={counterpart}
-                          dateOnCard
-                          stickyPointerPassThrough
-                          isOpen={openValues.includes(
-                            workEntryAnchorId(counterpart),
-                          )}
-                        />
-                      </div>
-                    ))}
+                    {group.counterpartEntries.map((counterpart) => {
+                      const counterpartAnchorId =
+                        workEntryAnchorId(counterpart);
+                      const counterpartActivated =
+                        activatedAnchorIds.has(counterpartAnchorId);
+                      const counterpartOpen =
+                        openValues.includes(counterpartAnchorId);
+                      return (
+                        <div
+                          key={counterpart.company}
+                          className="relative z-20 pointer-events-none"
+                        >
+                          <TimelineEntryRow
+                            entry={counterpart}
+                            dateOnCard
+                            stickyPointerPassThrough
+                            isOpen={counterpartOpen}
+                            showHeaderAnimation={counterpartActivated}
+                            showBodyAnimation={
+                              counterpartActivated && counterpartOpen
+                            }
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
                 );
               }
@@ -350,7 +421,9 @@ export const Work = () => {
               <TimelineEntryRow
                 key={`${entry.company}-${entry.startDate}`}
                 entry={entry}
-                isOpen={openValues.includes(workEntryAnchorId(entry))}
+                isOpen={entryOpen}
+                showHeaderAnimation={entryActivated}
+                showBodyAnimation={entryActivated && entryOpen}
               />
             );
           })}

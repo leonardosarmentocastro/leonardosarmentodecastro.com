@@ -27,11 +27,11 @@
 
 /* Timeline checkpoint — reached by scroll progress */
 .cv-work-checkpoint.cv-checkpoint-reached .cv-timeline-node-outer {
-  background-color: #d4d4d4;
+  background-color: #c5d9f5;
 }
 
 .cv-work-checkpoint.cv-checkpoint-reached .cv-timeline-node-inner {
-  background-color: #171717;
+  background-color: #3c78d8;
 }
 
 /* Ping ring — hidden until reached; today origin never pings */
@@ -47,6 +47,10 @@
 }
 
 .cv-work-checkpoint.cv-checkpoint-reached .cv-date-pill {
-  background-color: #171717;
+  background-color: #3c78d8;
   color: #ffffff;
+}
+
+.cv-work-checkpoint.cv-checkpoint-reached .cv-timeline-node-ping {
+  background-color: #3c78d8;
 }
