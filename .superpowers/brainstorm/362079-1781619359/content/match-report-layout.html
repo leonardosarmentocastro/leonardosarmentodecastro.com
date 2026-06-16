@@ -1,0 +1,93 @@
+<h2>Match report layout inside the modal</h2>
+<p class="subtitle">The sticky bar stays compact. After analysis, results open in a modal the recruiter can close and reopen without losing state. Which layout works best for comparing while scrolling the CV?</p>
+
+<div class="cards">
+  <div class="card" data-choice="verdict-first" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="margin:0;border:none;max-width:320px">
+        <div class="mockup-header" style="font-size:11px">Job Fit Analysis</div>
+        <div class="mockup-body" style="padding:12px;font-size:10px">
+          <div style="background:#e8f5e9;border-radius:6px;padding:10px;margin-bottom:10px;border-left:3px solid #4caf50">
+            <div style="font-weight:700;font-size:11px;margin-bottom:4px">Strong fit for Senior Frontend role</div>
+            <div style="color:#555;line-height:1.4">10+ years TypeScript/React, recent Pinterest work aligns with scale &amp; A/B testing requirements.</div>
+          </div>
+          <div style="font-weight:600;color:#4caf50;margin-bottom:4px">✓ Strong matches (5)</div>
+          <div style="padding-left:8px;margin-bottom:8px;color:#333">TypeScript · React · Next.js · Node.js · AWS</div>
+          <div style="font-weight:600;color:#f9a825;margin-bottom:4px">~ Partial (2)</div>
+          <div style="padding-left:8px;margin-bottom:8px;color:#333">Kubernetes — adjacent (Docker, CI/CD) · GraphQL — limited direct use</div>
+          <div style="font-weight:600;color:#e57373;margin-bottom:4px">✗ Gaps (1)</div>
+          <div style="padding-left:8px;color:#333">Ruby on Rails — not in CV</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Verdict-first, scrollable</h3>
+      <p>Plain-language summary at top, then three color-coded sections. Single scroll — easy to scan top-to-bottom.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="tabbed" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="margin:0;border:none;max-width:320px">
+        <div class="mockup-header" style="font-size:11px">Job Fit Analysis</div>
+        <div class="mockup-body" style="padding:0;font-size:10px">
+          <div style="background:#e8f5e9;padding:8px 12px;font-weight:600;font-size:10px">Strong fit — see Summary tab</div>
+          <div style="display:flex;border-bottom:1px solid #ddd;font-size:9px">
+            <div style="padding:8px 10px;border-bottom:2px solid #3c78d8;font-weight:600;color:#3c78d8">Summary</div>
+            <div style="padding:8px 10px;color:#888">Strong (5)</div>
+            <div style="padding:8px 10px;color:#888">Partial (2)</div>
+            <div style="padding:8px 10px;color:#888">Gaps (1)</div>
+          </div>
+          <div style="padding:12px;color:#555;line-height:1.4">
+            Leonardo brings 10+ years of TypeScript/React experience with recent senior roles at Pinterest and Blue Yonder…
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Tabbed sections</h3>
+      <p>Verdict chip always visible. Tabs switch between summary and each match category. Less scrolling, more clicks.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="split-panel" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="margin:0;border:none;max-width:320px">
+        <div class="mockup-header" style="font-size:11px">Job Fit Analysis</div>
+        <div class="mockup-body" style="padding:0;font-size:10px;display:flex;min-height:140px">
+          <div style="width:38%;border-right:1px solid #ddd;padding:10px;background:#fafafa">
+            <div style="font-weight:700;font-size:10px;margin-bottom:6px;color:#4caf50">Strong fit</div>
+            <div style="color:#555;line-height:1.3;font-size:9px">Senior TS/React engineer with relevant scale experience.</div>
+          </div>
+          <div style="flex:1;padding:10px;overflow:hidden">
+            <div style="font-weight:600;margin-bottom:6px;font-size:9px">Strong</div>
+            <div style="font-size:9px;margin-bottom:6px">TypeScript, React, Next.js</div>
+            <div style="font-weight:600;margin-bottom:6px;font-size:9px;color:#f9a825">Partial</div>
+            <div style="font-size:9px;margin-bottom:6px">Kubernetes, GraphQL</div>
+            <div style="font-weight:600;margin-bottom:6px;font-size:9px;color:#e57373">Gaps</div>
+            <div style="font-size:9px">Ruby on Rails</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Split panel</h3>
+      <p>Verdict pinned left, match lists scroll right. Good for wide modals; cramped on mobile.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:24px">
+  <h3>Sticky bar → modal flow (your choice C)</h3>
+  <div class="mockup">
+    <div class="mockup-body" style="padding:12px;font-size:10px">
+      <div style="background:#f5f5f5;border-bottom:1px solid #ddd;padding:6px 12px;display:flex;gap:8px;align-items:center;margin:-12px -12px 12px">
+        <span style="font-weight:600;color:#3c78d8;font-size:9px">Check fit</span>
+        <div class="mock-input" style="flex:1;font-size:9px">Paste job description…</div>
+        <button class="mock-button" style="font-size:9px">Analyze</button>
+        <span style="font-size:9px;color:#4caf50;font-weight:600">✓ Results ready</span>
+      </div>
+      <p style="color:#888;margin:0">↓ CV content scrolls beneath. Modal overlays; closing it keeps job text + report in memory. Reopen via bar badge or "View results".</p>
+    </div>
+  </div>
+</div>
