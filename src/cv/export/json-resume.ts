@@ -1,12 +1,12 @@
 import type { Resume, SkillLevel, WorkExperience } from "@/cv/types";
 
-export type JsonResumeProfile = {
+type JsonResumeProfile = {
   network: string;
   username: string;
   url: string;
 };
 
-export type JsonResumeBasics = {
+type JsonResumeBasics = {
   name: string;
   label: string;
   email: string;
@@ -17,7 +17,7 @@ export type JsonResumeBasics = {
   profiles: JsonResumeProfile[];
 };
 
-export type JsonResumeWork = {
+type JsonResumeWork = {
   name: string;
   position: string;
   startDate: string;
@@ -27,14 +27,14 @@ export type JsonResumeWork = {
   keywords: string[];
 };
 
-export type JsonResumeEducation = {
+type JsonResumeEducation = {
   institution: string;
   studyType: string;
   startDate: string;
   endDate: string;
 };
 
-export type JsonResumeSkill = {
+type JsonResumeSkill = {
   name: string;
   level: string;
   keywords: string[];
@@ -44,7 +44,7 @@ export type JsonResumeSkill = {
   yearsOfExperience?: number;
 };
 
-export type JsonResumeLanguage = {
+type JsonResumeLanguage = {
   language: string;
   fluency: string;
 };

@@ -1,6 +1,6 @@
 import type { Resume, Skill, WorkExperience } from "@/cv/types";
 
-export type AtsExperience = {
+type AtsExperience = {
   company: string;
   role: string;
   dateRange: string;
@@ -9,13 +9,13 @@ export type AtsExperience = {
   technologies: string[];
 };
 
-export type AtsEducation = {
+type AtsEducation = {
   school: string;
   degree: string;
   period: string;
 };
 
-export type AtsSkillGroup = {
+type AtsSkillGroup = {
   category: string;
   entries: string[];
 };
