@@ -202,7 +202,9 @@ static asset and is what `RESUME.hero.links.resumePdf` points to.
 
 **Regenerate after any CV data or print-layout change:**
 
-1. `pnpm build && pnpm start` (or `pnpm dev`) in one terminal.
+1. `pnpm build && pnpm start` in one terminal. Use the production server, **not**
+   `pnpm dev`: the script waits for `networkidle0`, and the dev server's persistent
+   HMR WebSocket never goes idle, so generation would hang until the 60s timeout.
 2. `pnpm cv:pdf` in another (override the target with `CV_PDF_BASE_URL` if needed).
 3. Commit the updated PDF and its `.hash` sibling.
 
