@@ -2,7 +2,7 @@
 
 Personal website of **Leonardo Sarmento de Castro** — Senior Software Engineer (TypeScript · Node.js · React · AWS).
 
-Built with the Next.js App Router. Two routes today: the landing page (`/`) and the web version of the CV (`/cv`). Designed to grow into a small portfolio/blog over time.
+Built with the Next.js App Router. The landing page (`/`) and the web CV (`/cv`), plus machine-readable exports derived from the same source of truth: a JSON Resume endpoint (`/api/cv/json`) and an ATS PDF (`/cv/ats`). Designed to grow into a small portfolio/blog over time.
 
 ---
 
@@ -69,6 +69,8 @@ src/
 │   ├── layout.tsx                # Mantine + fonts + global providers
 │   ├── page.tsx                  # Renders <LandingPage />
 │   ├── cv/page.tsx               # Renders <CVPage />
+│   ├── cv/ats/route.ts           # ATS PDF download (/cv/ats)
+│   ├── api/cv/json/route.ts      # JSON Resume endpoint (/api/cv/json)
 │   ├── sitemap.ts
 │   └── robots.ts
 ├── analytics/                    # PostHog event API — see src/analytics/README.md
@@ -78,6 +80,7 @@ src/
 ├── cv/                           # CV domain — see src/cv/README.md
 │   ├── README.md
 │   ├── data.ts                   # Source of truth for CV content (RESUME)
+│   ├── export/                   # Machine-readable exports — see src/cv/export/README.md
 │   ├── types.ts
 │   ├── ResumeOptionsModal.tsx    # Shared "PDF vs WEB" chooser (mounted on /)
 │   ├── sections/{Hero,About,Work,Education,Skills,Contact}/
