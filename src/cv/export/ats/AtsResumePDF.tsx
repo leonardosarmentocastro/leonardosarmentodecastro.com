@@ -18,8 +18,13 @@ const styles = StyleSheet.create({
     color: "#222222",
     lineHeight: 1.4,
   },
-  name: { fontSize: 20, fontFamily: "Helvetica-Bold" },
-  headline: { fontSize: 11, marginTop: 2 },
+  name: {
+    fontSize: 20,
+    fontFamily: "Helvetica-Bold",
+    lineHeight: 1.2,
+    marginBottom: 6,
+  },
+  headline: { fontSize: 11 },
   contact: { fontSize: 9, color: "#444444", marginTop: 4 },
   link: { fontSize: 9, color: "#444444" },
   heading: {
