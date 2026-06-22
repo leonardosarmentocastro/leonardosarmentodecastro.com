@@ -5,6 +5,7 @@ vi.mock("@/analytics/events", () => ({
   trackResumeClick: vi.fn(),
   trackResumeModalDismiss: vi.fn(),
   trackResumePdfClick: vi.fn(),
+  trackResumeAtsClick: vi.fn(),
   trackResumeWebClick: vi.fn(),
   trackContactModalOpen: vi.fn(),
   trackContactModalDismiss: vi.fn(),
@@ -41,7 +42,9 @@ describe("LandingPage analytics", () => {
     await user.click(button);
 
     expect(trackResumeClick).toHaveBeenCalledTimes(1);
-    expect(screen.getByRole("link", { name: /open pdf/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /recruiter pdf/i }),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: /view web version/i }),
     ).toBeInTheDocument();
@@ -154,7 +157,7 @@ describe("LandingPage analytics", () => {
     renderWithProviders(<LandingPage />);
 
     await user.click(screen.getByRole("button", { name: /^resume$/i }));
-    await user.click(screen.getByRole("link", { name: /open pdf/i }));
+    await user.click(screen.getByRole("link", { name: /recruiter pdf/i }));
 
     expect(trackResumePdfClick).toHaveBeenCalledTimes(1);
     expect(trackResumeModalDismiss).not.toHaveBeenCalled();
