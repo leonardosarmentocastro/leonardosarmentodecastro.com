@@ -11,7 +11,7 @@ export async function GET() {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition":
-        'attachment; filename="Leonardo-Sarmento-de-Castro-Resume.pdf"',
+        'attachment; filename="Leonardo-Sarmento-de-Castro-Resume-ATS.pdf"',
     },
   });
 }
