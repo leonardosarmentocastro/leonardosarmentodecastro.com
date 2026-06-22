@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { RESUME } from "@/cv/data";
-import { buildAtsResume } from "../ats-view-model";
+import { buildAtsResume } from "../build-ats-resume";
 
 describe("buildAtsResume", () => {
   const ats = buildAtsResume(RESUME);

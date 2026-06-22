@@ -7,7 +7,7 @@ import {
   View,
 } from "@react-pdf/renderer";
 
-import type { AtsResume } from "./ats-view-model";
+import type { AtsResume } from "./ats/types";
 
 const styles = StyleSheet.create({
   page: {

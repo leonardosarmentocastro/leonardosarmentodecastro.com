@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { RESUME } from "@/cv/data";
 import { renderAtsPdf } from "../AtsResumeDocument";
-import { buildAtsResume } from "../ats-view-model";
+import { buildAtsResume } from "../ats/build-ats-resume";
 
 describe("renderAtsPdf", () => {
   it("produces a non-empty PDF buffer", async () => {

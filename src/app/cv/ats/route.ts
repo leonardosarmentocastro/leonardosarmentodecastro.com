@@ -1,6 +1,6 @@
 import { RESUME } from "@/cv/data";
 import { renderAtsPdf } from "@/cv/export/AtsResumeDocument";
-import { buildAtsResume } from "@/cv/export/ats-view-model";
+import { buildAtsResume } from "@/cv/export/ats/build-ats-resume";
 
 export const runtime = "nodejs";
 export const dynamic = "force-static";
