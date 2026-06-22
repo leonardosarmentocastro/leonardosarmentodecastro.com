@@ -3,9 +3,11 @@
 import "@/cv/cv.css";
 
 import { useGSAP } from "@gsap/react";
+import { useDisclosure } from "@mantine/hooks";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+import { ResumeOptionsModal } from "@/cv/ResumeOptionsModal";
 import { About } from "@/cv/sections/About/About";
 import { Contact } from "@/cv/sections/Contact/Contact";
 import { Education } from "@/cv/sections/Education/Education";
@@ -18,6 +20,9 @@ gsap.registerPlugin(ScrollTrigger);
 const SECTION_IDS = ["hero", "about", "work", "education", "skills", "contact"];
 
 export const CVPage = () => {
+  const [formatsOpened, { open: openFormats, close: closeFormats }] =
+    useDisclosure(false);
+
   useGSAP(() => {
     const mm = gsap.matchMedia();
 
@@ -49,7 +54,7 @@ export const CVPage = () => {
   return (
     <main className="bg-white text-neutral-900 min-h-screen">
       <div className="max-w-5xl mx-auto px-6 py-12">
-        <Hero />
+        <Hero onOpenFormatDialog={openFormats} />
         <hr className="my-12 border-neutral-200" />
         <About />
         <hr className="my-12 border-neutral-200" />
@@ -61,6 +66,11 @@ export const CVPage = () => {
         <hr className="my-12 border-neutral-200" />
         <Contact />
       </div>
+      <ResumeOptionsModal
+        opened={formatsOpened}
+        onClose={closeFormats}
+        options={["recruiterPdf", "ats"]}
+      />
     </main>
   );
 };

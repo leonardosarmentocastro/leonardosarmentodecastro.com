@@ -1,6 +1,7 @@
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
-import { renderWithProviders } from "@/test/render";
+import { renderWithProviders, screen } from "@/test/render";
 
 import { CVPage } from "../CVPage";
 
@@ -36,5 +37,20 @@ describe("CVPage", () => {
 
     // Silence unused-array lint.
     expect(positions.length).toBe(6);
+  });
+
+  it("opens a 2-option format dialog (recruiter PDF + ATS) from the hero PDF control", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<CVPage />);
+    await user.click(screen.getByRole("button", { name: /open resume pdf/i }));
+    expect(
+      screen.getByRole("link", { name: /recruiter pdf/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /machine-readable/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: /web version/i }),
+    ).not.toBeInTheDocument();
   });
 });

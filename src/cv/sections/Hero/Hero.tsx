@@ -19,7 +19,13 @@ const ICON_LINK =
 
 const HERO_LOCATION = "cv_hero" as const;
 
-export const Hero = ({ printMode = false }: { printMode?: boolean }) => {
+export const Hero = ({
+  printMode = false,
+  onOpenFormatDialog,
+}: {
+  printMode?: boolean;
+  onOpenFormatDialog?: () => void;
+}) => {
   const { name, role, kicker, location, blurb, avatar, links } = RESUME.hero;
   const blurbBody = blurb.startsWith(BLURB_LEAD)
     ? blurb.slice(BLURB_LEAD.length).trimStart()
@@ -110,16 +116,27 @@ export const Hero = ({ printMode = false }: { printMode?: boolean }) => {
             >
               <IconBrandWhatsapp className="w-5 h-5" />
             </a>
-            <a
-              href={links.resumePdf}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Open resume PDF"
-              className={`${ICON_LINK} hover:border-[#dc2626] hover:text-[#dc2626]`}
-              onClick={() => trackResumePdfClick()}
-            >
-              <IconFileTypePdf className="w-5 h-5" />
-            </a>
+            {onOpenFormatDialog ? (
+              <button
+                type="button"
+                aria-label="Open resume PDF"
+                className={`${ICON_LINK} hover:border-[#dc2626] hover:text-[#dc2626] cursor-pointer`}
+                onClick={onOpenFormatDialog}
+              >
+                <IconFileTypePdf className="w-5 h-5" />
+              </button>
+            ) : (
+              <a
+                href={links.resumePdf}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open resume PDF"
+                className={`${ICON_LINK} hover:border-[#dc2626] hover:text-[#dc2626]`}
+                onClick={() => trackResumePdfClick()}
+              >
+                <IconFileTypePdf className="w-5 h-5" />
+              </a>
+            )}
             <a
               href={links.site}
               target="_blank"

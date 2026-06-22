@@ -233,6 +233,14 @@ describe("Hero", () => {
     expect(lead.closest("p")).not.toHaveClass("font-bold");
   });
 
+  it("renders the PDF control as a button that opens the format dialog when wired", async () => {
+    const onOpen = vi.fn();
+    const user = userEvent.setup();
+    renderWithProviders(<Hero onOpenFormatDialog={onOpen} />);
+    await user.click(screen.getByRole("button", { name: /open resume pdf/i }));
+    expect(onOpen).toHaveBeenCalledTimes(1);
+  });
+
   it("applies brand hover borders to hero icon links", () => {
     renderWithProviders(<Hero />);
     expect(screen.getByRole("link", { name: /linkedin/i })).toHaveClass(
