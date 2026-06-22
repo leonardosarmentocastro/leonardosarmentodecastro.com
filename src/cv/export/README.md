@@ -8,8 +8,8 @@ every deploy, so they never drift from the site.
 
 | URL | Output | Source mapper | Consumer |
 | --- | --- | --- | --- |
-| `/api/cv/json` | [JSON Resume](https://jsonresume.org/schema) standard | `toJsonResume` (`json/json-resume.ts`) | job-hunter scraper (machine) |
-| `/cv/ats` | Single-column, selectable-text PDF (attachment download) | `buildAtsResume` + `AtsResumeDocument` | hiring platforms / ATS |
+| `/api/cv/json` | [JSON Resume](https://jsonresume.org/schema) standard | `buildJsonResume` (`json/build-json-resume.ts`) | job-hunter scraper (machine) |
+| `/cv/ats` | Single-column, selectable-text PDF (attachment download) | `buildAtsResume` + `AtsResumePDF` | hiring platforms / ATS |
 
 Both route handlers run on the Node.js runtime (`export const runtime = "nodejs"`),
 required by `@react-pdf/renderer`. `/api/cv/json` sends `Access-Control-Allow-Origin: *`
@@ -22,13 +22,13 @@ mappers (`helpers.ts`) producing the shapes declared in `types.ts`.
 
 | File | Purpose |
 | --- | --- |
-| `json/json-resume.ts` | `toJsonResume(resume)` → JSON Resume object (thin orchestrator). |
+| `json/build-json-resume.ts` | `buildJsonResume(resume)` → JSON Resume object (thin orchestrator). |
 | `json/helpers.ts` | Pure mappers: `toIsoMonth`, `parseLocation`, `toWork`, `toEducation`, `toSkill`, `toLanguage`, `profileFromUrl`. |
 | `json/types.ts` | `JsonResume` and its per-section sub-types. |
 | `ats/build-ats-resume.ts` | `buildAtsResume(resume)` → plain, ordered section data (all PDF content/layout decisions, unit-testable without rendering). |
 | `ats/helpers.ts` | Pure mappers: `toExperience`, `groupSkills`, `stripFlags`. |
 | `ats/types.ts` | `AtsResume` and its per-section sub-types. |
-| `AtsResumeDocument.tsx` | `@react-pdf/renderer` component + `renderAtsPdf(viewModel)` helper. |
+| `ats/AtsResumePDF.tsx` | `@react-pdf/renderer` component + `renderAtsPdf(viewModel)` helper. |
 
 ## JSON Resume mapping
 

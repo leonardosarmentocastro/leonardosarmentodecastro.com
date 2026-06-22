@@ -1,5 +1,5 @@
 import { RESUME } from "@/cv/data";
-import { renderAtsPdf } from "@/cv/export/AtsResumeDocument";
+import { renderAtsPdf } from "@/cv/export/ats/AtsResumePDF";
 import { buildAtsResume } from "@/cv/export/ats/build-ats-resume";
 
 export const runtime = "nodejs";

@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { RESUME } from "@/cv/data";
-import { toJsonResume } from "../json-resume";
+import { buildJsonResume } from "../build-json-resume";
 
-describe("toJsonResume", () => {
-  const json = toJsonResume(RESUME);
+describe("buildJsonResume", () => {
+  const json = buildJsonResume(RESUME);
 
   it("maps basics from the hero", () => {
     expect(json.basics.name).toBe(RESUME.hero.name);
@@ -42,7 +42,7 @@ describe("toJsonResume", () => {
         ...RESUME.workExperience.slice(1),
       ],
     };
-    const result = toJsonResume(withPresent);
+    const result = buildJsonResume(withPresent);
     expect(result.work[0]).not.toHaveProperty("endDate");
     expect(result.work[0].startDate).toBe("2024-08");
   });

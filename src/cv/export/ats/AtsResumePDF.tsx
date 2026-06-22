@@ -7,7 +7,7 @@ import {
   View,
 } from "@react-pdf/renderer";
 
-import type { AtsResume } from "./ats/types";
+import type { AtsResume } from "./types";
 
 const styles = StyleSheet.create({
   page: {
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   jobTechLabel: { fontFamily: "Helvetica-Bold" },
 });
 
-export function AtsResumeDocument({ resume }: { resume: AtsResume }) {
+export function AtsResumePDF({ resume }: { resume: AtsResume }) {
   return (
     <Document title={`${resume.name} — Resume`} author={resume.name}>
       <Page size="A4" style={styles.page}>
@@ -98,5 +98,5 @@ export function AtsResumeDocument({ resume }: { resume: AtsResume }) {
 }
 
 export function renderAtsPdf(resume: AtsResume): Promise<Buffer> {
-  return renderToBuffer(<AtsResumeDocument resume={resume} />);
+  return renderToBuffer(<AtsResumePDF resume={resume} />);
 }

@@ -10,7 +10,7 @@ import {
 } from "./helpers";
 import type { JsonResume } from "./types";
 
-export function toJsonResume(resume: Resume): JsonResume {
+export function buildJsonResume(resume: Resume): JsonResume {
   const languages = resume.skills.filter((s) => s.category === "Communication");
   const technical = resume.skills.filter((s) => s.category !== "Communication");
 
