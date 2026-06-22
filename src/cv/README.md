@@ -193,3 +193,19 @@ The CV exposes WhatsApp, Email, LinkedIn, and GitHub from the landing contact mo
 2. Add a CTA in each surface that needs the new channel.
 
 See `src/analytics/README.md` for the conventions.
+
+## Generated recruiter PDF (`/cv/print` → `public/cv/...`)
+
+The human-facing recruiter PDF is generated from the live `/cv/print` route and
+committed as `public/cv/Leonardo-Sarmento-de-Castro-Resume.pdf`. It is served as a
+static asset and is what `RESUME.hero.links.resumePdf` points to.
+
+**Regenerate after any CV data or print-layout change:**
+
+1. `pnpm build && pnpm start` (or `pnpm dev`) in one terminal.
+2. `pnpm cv:pdf` in another (override the target with `CV_PDF_BASE_URL` if needed).
+3. Commit the updated PDF and its `.hash` sibling.
+
+A content-hash freshness test (`src/cv/print/__tests__/pdf-asset.test.ts`) fails if
+CV data changed without regenerating. For layout-only changes, bump
+`PRINT_LAYOUT_VERSION` in `src/cv/print/pdf-asset.ts` and regenerate.
