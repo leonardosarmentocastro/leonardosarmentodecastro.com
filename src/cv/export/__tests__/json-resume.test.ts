@@ -86,6 +86,13 @@ describe("toJsonResume", () => {
     expect(js?.keywords).toEqual(["JavaScript"]);
   });
 
+  it("annotates technical skills with self-assessed years of experience", () => {
+    const js = json.skills.find((s) => s.name === "JavaScript");
+    expect(js?.yearsOfExperience).toBe(10);
+    const ts = json.skills.find((s) => s.name === "TypeScript");
+    expect(ts?.yearsOfExperience).toBe(8);
+  });
+
   it("does not include milestones anywhere", () => {
     expect(JSON.stringify(json)).not.toContain("Looking for new opportunities");
   });

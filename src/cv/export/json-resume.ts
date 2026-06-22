@@ -38,6 +38,10 @@ export type JsonResumeSkill = {
   name: string;
   level: string;
   keywords: string[];
+  /** Non-standard extension: self-assessed years of experience. Omitted for
+   * skills without an experience bar (e.g. native languages) or with no
+   * logged years, mirroring the ATS export. */
+  yearsOfExperience?: number;
 };
 
 export type JsonResumeLanguage = {
@@ -147,11 +151,17 @@ export function toJsonResume(resume: Resume): JsonResume {
       studyType: e.degree,
       ...parseEducationPeriod(e.period),
     })),
-    skills: technical.map((s) => ({
-      name: s.name,
-      level: s.level,
-      keywords: s.aliases,
-    })),
+    skills: technical.map((s) => {
+      const skill: JsonResumeSkill = {
+        name: s.name,
+        level: s.level,
+        keywords: s.aliases,
+      };
+      if (!s.omitExperienceBar && s.years > 0) {
+        skill.yearsOfExperience = s.years;
+      }
+      return skill;
+    }),
     languages: languages.map((s) => ({
       language: s.name,
       fluency: FLUENCY_BY_LEVEL[s.level],

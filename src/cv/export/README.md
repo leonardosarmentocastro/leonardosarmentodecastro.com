@@ -34,6 +34,7 @@ because the data is public and a cross-origin scraper may fetch it directly.
 | `work[].keywords` | `workExperience[].technologies` |
 | `education[].{institution,studyType,startDate,endDate}` | `education[].{school,degree}` + parsed `period` |
 | `skills[].{name,level,keywords}` | non-`Communication` `skills[]` (`aliases` → `keywords`) |
+| `skills[].yearsOfExperience` *(non-standard)* | `skills[].years` — self-assessed; omitted for `omitExperienceBar` skills or zero years |
 | `languages[]` | `Communication` skills (English, Portuguese) |
 
 **Not exported:** milestones (no JSON Resume home, low matching value).
@@ -59,12 +60,17 @@ These match `skills[].keywords` (the `aliases`) exactly — the same mapping
 `src/cv/sections/Skills/matching.ts` relies on for the site's skill↔work
 navigation. A consumer can therefore:
 
-1. Read each `skills[]` entry for the engineer's **self-assessed** level.
+1. Read each `skills[]` entry for the engineer's **self-assessed** level and
+   `yearsOfExperience` — the curated answer to "how many years with X?", taken
+   straight from `data.ts` rather than inferred.
 2. Join `work[].keywords` → `skills[]` by exact, case-insensitive match to get
    the **evidence**: which jobs used each technology, their dates, and durations.
 
 This lets the scraper compute per-technology `firstUsed` / `lastUsed` /
-`totalMonths` / `jobCount` deterministically — no guessing.
+`totalMonths` / `jobCount` deterministically — no guessing. Note these computed
+spans can legitimately differ from the curated `yearsOfExperience` (a span across
+jobs is not the same as focused years of practice); prefer `yearsOfExperience`
+when reporting a single number.
 
 ## Editing
 
