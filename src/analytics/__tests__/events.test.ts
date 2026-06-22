@@ -58,6 +58,14 @@ describe("event trackers", () => {
     });
   });
 
+  it("trackResumeAtsClick captures resume_ats_clicked with destination=ats_pdf", async () => {
+    const { trackResumeAtsClick } = await loadAnalytics();
+    trackResumeAtsClick();
+    expect(mockCapture).toHaveBeenCalledWith("resume_ats_clicked", {
+      destination: "ats_pdf",
+    });
+  });
+
   it("trackContactClick captures contact_clicked with channel and location", async () => {
     const { trackContactClick } = await loadAnalytics();
     trackContactClick({ channel: "whatsapp", location: "landing_modal" });
