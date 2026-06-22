@@ -255,3 +255,19 @@ describe("Hero", () => {
     );
   });
 });
+
+describe("Hero printMode", () => {
+  it("hides the social/PDF icon row in print mode", () => {
+    renderWithProviders(<Hero printMode />);
+    expect(screen.queryByLabelText(/linkedin/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/open resume pdf/i)).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /leonardo sarmento de castro/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders the icon row by default (web)", () => {
+    renderWithProviders(<Hero />);
+    expect(screen.getByLabelText(/linkedin/i)).toBeInTheDocument();
+  });
+});
