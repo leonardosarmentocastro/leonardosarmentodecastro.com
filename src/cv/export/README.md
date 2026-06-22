@@ -38,6 +38,20 @@ because the data is public and a cross-origin scraper may fetch it directly.
 
 **Not exported:** milestones (no JSON Resume home, low matching value).
 
+## ATS PDF contents
+
+The PDF mirrors the same source data as the JSON, so a human or hiring platform
+reading it sees the same evidence:
+
+- **Skills** are grouped by category and annotated with the engineer's
+  self-assessed years of experience — `"JavaScript — Expert · 10 yrs"`. The years
+  suffix is dropped for skills flagged `omitExperienceBar` (e.g. Portuguese, a
+  native language), so they render as just `"Portuguese — Expert"`.
+- **Experience** entries each end with a `Technologies:` line listing that role's
+  `technologies`, the same per-job keywords the JSON exposes as `work[].keywords`.
+  This answers the common hiring-form question — *"how many years with X?"* —
+  by pairing the per-skill years above with the jobs that actually used each tech.
+
 ## Consumer join rule (skill strength inference)
 
 `work[].keywords` strings are emitted **unchanged** from `workExperience[].technologies`.

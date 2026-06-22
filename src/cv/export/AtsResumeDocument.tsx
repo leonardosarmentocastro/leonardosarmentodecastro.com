@@ -33,6 +33,8 @@ const styles = StyleSheet.create({
   jobHeader: { fontFamily: "Helvetica-Bold" },
   jobMeta: { fontSize: 9, color: "#555555", marginBottom: 3 },
   bullet: { marginLeft: 10, marginBottom: 2 },
+  jobTech: { fontSize: 9, color: "#555555", marginTop: 3 },
+  jobTechLabel: { fontFamily: "Helvetica-Bold" },
 });
 
 export function AtsResumeDocument({ resume }: { resume: AtsResume }) {
@@ -72,6 +74,12 @@ export function AtsResumeDocument({ resume }: { resume: AtsResume }) {
                 • {bullet}
               </Text>
             ))}
+            {job.technologies.length > 0 && (
+              <Text style={styles.jobTech}>
+                <Text style={styles.jobTechLabel}>Technologies: </Text>
+                {job.technologies.join(", ")}
+              </Text>
+            )}
           </View>
         ))}
 

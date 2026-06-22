@@ -57,4 +57,30 @@ describe("buildAtsResume", () => {
       period: RESUME.education[0].period,
     });
   });
+
+  it("carries each job's technologies for the ATS to parse", () => {
+    const pinterest = ats.experience.find((e) => e.company === "Pinterest");
+    expect(pinterest?.technologies).toEqual(
+      RESUME.workExperience[0].technologies,
+    );
+    expect(pinterest?.technologies).toContain("TypeScript");
+  });
+
+  it("annotates technical skills with self-assessed years of experience", () => {
+    const languages = ats.skills.find((g) => g.category === "Languages");
+    expect(languages?.entries).toContain("JavaScript — Expert · 10 yrs");
+    expect(languages?.entries).toContain("TypeScript — Advanced · 8 yrs");
+  });
+
+  it("omits the years suffix for skills without an experience bar", () => {
+    const communication = ats.skills.find(
+      (g) => g.category === "Communication",
+    );
+    expect(communication?.entries).toContain("Portuguese — Expert");
+    expect(
+      communication?.entries.some(
+        (e) => e.includes("Portuguese") && e.includes("yrs"),
+      ),
+    ).toBe(false);
+  });
 });
