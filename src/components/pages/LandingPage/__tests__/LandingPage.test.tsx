@@ -50,6 +50,21 @@ describe("LandingPage analytics", () => {
     ).toBeInTheDocument();
   });
 
+  it("opens a 3-option resume dialog (recruiter PDF, ATS, web)", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<LandingPage />);
+
+    await user.click(screen.getByRole("button", { name: /^resume$/i }));
+
+    expect(
+      screen.getByRole("link", { name: /recruiter pdf/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /ats/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /view web version/i }),
+    ).toBeInTheDocument();
+  });
+
   it("fires contact_clicked with channel=linkedin and location=landing_modal when the LINKEDIN link is clicked", async () => {
     const user = userEvent.setup();
     renderWithProviders(<LandingPage />);
