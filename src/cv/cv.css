@@ -77,3 +77,12 @@ button[data-testid^="work-tech-badge-"]:focus-visible {
 .cv-work-tech-tooltip {
   font-family: var(--font-quicksand), sans-serif;
 }
+
+/* Print CV: hide interactive accordion chevrons, keep colors when printed */
+.cv-print [data-slot="accordion-trigger"] svg {
+  display: none;
+}
+.cv-print {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
