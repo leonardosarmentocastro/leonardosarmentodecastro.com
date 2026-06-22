@@ -38,3 +38,13 @@ describe("About", () => {
     expect(labels.size).toBe(RESUME.workExperience.length);
   });
 });
+
+describe("About printMode", () => {
+  it("renders the static logo row (not the animated marquee) in print mode", () => {
+    renderWithProviders(<About printMode />);
+    expect(screen.getByTestId("company-logo-static")).toBeInTheDocument();
+    expect(
+      screen.queryByTestId("company-logo-marquee"),
+    ).not.toBeInTheDocument();
+  });
+});
