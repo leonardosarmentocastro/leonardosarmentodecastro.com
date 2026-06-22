@@ -118,3 +118,14 @@ describe("Skills", () => {
     expect(icons.length).toBeGreaterThanOrEqual(2);
   });
 });
+
+describe("Skills printMode", () => {
+  it("renders no interactive skill buttons in print mode", () => {
+    renderWithProviders(<Skills printMode />);
+    expect(
+      screen.getByRole("heading", { name: /^skills$/i }),
+    ).toBeInTheDocument();
+    const buttons = screen.queryAllByRole("button");
+    expect(buttons).toHaveLength(0);
+  });
+});

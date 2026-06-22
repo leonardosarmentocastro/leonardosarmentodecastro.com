@@ -103,12 +103,14 @@ const CARD_CLASS =
 const SkillCard = ({
   skill,
   onOpen,
+  printMode = false,
 }: {
   skill: Skill;
   onOpen: (skill: Skill) => void;
+  printMode?: boolean;
 }) => {
   const interactive =
-    experiencesForSkill(skill, RESUME.workExperience).length > 0;
+    !printMode && experiencesForSkill(skill, RESUME.workExperience).length > 0;
 
   if (!interactive) {
     return (
@@ -136,7 +138,7 @@ const SkillCard = ({
   );
 };
 
-export const Skills = () => {
+export const Skills = ({ printMode = false }: { printMode?: boolean }) => {
   const groups = groupByCategory(RESUME.skills);
   const [activeSkill, setActiveSkill] = useState<Skill | null>(null);
 
@@ -168,16 +170,23 @@ export const Skills = () => {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {group.items.map((skill) => (
-              <SkillCard key={skill.name} skill={skill} onOpen={handleOpen} />
+              <SkillCard
+                key={skill.name}
+                skill={skill}
+                onOpen={handleOpen}
+                printMode={printMode}
+              />
             ))}
           </div>
         </div>
       ))}
-      <SkillExperiencesModal
-        skill={activeSkill}
-        onClose={() => setActiveSkill(null)}
-        onExperienceClick={handleExperienceClick}
-      />
+      {!printMode && (
+        <SkillExperiencesModal
+          skill={activeSkill}
+          onClose={() => setActiveSkill(null)}
+          onExperienceClick={handleExperienceClick}
+        />
+      )}
     </section>
   );
 };
