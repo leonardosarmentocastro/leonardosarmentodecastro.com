@@ -45,9 +45,7 @@ describe("LandingPage analytics", () => {
     expect(
       screen.getByRole("link", { name: /recruiter pdf/i }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: /view web version/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /web page/i })).toBeInTheDocument();
   });
 
   it("opens a 3-option resume dialog (recruiter PDF, ATS, web)", async () => {
@@ -60,9 +58,7 @@ describe("LandingPage analytics", () => {
       screen.getByRole("link", { name: /recruiter pdf/i }),
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /ats/i })).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: /view web version/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /web page/i })).toBeInTheDocument();
   });
 
   it("fires contact_clicked with channel=linkedin and location=landing_modal when the LINKEDIN link is clicked", async () => {
@@ -183,7 +179,7 @@ describe("LandingPage analytics", () => {
     renderWithProviders(<LandingPage />);
 
     await user.click(screen.getByRole("button", { name: /^resume$/i }));
-    await user.click(screen.getByRole("link", { name: /view web version/i }));
+    await user.click(screen.getByRole("link", { name: /web page/i }));
 
     expect(trackResumeWebClick).toHaveBeenCalledTimes(1);
     expect(trackResumeModalDismiss).not.toHaveBeenCalled();

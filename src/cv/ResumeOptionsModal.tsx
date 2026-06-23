@@ -14,6 +14,8 @@ import { RESUME } from "@/cv/data";
 
 export type ResumeOptionKey = "recruiterPdf" | "ats" | "web";
 
+type Variant = "filled" | "outline";
+
 type Descriptor = {
   href: string;
   internal: boolean;
@@ -21,6 +23,7 @@ type Descriptor = {
   title: string;
   subtitle: string;
   bg: string;
+  variant: Variant;
   track: () => void;
 };
 
@@ -32,6 +35,7 @@ const DESCRIPTORS: Record<ResumeOptionKey, Descriptor> = {
     title: "RECRUITER PDF",
     subtitle: "Best for download, print, or sharing offline",
     bg: "#BB001B",
+    variant: "filled",
     track: trackResumePdfClick,
   },
   ats: {
@@ -40,16 +44,18 @@ const DESCRIPTORS: Record<ResumeOptionKey, Descriptor> = {
     Icon: IconFileText,
     title: "ATS / MACHINE-READABLE PDF",
     subtitle: "Plain text, optimized for applicant tracking systems",
-    bg: "#404040",
+    bg: "#ffffff",
+    variant: "outline",
     track: trackResumeAtsClick,
   },
   web: {
     href: "/cv",
     internal: true,
     Icon: IconWorld,
-    title: "VIEW WEB VERSION",
+    title: "WEB PAGE",
     subtitle: "Interactive, always up to date",
     bg: "#171717",
+    variant: "filled",
     track: trackResumeWebClick,
   },
 };
@@ -80,17 +86,32 @@ export const ResumeOptionsModal = ({
         <div className="flex flex-col gap-[10px] items-center w-full">
           {options.map((key) => {
             const d = DESCRIPTORS[key];
+            const isOutline = d.variant === "outline";
+            const textColor = isOutline ? "text-black" : "text-white";
+            const style = isOutline
+              ? {
+                  backgroundColor: d.bg,
+                  color: "#000000",
+                  border: "2px solid #000000",
+                }
+              : { backgroundColor: d.bg };
             const onClick = () => {
               onChoiceClick?.();
               d.track();
             };
             const inner = (
               <>
-                <d.Icon className="w-[32px] h-[32px] text-white mb-[10px]" />
-                <span className="text-white font-jakarta-sans font-bold text-[14px] md:text-[20px]">
+                <d.Icon
+                  className={`w-[32px] h-[32px] ${textColor} mb-[10px]`}
+                />
+                <span
+                  className={`${textColor} font-jakarta-sans font-bold text-[14px] md:text-[20px]`}
+                >
                   {d.title}
                 </span>
-                <span className="text-white font-jakarta-sans font-normal text-[12px] md:text-[16px]">
+                <span
+                  className={`${textColor} font-jakarta-sans font-normal text-[12px] md:text-[16px]`}
+                >
                   {d.subtitle}
                 </span>
               </>
@@ -99,7 +120,8 @@ export const ResumeOptionsModal = ({
               <Link
                 key={key}
                 className={cardClass}
-                style={{ backgroundColor: d.bg }}
+                style={style}
+                data-variant={d.variant}
                 href={d.href}
                 onClick={onClick}
               >
@@ -109,7 +131,8 @@ export const ResumeOptionsModal = ({
               <a
                 key={key}
                 className={cardClass}
-                style={{ backgroundColor: d.bg }}
+                style={style}
+                data-variant={d.variant}
                 href={d.href}
                 target="_blank"
                 rel="noopener noreferrer"

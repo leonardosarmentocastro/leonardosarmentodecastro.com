@@ -38,7 +38,7 @@ describe("ResumeOptionsModal", () => {
       <ResumeOptionsModal
         opened
         onClose={noop}
-        options={["recruiterPdf", "ats", "web"]}
+        options={["recruiterPdf", "web", "ats"]}
       />,
     );
     const pdf = screen.getByRole("link", { name: /recruiter pdf/i });
@@ -49,9 +49,44 @@ describe("ResumeOptionsModal", () => {
       "href",
       "/cv/ats",
     );
-    expect(screen.getByRole("link", { name: /web version/i })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /web page/i })).toHaveAttribute(
       "href",
       "/cv",
+    );
+  });
+
+  it("renders options in the exact order they are passed", () => {
+    renderWithProviders(
+      <ResumeOptionsModal
+        opened
+        onClose={noop}
+        options={["recruiterPdf", "web", "ats"]}
+      />,
+    );
+    const labels = screen.getAllByRole("link").map((l) => l.textContent ?? "");
+    expect(labels[0]).toMatch(/recruiter pdf/i);
+    expect(labels[1]).toMatch(/web page/i);
+    expect(labels[2]).toMatch(/ats/i);
+  });
+
+  it("styles the ATS option as an outline (white) card and the others as filled", () => {
+    renderWithProviders(
+      <ResumeOptionsModal
+        opened
+        onClose={noop}
+        options={["recruiterPdf", "web", "ats"]}
+      />,
+    );
+    expect(screen.getByRole("link", { name: /ats/i })).toHaveAttribute(
+      "data-variant",
+      "outline",
+    );
+    expect(
+      screen.getByRole("link", { name: /recruiter pdf/i }),
+    ).toHaveAttribute("data-variant", "filled");
+    expect(screen.getByRole("link", { name: /web page/i })).toHaveAttribute(
+      "data-variant",
+      "filled",
     );
   });
 
@@ -68,7 +103,7 @@ describe("ResumeOptionsModal", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /ats/i })).toBeInTheDocument();
     expect(
-      screen.queryByRole("link", { name: /web version/i }),
+      screen.queryByRole("link", { name: /web page/i }),
     ).not.toBeInTheDocument();
   });
 
