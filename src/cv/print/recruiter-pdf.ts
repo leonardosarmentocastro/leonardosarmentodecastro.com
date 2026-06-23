@@ -1,3 +1,11 @@
+/**
+ * Defines the generated recruiter PDF artifact: where it comes from
+ * (`/cv/print`), where it lives once exported (`public/cv/...pdf`), and how we
+ * know it is still in sync with the CV (the content-hash freshness guard).
+ *
+ * Consumed by `scripts/cv/generate-pdf.ts` (writes the PDF + hash) and the
+ * freshness test (`__tests__/recruiter-pdf.test.ts`).
+ */
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 

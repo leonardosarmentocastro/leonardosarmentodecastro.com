@@ -1,6 +1,6 @@
 "use client";
 
-import "@/cv/cv.css";
+import "@/cv/styles.css";
 
 import { useGSAP } from "@gsap/react";
 import { useDisclosure } from "@mantine/hooks";

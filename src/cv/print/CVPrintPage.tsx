@@ -1,6 +1,7 @@
 "use client";
 
-import "@/cv/cv.css";
+import "@/cv/styles.css";
+import "./styles.css";
 
 import { About } from "@/cv/sections/About/About";
 import { Education } from "@/cv/sections/Education/Education";

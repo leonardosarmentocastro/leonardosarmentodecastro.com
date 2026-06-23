@@ -5,9 +5,9 @@ import {
   CV_PDF_HASH_FILE,
   CV_PDF_PUBLIC_PATH,
   computeCvPdfContentHash,
-} from "../pdf-asset";
+} from "../recruiter-pdf";
 
-describe("cv pdf asset", () => {
+describe("cv recruiter pdf", () => {
   it("exposes the public asset path used by RESUME.resumePdf", () => {
     expect(CV_PDF_PUBLIC_PATH).toBe(
       "/cv/Leonardo-Sarmento-de-Castro-Resume.pdf",
