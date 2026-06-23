@@ -117,8 +117,7 @@ Suggested slices, each red→green→refactor and independently buildable:
 5. Repoint `resumePdf` in `data.ts` + update `ResumeOptionsModal` test.
 6. Docs: `src/cv/README.md` (or `export/README.md`) note the new `/cv/pdf` surface.
 
-## Open questions / confirm during planning
-- **Canonical host.** The dialog links to `/cv/ats` etc. relative; `RESUME.hero.links.site`
-  is `https://www.leonardosarmentodecastro.com` but the user shared
-  `https://www.leonardosarmentocastro.com/...`. Confirm the exact production host for
-  `metadataBase` before hardcoding.
+## Resolved decisions
+- **Canonical host.** `metadataBase` uses `https://www.leonardosarmentodecastro.com`
+  (confirmed — matches `RESUME.hero.links.site`; the user's earlier WhatsApp link
+  omitting the "de" was a typo).
