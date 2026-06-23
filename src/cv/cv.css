@@ -97,3 +97,13 @@ button[data-testid^="work-tech-badge-"]:focus-visible {
   break-inside: avoid;
   page-break-inside: avoid;
 }
+
+/*
+ * Keep a heading glued to the content that follows it: a section title (h2)
+ * stays with its first category, and a category title (h3) stays with its
+ * first card. Prevents a heading from being stranded alone at a page bottom.
+ */
+.cv-print .cv-print-keep-with-next {
+  break-after: avoid;
+  page-break-after: avoid;
+}

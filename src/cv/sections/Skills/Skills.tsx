@@ -160,12 +160,12 @@ export const Skills = ({ printMode = false }: { printMode?: boolean }) => {
 
   return (
     <section id="skills" className="flex flex-col gap-6 font-quicksand">
-      <h2 className="text-xl font-domine text-[#2d2a24] tracking-tight">
+      <h2 className="cv-print-keep-with-next font-domine text-[#2d2a24] text-xl tracking-tight">
         Skills
       </h2>
       {groups.map((group) => (
         <div key={group.category} className="flex flex-col gap-3">
-          <h3 className="text-xs font-quicksand font-bold uppercase tracking-wider text-neutral-500">
+          <h3 className="cv-print-keep-with-next font-quicksand font-bold text-neutral-500 text-xs uppercase tracking-wider">
             {group.category}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

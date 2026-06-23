@@ -139,4 +139,19 @@ describe("Skills printMode", () => {
       expect(card).toHaveClass("cv-print-skill-card");
     }
   });
+
+  it("keeps the section and category titles attached to their cards for print", () => {
+    renderWithProviders(<Skills printMode />);
+    // `break-after: avoid` (keyed off this class) keeps a heading with the
+    // content that follows: the "Skills" h2 with its first category, and each
+    // category h3 with its first card — so no heading is orphaned at a page end.
+    expect(
+      screen.getByRole("heading", { level: 2, name: /^skills$/i }),
+    ).toHaveClass("cv-print-keep-with-next");
+    const categoryHeadings = screen.getAllByRole("heading", { level: 3 });
+    expect(categoryHeadings.length).toBeGreaterThan(0);
+    for (const heading of categoryHeadings) {
+      expect(heading).toHaveClass("cv-print-keep-with-next");
+    }
+  });
 });
