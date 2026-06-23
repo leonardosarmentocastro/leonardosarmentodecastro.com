@@ -107,3 +107,12 @@ button[data-testid^="work-tech-badge-"]:focus-visible {
   break-after: avoid;
   page-break-after: avoid;
 }
+
+/*
+ * The work-entry description renders as an inline <span> in print (no body
+ * animation), so its Tailwind bottom margin is ignored and it sits flush
+ * against the bullet list. Make it a block so that margin separates the two.
+ */
+.cv-print .cv-print-work-description {
+  display: block;
+}

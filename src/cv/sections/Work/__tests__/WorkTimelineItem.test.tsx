@@ -4,6 +4,7 @@ import { Accordion } from "@/components/ui/Accordion";
 import { RESUME } from "@/cv/data";
 import { renderWithProviders, screen } from "@/test/render";
 
+import { workEntryAnchorId } from "../anchors";
 import { WorkTimelineItem } from "../WorkTimelineItem";
 
 describe("WorkTimelineItem", () => {
@@ -20,6 +21,21 @@ describe("WorkTimelineItem", () => {
     expect(screen.getByTestId("work-entry-Pinterest")).toHaveAttribute(
       "data-header-animated",
       "true",
+    );
+  });
+
+  it("tags the description so print can space it from the bullets", () => {
+    const entry = RESUME.workExperience[0];
+    renderWithProviders(
+      <Accordion value={[workEntryAnchorId(entry)]} onValueChange={() => {}}>
+        <WorkTimelineItem entry={entry} isOpen />
+      </Accordion>,
+    );
+    // The description renders inline in print; this class lets the print
+    // stylesheet make it a block so its bottom margin separates it from the
+    // bullet list (which is invisible while it stays an inline span).
+    expect(screen.getByText(entry.description)).toHaveClass(
+      "cv-print-work-description",
     );
   });
 });
