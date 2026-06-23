@@ -9,6 +9,9 @@ describe("GET /cv/ats", () => {
     expect(res.headers.get("content-type")).toBe("application/pdf");
     expect(res.headers.get("content-disposition")).toContain("attachment");
     expect(res.headers.get("content-disposition")).toContain(".pdf");
+    expect(res.headers.get("content-disposition")).toContain(
+      'filename="Leonardo-Sarmento-de-Castro-Resume-ATS.pdf"',
+    );
   }, 30000);
 
   it("returns real PDF bytes", async () => {

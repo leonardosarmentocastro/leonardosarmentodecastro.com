@@ -317,6 +317,7 @@ export const LandingPage = () => {
       <ResumeOptionsModal
         opened={resumeModalOpened}
         onClose={handleResumeModalClose}
+        options={["recruiterPdf", "web", "ats"]}
         onChoiceClick={handleResumeChoiceClick}
       />
 

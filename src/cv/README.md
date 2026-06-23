@@ -13,7 +13,8 @@ The CV domain. Owns the data, types, and UI building blocks for the `/cv` route 
 | `sections/About/CompanyLogoMarquee.tsx` | About-section company logo marquee (Magic UI `Marquee`). |
 | `cv-colors.ts` | PDF brand hex tokens and Tailwind class helpers shared across CV sections. |
 | `company-logos.ts` | Maps `WorkExperience.company` strings to `/cv/companies/*` assets. |
-| `cv.css` | Checkpoint/spine styles, flash animation, blue-derived timeline palette. |
+| `styles.css` | Web-CV styles: checkpoint/spine, flash animation, blue-derived timeline palette, tech-badge resets. |
+| `print/styles.css` | Print-only styles for `/cv/print` (the `.cv-print` container): A4 page-fragmentation rules. |
 | `__tests__/data.test.ts` | Guard rails on the shape of `RESUME`. |
 
 ## Editing the CV
@@ -30,7 +31,7 @@ Optional `stickyThrough: "<Company>"` pins a parallel role on its lane while scr
 
 Milestones render as horizontal dividers, not timeline cards. A **today** origin marker sits at the top of the spine (always active, no ping animation).
 
-Scroll-driven spine fill and card fade-ins use GSAP `ScrollTrigger` (`prefers-reduced-motion: reduce` marks all checkpoints reached immediately). Domain styles for checkpoints and flash animation live in `src/cv/cv.css`.
+Scroll-driven spine fill and card fade-ins use GSAP `ScrollTrigger` (`prefers-reduced-motion: reduce` marks all checkpoints reached immediately). Domain styles for checkpoints and flash animation live in `src/cv/styles.css`.
 
 ## Colors and typography
 
@@ -109,7 +110,7 @@ Skipped entirely under `prefers-reduced-motion: reduce` — text renders statica
 
 Each skill declares `aliases` (the exact `technologies[]` strings that represent it). `experiencesForSkill` (`sections/Skills/matching.ts`) maps a skill to the jobs that used it. Clicking a skill card opens `SkillExperiencesModal`; clicking a job there closes it and calls `scrollToWorkEntry` (`sections/Work/anchors.ts`), which:
 
-1. Smooth-scrolls to the entry's anchor (`workEntryAnchorId`) and flashes it (`.cv-flash`, in `src/cv/cv.css`) — both gated behind `prefers-reduced-motion`.
+1. Smooth-scrolls to the entry's anchor (`workEntryAnchorId`) and flashes it (`.cv-flash`, in `src/cv/styles.css`) — both gated behind `prefers-reduced-motion`.
 2. Dispatches `cv:open-work-entry` with the anchor id. `Work.tsx` listens on `document` and adds that id to the multi-open accordion so the job details are visible on arrival (decouples Skills modal from Work state without prop-drilling).
 
 To add a skill, include its `aliases` so it links to the right jobs. Analytics: `skill_experiences_opened` and `skill_experience_clicked`.
@@ -193,3 +194,21 @@ The CV exposes WhatsApp, Email, LinkedIn, and GitHub from the landing contact mo
 2. Add a CTA in each surface that needs the new channel.
 
 See `src/analytics/README.md` for the conventions.
+
+## Generated recruiter PDF (`/cv/print` → `public/cv/...`)
+
+The human-facing recruiter PDF is generated from the live `/cv/print` route and
+committed as `public/cv/Leonardo-Sarmento-de-Castro-Resume.pdf`. It is served as a
+static asset and is what `RESUME.hero.links.resumePdf` points to.
+
+**Regenerate after any CV data or print-layout change:**
+
+1. `pnpm build && pnpm start` in one terminal. Use the production server, **not**
+   `pnpm dev`: the script waits for `networkidle0`, and the dev server's persistent
+   HMR WebSocket never goes idle, so generation would hang until the 60s timeout.
+2. `pnpm cv:pdf` in another (override the target with `CV_PDF_BASE_URL` if needed).
+3. Commit the updated PDF and its `.hash` sibling.
+
+A content-hash freshness test (`src/cv/print/__tests__/hash.test.ts`) fails if
+CV data changed without regenerating. For layout-only changes, bump
+`PRINT_LAYOUT_VERSION` in `src/cv/print/constants.ts` and regenerate.

@@ -118,3 +118,40 @@ describe("Skills", () => {
     expect(icons.length).toBeGreaterThanOrEqual(2);
   });
 });
+
+describe("Skills printMode", () => {
+  it("renders no interactive skill buttons in print mode", () => {
+    renderWithProviders(<Skills printMode />);
+    expect(
+      screen.getByRole("heading", { name: /^skills$/i }),
+    ).toBeInTheDocument();
+    const buttons = screen.queryAllByRole("button");
+    expect(buttons).toHaveLength(0);
+  });
+
+  it("marks each skill card as an unbreakable block for print pagination", () => {
+    renderWithProviders(<Skills printMode />);
+    const cards = screen.getAllByTestId(/^skill-card-/);
+    expect(cards).toHaveLength(RESUME.skills.length);
+    // The class is the contract the print stylesheet hangs `break-inside: avoid`
+    // off of, so a skill card never starts near a page bottom and splits.
+    for (const card of cards) {
+      expect(card).toHaveClass("cv-print-skill-card");
+    }
+  });
+
+  it("keeps the section and category titles attached to their cards for print", () => {
+    renderWithProviders(<Skills printMode />);
+    // `break-after: avoid` (keyed off this class) keeps a heading with the
+    // content that follows: the "Skills" h2 with its first category, and each
+    // category h3 with its first card — so no heading is orphaned at a page end.
+    expect(
+      screen.getByRole("heading", { level: 2, name: /^skills$/i }),
+    ).toHaveClass("cv-print-keep-with-next");
+    const categoryHeadings = screen.getAllByRole("heading", { level: 3 });
+    expect(categoryHeadings.length).toBeGreaterThan(0);
+    for (const heading of categoryHeadings) {
+      expect(heading).toHaveClass("cv-print-keep-with-next");
+    }
+  });
+});

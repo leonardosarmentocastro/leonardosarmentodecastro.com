@@ -3,63 +3,122 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/analytics/events", () => ({
   trackResumePdfClick: vi.fn(),
+  trackResumeAtsClick: vi.fn(),
   trackResumeWebClick: vi.fn(),
 }));
 
-import { trackResumePdfClick, trackResumeWebClick } from "@/analytics/events";
+import {
+  trackResumeAtsClick,
+  trackResumePdfClick,
+  trackResumeWebClick,
+} from "@/analytics/events";
 import { renderWithProviders, screen } from "@/test/render";
-
 import { RESUME } from "../data";
 import { ResumeOptionsModal } from "../ResumeOptionsModal";
 
-beforeEach(() => {
-  vi.clearAllMocks();
-});
-
-afterEach(() => {
-  vi.clearAllMocks();
-});
-
 const noop = () => undefined;
+
+beforeEach(() => vi.clearAllMocks());
+afterEach(() => vi.clearAllMocks());
 
 describe("ResumeOptionsModal", () => {
   it("renders nothing when closed", () => {
-    renderWithProviders(<ResumeOptionsModal opened={false} onClose={noop} />);
+    renderWithProviders(
+      <ResumeOptionsModal
+        opened={false}
+        onClose={noop}
+        options={["recruiterPdf", "ats"]}
+      />,
+    );
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("renders both PDF and WEB choices with the expected hrefs when opened", () => {
-    renderWithProviders(<ResumeOptionsModal opened onClose={noop} />);
+  it("renders the 3-option (landing) configuration with correct destinations", () => {
+    renderWithProviders(
+      <ResumeOptionsModal
+        opened
+        onClose={noop}
+        options={["recruiterPdf", "web", "ats"]}
+      />,
+    );
+    const pdf = screen.getByRole("link", { name: /recruiter pdf/i });
+    expect(pdf).toHaveAttribute("href", RESUME.hero.links.resumePdf);
+    expect(pdf).toHaveAttribute("target", "_blank");
 
-    const dialog = screen.getByRole("dialog");
-    expect(dialog).toBeInTheDocument();
-
-    const pdfLink = screen.getByRole("link", { name: /open pdf/i });
-    expect(pdfLink).toHaveAttribute("href", RESUME.hero.links.resumePdf);
-    expect(pdfLink).toHaveAttribute("target", "_blank");
-    expect(pdfLink).toHaveAttribute("rel", "noopener noreferrer");
-
-    const webLink = screen.getByRole("link", { name: /view web version/i });
-    expect(webLink).toHaveAttribute("href", "/cv");
+    expect(screen.getByRole("link", { name: /ats/i })).toHaveAttribute(
+      "href",
+      "/cv/ats",
+    );
+    expect(screen.getByRole("link", { name: /web page/i })).toHaveAttribute(
+      "href",
+      "/cv",
+    );
   });
 
-  it("fires trackResumePdfClick when the PDF link is clicked", async () => {
-    const user = userEvent.setup();
-    renderWithProviders(<ResumeOptionsModal opened onClose={noop} />);
-
-    await user.click(screen.getByRole("link", { name: /open pdf/i }));
-
-    expect(trackResumePdfClick).toHaveBeenCalledTimes(1);
-    expect(trackResumeWebClick).not.toHaveBeenCalled();
+  it("renders options in the exact order they are passed", () => {
+    renderWithProviders(
+      <ResumeOptionsModal
+        opened
+        onClose={noop}
+        options={["recruiterPdf", "web", "ats"]}
+      />,
+    );
+    const labels = screen.getAllByRole("link").map((l) => l.textContent ?? "");
+    expect(labels[0]).toMatch(/recruiter pdf/i);
+    expect(labels[1]).toMatch(/web page/i);
+    expect(labels[2]).toMatch(/ats/i);
   });
 
-  it("fires trackResumeWebClick when the WEB link is clicked", async () => {
+  it("styles the ATS option as an outline (white) card and the others as filled", () => {
+    renderWithProviders(
+      <ResumeOptionsModal
+        opened
+        onClose={noop}
+        options={["recruiterPdf", "web", "ats"]}
+      />,
+    );
+    expect(screen.getByRole("link", { name: /ats/i })).toHaveAttribute(
+      "data-variant",
+      "outline",
+    );
+    expect(
+      screen.getByRole("link", { name: /recruiter pdf/i }),
+    ).toHaveAttribute("data-variant", "filled");
+    expect(screen.getByRole("link", { name: /web page/i })).toHaveAttribute(
+      "data-variant",
+      "filled",
+    );
+  });
+
+  it("renders only the requested 2 options for the /cv configuration", () => {
+    renderWithProviders(
+      <ResumeOptionsModal
+        opened
+        onClose={noop}
+        options={["recruiterPdf", "ats"]}
+      />,
+    );
+    expect(
+      screen.getByRole("link", { name: /recruiter pdf/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /ats/i })).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: /web page/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("fires the matching analytics event per choice", async () => {
     const user = userEvent.setup();
-    renderWithProviders(<ResumeOptionsModal opened onClose={noop} />);
-
-    await user.click(screen.getByRole("link", { name: /view web version/i }));
-
-    expect(trackResumeWebClick).toHaveBeenCalledTimes(1);
+    renderWithProviders(
+      <ResumeOptionsModal
+        opened
+        onClose={noop}
+        options={["recruiterPdf", "ats", "web"]}
+      />,
+    );
+    await user.click(screen.getByRole("link", { name: /ats/i }));
+    expect(trackResumeAtsClick).toHaveBeenCalledTimes(1);
     expect(trackResumePdfClick).not.toHaveBeenCalled();
+    expect(trackResumeWebClick).not.toHaveBeenCalled();
   });
 });

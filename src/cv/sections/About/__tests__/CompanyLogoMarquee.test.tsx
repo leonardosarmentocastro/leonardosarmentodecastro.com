@@ -80,3 +80,15 @@ describe("CompanyLogoMarquee", () => {
     expect(scrollToWorkEntry).toHaveBeenCalledWith(target);
   });
 });
+
+describe("CompanyLogoMarquee print/static", () => {
+  it("renders a static container limited to N logos when forceStatic+limit set", () => {
+    renderWithProviders(<CompanyLogoMarquee forceStatic limit={5} />);
+    expect(screen.getByTestId("company-logo-static")).toBeInTheDocument();
+    expect(
+      screen.queryByTestId("company-logo-marquee"),
+    ).not.toBeInTheDocument();
+    expect(screen.getAllByTestId("company-logo").length).toBeLessThanOrEqual(5);
+    expect(screen.getAllByTestId("company-logo").length).toBeGreaterThan(0);
+  });
+});

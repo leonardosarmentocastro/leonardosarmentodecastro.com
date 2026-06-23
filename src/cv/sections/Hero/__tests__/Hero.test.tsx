@@ -233,6 +233,14 @@ describe("Hero", () => {
     expect(lead.closest("p")).not.toHaveClass("font-bold");
   });
 
+  it("renders the PDF control as a button that opens the format dialog when wired", async () => {
+    const onOpen = vi.fn();
+    const user = userEvent.setup();
+    renderWithProviders(<Hero onOpenFormatDialog={onOpen} />);
+    await user.click(screen.getByRole("button", { name: /open resume pdf/i }));
+    expect(onOpen).toHaveBeenCalledTimes(1);
+  });
+
   it("applies brand hover borders to hero icon links", () => {
     renderWithProviders(<Hero />);
     expect(screen.getByRole("link", { name: /linkedin/i })).toHaveClass(
@@ -253,5 +261,21 @@ describe("Hero", () => {
     expect(screen.getByRole("link", { name: /open resume pdf/i })).toHaveClass(
       "hover:border-[#dc2626]",
     );
+  });
+});
+
+describe("Hero printMode", () => {
+  it("hides the social/PDF icon row in print mode", () => {
+    renderWithProviders(<Hero printMode />);
+    expect(screen.queryByLabelText(/linkedin/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/open resume pdf/i)).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /leonardo sarmento de castro/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders the icon row by default (web)", () => {
+    renderWithProviders(<Hero />);
+    expect(screen.getByLabelText(/linkedin/i)).toBeInTheDocument();
   });
 });

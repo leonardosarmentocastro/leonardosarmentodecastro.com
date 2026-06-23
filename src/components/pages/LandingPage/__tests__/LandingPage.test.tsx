@@ -5,6 +5,7 @@ vi.mock("@/analytics/events", () => ({
   trackResumeClick: vi.fn(),
   trackResumeModalDismiss: vi.fn(),
   trackResumePdfClick: vi.fn(),
+  trackResumeAtsClick: vi.fn(),
   trackResumeWebClick: vi.fn(),
   trackContactModalOpen: vi.fn(),
   trackContactModalDismiss: vi.fn(),
@@ -41,10 +42,23 @@ describe("LandingPage analytics", () => {
     await user.click(button);
 
     expect(trackResumeClick).toHaveBeenCalledTimes(1);
-    expect(screen.getByRole("link", { name: /open pdf/i })).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: /view web version/i }),
+      screen.getByRole("link", { name: /recruiter pdf/i }),
     ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /web page/i })).toBeInTheDocument();
+  });
+
+  it("opens a 3-option resume dialog (recruiter PDF, ATS, web)", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<LandingPage />);
+
+    await user.click(screen.getByRole("button", { name: /^resume$/i }));
+
+    expect(
+      screen.getByRole("link", { name: /recruiter pdf/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /ats/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /web page/i })).toBeInTheDocument();
   });
 
   it("fires contact_clicked with channel=linkedin and location=landing_modal when the LINKEDIN link is clicked", async () => {
@@ -154,7 +168,7 @@ describe("LandingPage analytics", () => {
     renderWithProviders(<LandingPage />);
 
     await user.click(screen.getByRole("button", { name: /^resume$/i }));
-    await user.click(screen.getByRole("link", { name: /open pdf/i }));
+    await user.click(screen.getByRole("link", { name: /recruiter pdf/i }));
 
     expect(trackResumePdfClick).toHaveBeenCalledTimes(1);
     expect(trackResumeModalDismiss).not.toHaveBeenCalled();
@@ -165,7 +179,7 @@ describe("LandingPage analytics", () => {
     renderWithProviders(<LandingPage />);
 
     await user.click(screen.getByRole("button", { name: /^resume$/i }));
-    await user.click(screen.getByRole("link", { name: /view web version/i }));
+    await user.click(screen.getByRole("link", { name: /web page/i }));
 
     expect(trackResumeWebClick).toHaveBeenCalledTimes(1);
     expect(trackResumeModalDismiss).not.toHaveBeenCalled();

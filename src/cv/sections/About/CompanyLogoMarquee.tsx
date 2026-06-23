@@ -22,14 +22,25 @@ const LogoButton = ({ entry }: { entry: WorkExperience }) => (
   </button>
 );
 
-export const CompanyLogoMarquee = () => {
+export const CompanyLogoMarquee = ({
+  forceStatic = false,
+  limit,
+}: {
+  forceStatic?: boolean;
+  limit?: number;
+} = {}) => {
   const reduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 
-  const buttons = RESUME.workExperience.map((entry) => (
+  const entries =
+    typeof limit === "number"
+      ? RESUME.workExperience.slice(0, limit)
+      : RESUME.workExperience;
+
+  const buttons = entries.map((entry) => (
     <LogoButton key={`${entry.company}-${entry.startDate}`} entry={entry} />
   ));
 
-  if (reduceMotion) {
+  if (forceStatic || reduceMotion) {
     return (
       <div
         data-testid="company-logo-static"

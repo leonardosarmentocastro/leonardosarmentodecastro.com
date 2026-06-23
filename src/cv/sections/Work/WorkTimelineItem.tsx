@@ -176,7 +176,7 @@ export const WorkTimelineItem = ({
               animate={showBodyAnimation}
               animation="fadeIn"
               by="line"
-              className={`text-sm mb-3 ${bodyClass}`}
+              className={`cv-print-work-description text-sm mb-3 ${bodyClass}`}
             >
               {entry.description}
             </AnimatedLine>

@@ -19,7 +19,13 @@ const ICON_LINK =
 
 const HERO_LOCATION = "cv_hero" as const;
 
-export const Hero = () => {
+export const Hero = ({
+  printMode = false,
+  onOpenFormatDialog,
+}: {
+  printMode?: boolean;
+  onOpenFormatDialog?: () => void;
+}) => {
   const { name, role, kicker, location, blurb, avatar, links } = RESUME.hero;
   const blurbBody = blurb.startsWith(BLURB_LEAD)
     ? blurb.slice(BLURB_LEAD.length).trimStart()
@@ -53,82 +59,98 @@ export const Hero = () => {
           <span className="font-bold">{BLURB_LEAD}</span> {blurbBody}
         </p>
 
-        <div className="mt-3 flex flex-row justify-center gap-3 md:justify-start">
-          <a
-            href={links.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="LinkedIn"
-            className={`${ICON_LINK} hover:border-[#0072b1] hover:text-[#0072b1]`}
-            onClick={() =>
-              trackContactClick({
-                channel: "linkedin",
-                location: HERO_LOCATION,
-              })
-            }
-          >
-            <IconBrandLinkedin className="w-5 h-5" />
-          </a>
-          <a
-            href={links.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="GitHub"
-            className={`${ICON_LINK} hover:border-[#24292f] hover:text-[#24292f]`}
-            onClick={() =>
-              trackContactClick({ channel: "github", location: HERO_LOCATION })
-            }
-          >
-            <IconBrandGithub className="w-5 h-5" />
-          </a>
-          <a
-            href={`mailto:${links.email}`}
-            aria-label="Email"
-            className={`${ICON_LINK} hover:border-[#bb001b] hover:text-[#bb001b]`}
-            onClick={() =>
-              trackContactClick({ channel: "email", location: HERO_LOCATION })
-            }
-          >
-            <IconMail className="w-5 h-5" />
-          </a>
-          <a
-            href={links.whatsapp}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="WhatsApp"
-            className={`${ICON_LINK} hover:border-[#128c7e] hover:text-[#128c7e]`}
-            onClick={() =>
-              trackContactClick({
-                channel: "whatsapp",
-                location: HERO_LOCATION,
-              })
-            }
-          >
-            <IconBrandWhatsapp className="w-5 h-5" />
-          </a>
-          <a
-            href={links.resumePdf}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Open resume PDF"
-            className={`${ICON_LINK} hover:border-[#dc2626] hover:text-[#dc2626]`}
-            onClick={() => trackResumePdfClick()}
-          >
-            <IconFileTypePdf className="w-5 h-5" />
-          </a>
-          <a
-            href={links.site}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Personal site"
-            className={`${ICON_LINK} hover:border-black hover:text-black`}
-            onClick={() =>
-              trackContactClick({ channel: "site", location: HERO_LOCATION })
-            }
-          >
-            <IconWorld className="w-5 h-5" />
-          </a>
-        </div>
+        {!printMode && (
+          <div className="mt-3 flex flex-row justify-center gap-3 md:justify-start">
+            <a
+              href={links.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className={`${ICON_LINK} hover:border-[#0072b1] hover:text-[#0072b1]`}
+              onClick={() =>
+                trackContactClick({
+                  channel: "linkedin",
+                  location: HERO_LOCATION,
+                })
+              }
+            >
+              <IconBrandLinkedin className="w-5 h-5" />
+            </a>
+            <a
+              href={links.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              className={`${ICON_LINK} hover:border-[#24292f] hover:text-[#24292f]`}
+              onClick={() =>
+                trackContactClick({
+                  channel: "github",
+                  location: HERO_LOCATION,
+                })
+              }
+            >
+              <IconBrandGithub className="w-5 h-5" />
+            </a>
+            <a
+              href={`mailto:${links.email}`}
+              aria-label="Email"
+              className={`${ICON_LINK} hover:border-[#bb001b] hover:text-[#bb001b]`}
+              onClick={() =>
+                trackContactClick({ channel: "email", location: HERO_LOCATION })
+              }
+            >
+              <IconMail className="w-5 h-5" />
+            </a>
+            <a
+              href={links.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+              className={`${ICON_LINK} hover:border-[#128c7e] hover:text-[#128c7e]`}
+              onClick={() =>
+                trackContactClick({
+                  channel: "whatsapp",
+                  location: HERO_LOCATION,
+                })
+              }
+            >
+              <IconBrandWhatsapp className="w-5 h-5" />
+            </a>
+            {onOpenFormatDialog ? (
+              <button
+                type="button"
+                aria-label="Open resume PDF"
+                className={`${ICON_LINK} hover:border-[#dc2626] hover:text-[#dc2626] cursor-pointer`}
+                onClick={onOpenFormatDialog}
+              >
+                <IconFileTypePdf className="w-5 h-5" />
+              </button>
+            ) : (
+              <a
+                href={links.resumePdf}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open resume PDF"
+                className={`${ICON_LINK} hover:border-[#dc2626] hover:text-[#dc2626]`}
+                onClick={() => trackResumePdfClick()}
+              >
+                <IconFileTypePdf className="w-5 h-5" />
+              </a>
+            )}
+            <a
+              href={links.site}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Personal site"
+              className={`${ICON_LINK} hover:border-black hover:text-black`}
+              onClick={() =>
+                trackContactClick({ channel: "site", location: HERO_LOCATION })
+              }
+            >
+              <IconWorld className="w-5 h-5" />
+            </a>
+          </div>
+        )}
       </div>
     </section>
   );

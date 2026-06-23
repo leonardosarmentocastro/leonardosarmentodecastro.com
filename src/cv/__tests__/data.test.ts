@@ -38,7 +38,13 @@ describe("RESUME data shape", () => {
     expect(links.whatsappMessage).toMatch(/^https:\/\/wa\.me\/.*text=/);
     expect(links.whatsappDisplay).toMatch(/^\+/);
     expect(links.site).toMatch(/^https:\/\//);
-    expect(links.resumePdf).toMatch(/^https:\/\/drive\.google\.com\//);
+    expect(links.resumePdf).toBe("/cv/Leonardo-Sarmento-de-Castro-Resume.pdf");
+  });
+
+  it("links the recruiter PDF to the generated local asset (not Google Drive)", () => {
+    expect(RESUME.hero.links.resumePdf).toBe(
+      "/cv/Leonardo-Sarmento-de-Castro-Resume.pdf",
+    );
   });
 
   it("has at least three about paragraphs", () => {
