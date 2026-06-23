@@ -8,9 +8,9 @@
  *
  * This is a manual/offline step (`pnpm cv:pdf`), deliberately NOT part of the
  * Vercel build — the PDF is committed to the repo and a content-hash test
- * (`recruiter-pdf.test.ts`) fails CI when it goes stale. Keeping Puppeteer out of
- * the build avoids shipping a Chromium download to every deploy. See
- * `src/cv/README.md` for the regeneration workflow.
+ * (`print/__tests__/hash.test.ts`) fails CI when it goes stale. Keeping
+ * Puppeteer out of the build avoids shipping a Chromium download to every
+ * deploy. See `src/cv/README.md` for the regeneration workflow.
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
@@ -20,8 +20,8 @@ import {
   CV_PDF_HASH_FILE,
   CV_PDF_OUTPUT_FILE,
   CV_PDF_ROUTE,
-  computeCvPdfContentHash,
-} from "@/cv/print/recruiter-pdf";
+} from "@/cv/print/constants";
+import { computeCvPdfContentHash } from "@/cv/print/hash";
 
 // Render against a server that's already serving the site. Defaults to a local
 // server; override with CV_PDF_BASE_URL to target a preview/production deploy.
@@ -61,8 +61,8 @@ async function main() {
     });
     mkdirSync(dirname(CV_PDF_OUTPUT_FILE), { recursive: true });
     writeFileSync(CV_PDF_OUTPUT_FILE, pdf);
-    // Write the freshness hash alongside the PDF so the recruiter-pdf test can
-    // tell when the committed PDF no longer matches the current CV data / layout.
+    // Write the freshness hash alongside the PDF so the hash test can tell when
+    // the committed PDF no longer matches the current CV data / layout.
     writeFileSync(CV_PDF_HASH_FILE, `${computeCvPdfContentHash()}\n`);
     console.log(`Wrote ${CV_PDF_OUTPUT_FILE}`);
   } finally {

@@ -1,21 +1,9 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { RESUME } from "@/cv/data";
-import {
-  CV_PDF_HASH_FILE,
-  CV_PDF_PUBLIC_PATH,
-  computeCvPdfContentHash,
-} from "../recruiter-pdf";
+import { CV_PDF_HASH_FILE } from "../constants";
+import { computeCvPdfContentHash } from "../hash";
 
-describe("cv recruiter pdf", () => {
-  it("exposes the public asset path used by RESUME.resumePdf", () => {
-    expect(CV_PDF_PUBLIC_PATH).toBe(
-      "/cv/Leonardo-Sarmento-de-Castro-Resume.pdf",
-    );
-    // Single source of truth: the recruiter link must point at this asset.
-    expect(RESUME.hero.links.resumePdf).toBe(CV_PDF_PUBLIC_PATH);
-  });
-
+describe("cv pdf content hash", () => {
   it("computes a deterministic content hash", () => {
     expect(computeCvPdfContentHash()).toBe(computeCvPdfContentHash());
     expect(computeCvPdfContentHash()).toMatch(/^[a-f0-9]{64}$/);

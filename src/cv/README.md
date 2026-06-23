@@ -209,6 +209,6 @@ static asset and is what `RESUME.hero.links.resumePdf` points to.
 2. `pnpm cv:pdf` in another (override the target with `CV_PDF_BASE_URL` if needed).
 3. Commit the updated PDF and its `.hash` sibling.
 
-A content-hash freshness test (`src/cv/print/__tests__/recruiter-pdf.test.ts`) fails if
+A content-hash freshness test (`src/cv/print/__tests__/hash.test.ts`) fails if
 CV data changed without regenerating. For layout-only changes, bump
-`PRINT_LAYOUT_VERSION` in `src/cv/print/recruiter-pdf.ts` and regenerate.
+`PRINT_LAYOUT_VERSION` in `src/cv/print/constants.ts` and regenerate.
