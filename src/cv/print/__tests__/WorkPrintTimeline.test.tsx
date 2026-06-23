@@ -24,4 +24,15 @@ describe("WorkPrintTimeline", () => {
       screen.getByText(/Looking for new opportunities/i),
     ).toBeInTheDocument();
   });
+
+  it("marks each work entry as an unbreakable block for print pagination", () => {
+    renderWithProviders(<WorkPrintTimeline />);
+    const entries = screen.getAllByTestId("work-print-entry");
+    expect(entries).toHaveLength(RESUME.workExperience.length);
+    // The class is the contract the print stylesheet hangs `break-inside: avoid`
+    // off of, so a card never starts near a page bottom and splits across pages.
+    for (const entry of entries) {
+      expect(entry).toHaveClass("cv-print-work-entry");
+    }
+  });
 });

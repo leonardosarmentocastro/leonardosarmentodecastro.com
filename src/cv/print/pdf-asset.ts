@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { RESUME } from "@/cv/data";
 
 /** Bump when the print LAYOUT changes without CV data changing. */
-export const PRINT_LAYOUT_VERSION = 1;
+export const PRINT_LAYOUT_VERSION = 2;
 
 export const CV_PDF_ROUTE = "/cv/print";
 export const CV_PDF_PUBLIC_PATH = "/cv/Leonardo-Sarmento-de-Castro-Resume.pdf";

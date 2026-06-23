@@ -75,7 +75,8 @@ export const WorkPrintTimeline = () => {
             return (
               <div
                 key={`${entry.company}-${entry.startDate}`}
-                className="relative w-full"
+                className="cv-print-work-entry relative w-full"
+                data-testid="work-print-entry"
               >
                 <PrintNode />
                 <WorkTimelineDatePill

@@ -86,3 +86,13 @@ button[data-testid^="work-tech-badge-"]:focus-visible {
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
+
+/*
+ * Keep each work-experience card whole: if it can't fit in the space left on
+ * the current page, the print engine pushes the entire card to the top of the
+ * next page instead of splitting it across the boundary.
+ */
+.cv-print .cv-print-work-entry {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
