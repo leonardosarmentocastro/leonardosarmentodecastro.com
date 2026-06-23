@@ -10,10 +10,18 @@ every deploy, so they never drift from the site.
 | --- | --- | --- | --- |
 | `/api/cv/json` | [JSON Resume](https://jsonresume.org/schema) standard | `buildJsonResume` (`json/build-json-resume.ts`) | job-hunter scraper (machine) |
 | `/cv/ats` | Single-column, selectable-text PDF (attachment download) | `buildAtsResume` + `AtsResumePDF` | hiring platforms / ATS |
+| `/cv/pdf` | HTML share page: renders an Open Graph card for link previews, then auto-downloads the recruiter PDF (fallback button for humans). | — (links to the recruiter PDF) | recruiters / link-sharing (WhatsApp, Slack) |
+| `/cv/pdf/download` | The recruiter PDF served as a `Content-Disposition: attachment` download (reads the pre-generated `public/cv` asset). | `readFile(CV_PDF_OUTPUT_FILE)` | the `/cv/pdf` page's download trigger |
 
 Both route handlers run on the Node.js runtime (`export const runtime = "nodejs"`),
 required by `@react-pdf/renderer`. `/api/cv/json` sends `Access-Control-Allow-Origin: *`
 because the data is public and a cross-origin scraper may fetch it directly.
+
+`/cv/pdf` is the link to share with people: link crawlers don't run JS, so they
+receive the HTML + the 1200×630 `opengraph-image.tsx` card, while real browsers
+run the client component that auto-downloads `/cv/pdf/download`. The raw asset at
+`CV_PDF_PUBLIC_PATH` stays the generator's output, but `/cv/pdf` is now the
+public-facing entry point (`RESUME.hero.links.resumePdf`).
 
 ## Files
 
