@@ -25,6 +25,16 @@ describe("WorkPrintTimeline", () => {
     ).toBeInTheDocument();
   });
 
+  it("starts the work section on a fresh print page", () => {
+    renderWithProviders(<WorkPrintTimeline />);
+    // The first (large) card cannot fit in the leftover space under Contact,
+    // so it would otherwise jump to the next page and leave a big gap. Forcing
+    // a page break before the section keeps it starting at the top of a page.
+    const section = document.getElementById("work");
+    expect(section).not.toBeNull();
+    expect(section).toHaveClass("cv-print-page-break-before");
+  });
+
   it("marks each work entry as an unbreakable block for print pagination", () => {
     renderWithProviders(<WorkPrintTimeline />);
     const entries = screen.getAllByTestId("work-print-entry");

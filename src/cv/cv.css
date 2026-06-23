@@ -116,3 +116,13 @@ button[data-testid^="work-tech-badge-"]:focus-visible {
 .cv-print .cv-print-work-description {
   display: block;
 }
+
+/*
+ * Work Experience follows the short Contact section, so its first (large,
+ * unbreakable) card cannot fit in the leftover space and would jump to the
+ * next page, leaving a huge blank gap. Start the section on a fresh page.
+ */
+.cv-print .cv-print-page-break-before {
+  break-before: page;
+  page-break-before: always;
+}

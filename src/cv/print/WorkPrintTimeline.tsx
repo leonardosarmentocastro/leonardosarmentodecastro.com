@@ -45,57 +45,61 @@ export const WorkPrintTimeline = () => {
   const allIds = RESUME.workExperience.map(workEntryAnchorId);
 
   return (
-    <section id="work" className="flex flex-col gap-8">
-      <h2 className="font-domine text-[#2d2a24] text-xl tracking-tight">
-        Work Experience
-      </h2>
+    // The page-break lives on this plain block <section>, not the inner flex
+    // column: Chromium ignores forced `break-before: page` on flex containers.
+    <section id="work" className="cv-print-page-break-before">
+      <div className="flex flex-col gap-8">
+        <h2 className="font-domine text-[#2d2a24] text-xl tracking-tight">
+          Work Experience
+        </h2>
 
-      <div className="relative pl-8">
-        {/* solid static spine */}
-        <div
-          className={`absolute top-3.5 bottom-0 left-3 z-0 w-0.5 ${workSpineFill}`}
-        />
+        <div className="relative pl-8">
+          {/* solid static spine */}
+          <div
+            className={`absolute top-3.5 bottom-0 left-3 z-0 w-0.5 ${workSpineFill}`}
+          />
 
-        <Accordion
-          multiple
-          value={allIds}
-          onValueChange={() => {}}
-          className="relative z-10 flex flex-col gap-10"
-        >
-          {items.map((item, i) => {
-            if (item.kind === "milestone") {
+          <Accordion
+            multiple
+            value={allIds}
+            onValueChange={() => {}}
+            className="relative z-10 flex flex-col gap-10"
+          >
+            {items.map((item, i) => {
+              if (item.kind === "milestone") {
+                return (
+                  <PrintMilestone
+                    key={`m-${item.milestone.year}-${i}`}
+                    text={item.milestone.text}
+                  />
+                );
+              }
+              const { entry } = item;
               return (
-                <PrintMilestone
-                  key={`m-${item.milestone.year}-${i}`}
-                  text={item.milestone.text}
-                />
+                <div
+                  key={`${entry.company}-${entry.startDate}`}
+                  className="cv-print-work-entry relative w-full"
+                  data-testid="work-print-entry"
+                >
+                  <PrintNode />
+                  <WorkTimelineDatePill
+                    entry={entry}
+                    align="start"
+                    placement="mobile"
+                    className="relative z-20 flex"
+                  />
+                  <WorkTimelineItem
+                    entry={entry}
+                    isOpen
+                    showHeaderAnimation={false}
+                    showBodyAnimation={false}
+                    suppressMobilePeriod
+                  />
+                </div>
               );
-            }
-            const { entry } = item;
-            return (
-              <div
-                key={`${entry.company}-${entry.startDate}`}
-                className="cv-print-work-entry relative w-full"
-                data-testid="work-print-entry"
-              >
-                <PrintNode />
-                <WorkTimelineDatePill
-                  entry={entry}
-                  align="start"
-                  placement="mobile"
-                  className="relative z-20 flex"
-                />
-                <WorkTimelineItem
-                  entry={entry}
-                  isOpen
-                  showHeaderAnimation={false}
-                  showBodyAnimation={false}
-                  suppressMobilePeriod
-                />
-              </div>
-            );
-          })}
-        </Accordion>
+            })}
+          </Accordion>
+        </div>
       </div>
     </section>
   );
