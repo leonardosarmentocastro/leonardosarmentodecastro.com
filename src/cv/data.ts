@@ -20,7 +20,7 @@ export const RESUME: Resume = {
       whatsappMessage:
         "https://wa.me/5512981276618?text=Hello%20Leonardo%2C%20I%27m%20interested%20in%20discussing%20a%20project%20opportunity%20with%20you.",
       site: "https://www.leonardosarmentodecastro.com",
-      resumePdf: "/cv/Leonardo-Sarmento-de-Castro-Resume.pdf",
+      resumePdf: "/cv/pdf",
     },
   },
 

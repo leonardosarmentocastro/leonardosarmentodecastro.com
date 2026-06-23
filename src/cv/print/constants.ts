@@ -10,7 +10,7 @@ import { join } from "node:path";
 export const PRINT_LAYOUT_VERSION = 6;
 
 export const CV_PDF_ROUTE = "/cv/print";
-export const CV_PDF_PUBLIC_PATH = "/cv/Leonardo-Sarmento-de-Castro-Resume.pdf";
+export const CV_PDF_PUBLIC_PATH = "/cv/pdf";
 
 const PUBLIC_DIR = join(process.cwd(), "public");
 export const CV_PDF_OUTPUT_FILE = join(
