@@ -15,7 +15,10 @@ export default async function Image() {
   const avatarBytes = await readFile(
     join(process.cwd(), "public", RESUME.hero.avatar),
   );
-  const avatarSrc = `data:image/jpeg;base64,${avatarBytes.toString("base64")}`;
+  const ext = RESUME.hero.avatar.split(".").pop()?.toLowerCase();
+  const mime =
+    ext === "png" ? "image/png" : ext === "webp" ? "image/webp" : "image/jpeg";
+  const avatarSrc = `data:${mime};base64,${avatarBytes.toString("base64")}`;
 
   return new ImageResponse(
     <div
