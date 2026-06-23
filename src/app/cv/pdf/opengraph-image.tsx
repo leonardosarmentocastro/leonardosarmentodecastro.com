@@ -29,6 +29,7 @@ export default async function Image() {
       }}
     >
       {/* avatar */}
+      {/* biome-ignore lint/performance/noImgElement: next/og (satori) only supports a plain <img> with a data URI; next/image is not supported inside ImageResponse */}
       <img
         src={avatarSrc}
         alt=""
@@ -47,10 +48,24 @@ export default async function Image() {
           borderLeft: "8px solid #BB001B",
         }}
       >
-        <div style={{ display: "flex", fontSize: 64, fontWeight: 800, lineHeight: 1.05 }}>
+        <div
+          style={{
+            display: "flex",
+            fontSize: 64,
+            fontWeight: 800,
+            lineHeight: 1.05,
+          }}
+        >
           {RESUME.hero.name}
         </div>
-        <div style={{ display: "flex", marginTop: 20, fontSize: 34, color: "#d4d4d4" }}>
+        <div
+          style={{
+            display: "flex",
+            marginTop: 20,
+            fontSize: 34,
+            color: "#d4d4d4",
+          }}
+        >
           {RESUME.hero.role}
         </div>
         <div
