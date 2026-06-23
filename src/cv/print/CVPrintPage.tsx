@@ -16,13 +16,13 @@ export const CVPrintPage = () => (
       <hr className="my-12 border-neutral-200" />
       <About printMode />
       <hr className="my-12 border-neutral-200" />
+      <ContactPrint />
+      <hr className="my-12 border-neutral-200" />
       <WorkPrintTimeline />
       <hr className="my-12 border-neutral-200" />
       <Education />
       <hr className="my-12 border-neutral-200" />
       <Skills printMode />
-      <hr className="my-12 border-neutral-200" />
-      <ContactPrint />
     </div>
   </main>
 );
