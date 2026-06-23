@@ -69,6 +69,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.leonardosarmentodecastro.com"),
   title: "Leonardo Sarmento de Castro | SENIOR SOFTWARE ENGINEER",
   description: "TYPESCRIPT | NODE.JS | REACT | AWS",
 };
