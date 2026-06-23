@@ -98,7 +98,7 @@ const SkillCardInner = ({ skill }: { skill: Skill }) => {
 };
 
 const CARD_CLASS =
-  "font-quicksand border border-neutral-200 rounded-lg p-4 flex flex-col gap-1 scroll-mt-24";
+  "cv-print-skill-card font-quicksand border border-neutral-200 rounded-lg p-4 flex flex-col gap-1 scroll-mt-24";
 
 const SkillCard = ({
   skill,

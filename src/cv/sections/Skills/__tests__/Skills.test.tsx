@@ -128,4 +128,15 @@ describe("Skills printMode", () => {
     const buttons = screen.queryAllByRole("button");
     expect(buttons).toHaveLength(0);
   });
+
+  it("marks each skill card as an unbreakable block for print pagination", () => {
+    renderWithProviders(<Skills printMode />);
+    const cards = screen.getAllByTestId(/^skill-card-/);
+    expect(cards).toHaveLength(RESUME.skills.length);
+    // The class is the contract the print stylesheet hangs `break-inside: avoid`
+    // off of, so a skill card never starts near a page bottom and splits.
+    for (const card of cards) {
+      expect(card).toHaveClass("cv-print-skill-card");
+    }
+  });
 });
