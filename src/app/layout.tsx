@@ -8,7 +8,7 @@ import {
   Spectral,
 } from "next/font/google";
 import Head from "next/head";
-import { CANONICAL_ORIGIN } from "@/og/site";
+import { CANONICAL_ORIGIN } from "@/seo/site";
 
 // global styles
 /////

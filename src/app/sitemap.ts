@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { CANONICAL_ORIGIN } from "@/og/site";
+import { CANONICAL_ORIGIN } from "@/seo/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
