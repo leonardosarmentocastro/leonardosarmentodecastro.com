@@ -19,7 +19,7 @@ export const RESUME: Resume = {
       whatsappDisplay: "+55 (12) 98127-6618",
       whatsappMessage:
         "https://wa.me/5512981276618?text=Hello%20Leonardo%2C%20I%27m%20interested%20in%20discussing%20a%20project%20opportunity%20with%20you.",
-      site: "https://www.leonardosarmentodecastro.com",
+      site: "https://leonardosarmentocastro.com",
       resumePdf: "/cv/Leonardo-Sarmento-de-Castro-Resume.pdf",
     },
   },
