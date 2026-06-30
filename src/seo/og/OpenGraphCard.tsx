@@ -1,4 +1,4 @@
-// src/og/card.tsx
+// src/seo/og/OpenGraphCard.tsx
 import { ImageResponse } from "next/og";
 
 import { RESUME } from "@/cv/data";
@@ -6,7 +6,7 @@ import { RESUME } from "@/cv/data";
 import { loadAvatarDataUri } from "./avatar";
 import { OG_SIZE } from "./constants";
 
-export async function renderOgCard({
+export async function renderOpenGraphCard({
   label,
 }: {
   label: string;

@@ -1,4 +1,4 @@
-// src/og/avatar.ts
+// src/seo/og/avatar.ts
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
