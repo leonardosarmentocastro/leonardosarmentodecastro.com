@@ -72,10 +72,10 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(CANONICAL_ORIGIN),
   title: "Leonardo Sarmento de Castro | SENIOR SOFTWARE ENGINEER",
-  description: "TYPESCRIPT | NODE.JS | REACT | AWS",
+  description: "AI ASSISTED | TYPESCRIPT | NODE.JS | REACT | AWS",
   openGraph: {
     title: "Leonardo Sarmento de Castro | SENIOR SOFTWARE ENGINEER",
-    description: "TYPESCRIPT | NODE.JS | REACT | AWS",
+    description: "AI ASSISTED | TYPESCRIPT | NODE.JS | REACT | AWS",
     url: "/",
     siteName: "Leonardo Sarmento de Castro",
     type: "website",
@@ -83,7 +83,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Leonardo Sarmento de Castro | SENIOR SOFTWARE ENGINEER",
-    description: "TYPESCRIPT | NODE.JS | REACT | AWS",
+    description: "AI ASSISTED | TYPESCRIPT | NODE.JS | REACT | AWS",
   },
 };
 
