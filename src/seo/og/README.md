@@ -20,16 +20,20 @@ by [`fonts.ts`](./fonts.ts):
 
 | File | Family / weight | Used for |
 | --- | --- | --- |
-| `Domine-Regular.ttf` | Domine 400 | the name |
+| `Domine-Bold.ttf` | Domine 700 | the name |
 | `Spectral-Bold.ttf` | Spectral 700 | kicker + role |
+
+> The web header renders the name in Domine **400**, but the card uses **700**:
+> OG cards are seen as small, recompressed thumbnails, and the heavier strokes
+> survive that downscaling without going faint.
 
 - **Source:** [Fontsource](https://fontsource.org) CDN (the fonts originate from
   Google Fonts, [SIL Open Font License 1.1](https://openfontlicense.org)).
 - **Regenerate:**
 
   ```bash
-  curl -sSL -o src/seo/og/fonts/Domine-Regular.ttf \
-    "https://cdn.jsdelivr.net/fontsource/fonts/domine@latest/latin-400-normal.ttf"
+  curl -sSL -o src/seo/og/fonts/Domine-Bold.ttf \
+    "https://cdn.jsdelivr.net/fontsource/fonts/domine@latest/latin-700-normal.ttf"
   curl -sSL -o src/seo/og/fonts/Spectral-Bold.ttf \
     "https://cdn.jsdelivr.net/fontsource/fonts/spectral@latest/latin-700-normal.ttf"
   ```
