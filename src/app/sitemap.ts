@@ -1,23 +1,20 @@
 import type { MetadataRoute } from "next";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const hostnames = [
-    "https://leonardosarmentocastro.com",
-    "https://leonardosarmentodecastro.com",
-  ];
+import { CANONICAL_ORIGIN } from "@/seo/site";
 
-  return hostnames.flatMap((host) => [
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
     {
-      url: `${host}/`,
+      url: `${CANONICAL_ORIGIN}/`,
       lastModified: new Date(),
-      changeFrequency: "monthly" as const,
+      changeFrequency: "monthly",
       priority: 1,
     },
     {
-      url: `${host}/cv`,
+      url: `${CANONICAL_ORIGIN}/cv`,
       lastModified: new Date(),
-      changeFrequency: "monthly" as const,
+      changeFrequency: "monthly",
       priority: 0.9,
     },
-  ]);
+  ];
 }

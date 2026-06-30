@@ -37,7 +37,7 @@ describe("RESUME data shape", () => {
     expect(links.whatsapp).toMatch(/^https:\/\/wa\.me\//);
     expect(links.whatsappMessage).toMatch(/^https:\/\/wa\.me\/.*text=/);
     expect(links.whatsappDisplay).toMatch(/^\+/);
-    expect(links.site).toMatch(/^https:\/\//);
+    expect(links.site).toBe("https://leonardosarmentocastro.com");
     expect(links.resumePdf).toBe("/cv/Leonardo-Sarmento-de-Castro-Resume.pdf");
   });
 
