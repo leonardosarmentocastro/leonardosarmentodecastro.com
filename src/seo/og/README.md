@@ -46,6 +46,21 @@ That only resolves because the OG routes are statically prerendered at build tim
 ever made dynamic, move these assets to `public/` (the avatar already reads from
 there) or inline them, or the serverless function won't find them.
 
+## Busting crawler caches when the design changes
+
+Next injects the `og:image`/`twitter:image` URL with a `?<hash>` token derived
+from the **route file's own source** (`src/app/opengraph-image.tsx` and
+`src/app/cv/opengraph-image.tsx`) — *not* from this card's rendered output.
+Because the card lives in imported modules (`OpenGraphCard.tsx`, `fonts.ts`),
+changing the design does **not** change the token on its own, so LinkedIn/X (which
+cache by image URL for ~7–30 days) keep serving the old picture.
+
+**When you change the card's appearance, bump the `og-card-version: N` comment at
+the top of both route files.** That edits the route source, so Next emits a fresh
+token, the URL changes, and crawlers refetch. After deploying, re-run the
+[LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/) to pull the new
+image immediately instead of waiting out their cache.
+
 ## Local preview gotcha
 
 Next can serve a **stale** prerendered OG image across builds. If a change isn't

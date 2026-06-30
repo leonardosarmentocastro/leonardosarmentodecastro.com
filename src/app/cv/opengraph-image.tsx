@@ -1,4 +1,6 @@
 // src/app/cv/opengraph-image.tsx
+// og-card-version: 2 — bump when the card design changes so Next emits a new
+// ?<hash> on the og:image URL and crawlers (LinkedIn, etc.) refetch the image.
 import { RESUME } from "@/cv/data";
 import { OG_CONTENT_TYPE, OG_SIZE } from "@/seo/og/constants";
 import { renderOpenGraphCard } from "@/seo/og/OpenGraphCard";
